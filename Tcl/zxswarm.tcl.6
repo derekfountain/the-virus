@@ -1,0 +1,186 @@
+#!/usr/bin/wish
+
+set ::NUM_BOIDS 30
+set ::SPEED 20
+
+set c [canvas .c -width 256 -height 192]
+pack $c
+focus $c
+
+expr {srand(0)}
+array set dots {}
+for { set i 0 } { $i < $::NUM_BOIDS } { incr i } {
+    set dots($i,graphic) [$c create rectangle 0 0 1 1]
+    set dots($i,velocity) [list 0 0]
+
+    # Scaling is 256 to 1, so divide by 256 to get screen pos
+    set dots($i,position) [list [expr {int(65536*rand())}] [expr {int(49152*rand())}]]
+}
+set centre [$c create rectangle 0 0 1 1 -outline yellow]
+set goal   [$c create rectangle 0 0 5 5 -outline red]
+
+set goal_x 32768
+set goal_y 24576
+
+bind $c <KeyPress-q> {incr ::goal_y -1000; puts "Goal $::goal_x , $::goal_y"}
+bind $c <KeyPress-a> {incr ::goal_y  1000; puts "Goal $::goal_x , $::goal_y"}
+bind $c <KeyPress-o> {incr ::goal_x -1000; puts "Goal $::goal_x , $::goal_y"}
+bind $c <KeyPress-p> {incr ::goal_x  1000; puts "Goal $::goal_x , $::goal_y"}
+
+proc draw_dots {} {
+    global dots
+
+    for { set i 0 } { $i < $::NUM_BOIDS } { incr i } {
+	$::c moveto $dots($i,graphic) [expr {round([lindex $dots($i,position) 0]/256)}] \
+	                              [expr {round([lindex $dots($i,position) 1]/256)}]
+    }
+}
+
+proc vector_distance { v1 v2 } {
+    set x_sq [expr { ([lindex $v1 0]-[lindex $v2 0]) * ([lindex $v1 0]-[lindex $v2 0]) } ]
+    set y_sq [expr { ([lindex $v1 1]-[lindex $v2 1]) * ([lindex $v1 1]-[lindex $v2 1]) } ]
+#    return [expr {round(sqrt($x_sq + $y_sq))}]
+    return [expr {(sqrt($x_sq + $y_sq))}]
+}
+
+proc vector_add { v1 v2 } {
+    set r [list [expr {[lindex $v1 0]+[lindex $v2 0]}] [expr {[lindex $v1 1]+[lindex $v2 1]}] ]
+    return $r
+}
+
+proc vector_sub { v1 v2 } {
+    set r [list [expr {[lindex $v1 0]-[lindex $v2 0]}] [expr {[lindex $v1 1]-[lindex $v2 1]}] ]
+    return $r
+}
+
+proc vector_mul { v1 m } {
+    set r [list [expr {[lindex $v1 0]*$m}] [expr {[lindex $v1 1]*$m}] ]
+    return $r
+}
+
+proc vector_div { v1 d } {
+#    set r [list [expr {round([lindex $v1 0]/$d)}] [expr {round([lindex $v1 1]/$d)}] ]
+    set r [list [expr {([lindex $v1 0]/$d)}] [expr {([lindex $v1 1]/$d)}] ]
+    return $r
+}
+
+# Rule 1: Boids try to fly towards the centre of mass of neighbouring boids.
+# Given just this rule and the velocity limitation the boids all convene on
+# one spot, which then drifts slowly in one direction out of the frame. I
+# think it's because, if there's one outlier boid which is slow to join the
+# final clump, that boid's velocity remains applied to the whole mass. Bit of
+# a guess really.
+#
+proc fly_towards_centre { index } {
+    global dots
+
+    set calculated_centre {0 0}
+
+    for { set i 0 } { $i < $::NUM_BOIDS } { incr i } {
+	set calculated_centre [vector_add $calculated_centre $dots($i,position)]
+    }
+    set centre_of_mass [vector_div $calculated_centre $::NUM_BOIDS]
+
+    # Test: just use starting point as a fixed point
+    # set centre_of_mass {36759 23422}
+    # puts "PC $centre_of_mass vs {36759 23422}"
+
+    # Distance of this boid to the centre of mass
+    #
+    set distance_to_centre [vector_sub $centre_of_mass $dots($index,position)]
+
+    # Move boid 1% of distance towards centre
+    #
+    set boid_velocity [vector_div $distance_to_centre 100]
+
+    # Test: yellow dot shows centre of mass - scale to screen
+    # $::c moveto $::centre [expr {[lindex $centre_of_mass 0]/256}] [expr {[lindex $centre_of_mass 1]/256}]
+
+    return $boid_velocity
+}
+
+# Rule 2: Boids try to keep a small distance away from other boids
+#
+proc avoid_others { index } {
+    global dots
+
+    set MIN_DISTANCE 1024
+    set boid_velocity [list 0 0]
+
+    for { set i 0 } { $i < $::NUM_BOIDS } { incr i } {
+        if { $i != $index } {
+            set distance [vector_distance $dots($i,position) $dots($index,position)]
+            if { $distance < $MIN_DISTANCE } {
+                set boid_velocity [vector_sub $boid_velocity [vector_sub $dots($i,position) $dots($index,position)]]
+            }
+        }
+    }
+
+    return $boid_velocity
+}
+
+# Rule 3: Boids try to match velocity with near boids.
+proc rule3 { index } {
+
+    global dots
+
+    set v [list 0 0]
+
+    for { set i 0 } { $i < $::NUM_BOIDS } { incr i } {
+	set v [vector_add $v $dots($i,velocity)]
+    }
+
+    set av_velocity [vector_div $v [expr {$::NUM_BOIDS-1}]]
+    set r [vector_sub $av_velocity $dots($index,velocity)]
+    set r [vector_div $r 100]
+
+    return $r
+}
+
+proc limit_velocity { index } {
+    global dots
+    
+    set VLIM 150
+    set mag [expr {sqrt([lindex $dots($index,velocity) 0] * [lindex $dots($index,velocity) 0] + \
+			    [lindex $dots($index,velocity) 1] * [lindex $dots($index,velocity) 1])} ]
+    set mymag [vector_distance {0 0} $dots($index,velocity)]
+#puts ">>> $mag $mymag"
+    if { $mag > $VLIM } {
+#puts " divide $dots($index,velocity) by $mag"
+	set t [vector_div $dots($index,velocity) $mag]
+#puts " giving: $t"
+#puts " multiply that by $VLIM"
+	set dots($index,velocity) [vector_mul $t $VLIM]
+#puts " ending with: $dots($index,velocity)"
+    }
+}
+
+proc move_all_dots {} {
+    global dots
+
+    for { set i 0 } { $i < $::NUM_BOIDS } { incr i } {
+
+	set v1 [fly_towards_centre $i]
+	set v2 [avoid_others       $i]
+#	set v3 [rule3 $i]
+    
+# Limit the magnitude of this
+#	set v4 [vector_sub [list $::goal_x $::goal_y] $dots($i,position)]
+#	set v4 [vector_div $v4 100]
+
+	set dots($i,velocity) [vector_add $dots($i,velocity) $v1]
+	set dots($i,velocity) [vector_add $dots($i,velocity) $v2]
+#	set dots($i,velocity) [vector_add $dots($i,velocity) $v3]
+#	set dots($i,velocity) [vector_add $dots($i,velocity) $v4]
+	limit_velocity $i
+	set dots($i,position) [vector_add $dots($i,position) $dots($i,velocity)]
+    }
+
+    draw_dots
+    $::c moveto $::goal [expr {$::goal_x/256}] [expr {$::goal_y/256}]
+
+    after $::SPEED move_all_dots
+}
+
+
+after $::SPEED move_all_dots

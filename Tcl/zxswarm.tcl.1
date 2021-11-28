@@ -1,0 +1,184 @@
+#!/usr/bin/wish
+
+set ::NUM_BOIDS 3
+# I think this is needed becuase 1% of small numbers like 75pixels is too small to function properly
+set ::MULTIPLIER 1024
+set ::SPEED 2000
+
+set c [canvas .c -width 256 -height 192]
+pack $c
+
+expr {srand(0)}
+array set dots {}
+for { set i 0 } { $i < $::NUM_BOIDS } { incr i } {
+    set dots($i,graphic) [$c create rectangle 0 0 1 1]
+    set dots($i,velocity) [list 0 0]
+    set dots($i,position) [list [expr {int(256*rand())*$::MULTIPLIER}] [expr {int(192*rand())*$::MULTIPLIER}]]
+#puts "init $i $dots($i,position)";
+}
+set centre [$c create rectangle 0 0 1 1 -outline green]
+
+proc draw_dots {} {
+    global dots
+
+    for { set i 0 } { $i < $::NUM_BOIDS } { incr i } {
+	$::c moveto $dots($i,graphic) [expr {round([lindex $dots($i,position) 0]/$::MULTIPLIER)}] \
+	                              [expr {round([lindex $dots($i,position) 1]/$::MULTIPLIER)}]
+    }
+}
+
+proc vector_distance { v1 v2 } {
+    set x_sq [expr { ([lindex $v1 0]-[lindex $v2 0]) * ([lindex $v1 0]-[lindex $v2 0]) } ]
+    set y_sq [expr { ([lindex $v1 1]-[lindex $v2 1]) * ([lindex $v1 1]-[lindex $v2 1]) } ]
+    return [expr {round(sqrt($x_sq + $y_sq)) * $::MULTIPLIER}]
+}
+
+proc vector_add { v1 v2 } {
+    set r [list [expr {[lindex $v1 0]+[lindex $v2 0]}] [expr {[lindex $v1 1]+[lindex $v2 1]}] ]
+    return $r
+}
+
+proc vector_sub { v1 v2 } {
+    set r [list [expr {[lindex $v1 0]-[lindex $v2 0]}] [expr {[lindex $v1 1]-[lindex $v2 1]}] ]
+    return $r
+}
+
+proc vector_div { v1 d } {
+    set r [list [expr {round([lindex $v1 0]/$d)}] [expr {round([lindex $v1 1]/$d)}] ]
+    return $r
+}
+set t1 [list 1  1]
+set t2 [list 15 31]
+set r  [vector_add $t1 $t2]        
+# 16 32
+set r  [vector_sub $r  [list 8 8]]          
+#  8 24
+set r  [vector_div $r  2]          
+#  4  12
+#puts "x=[lindex $r 0] y=[lindex $r 1]"
+#exit 0
+
+# Rule 1: Boids try to fly towards the centre of mass of neighbouring boids
+proc rule1 { index } {
+    global dots
+
+    set calculated_centre [list 0 0]
+
+    for { set i 0 } { $i < $::NUM_BOIDS } { incr i } {
+	if { $i != $index } {
+puts $dots($i,position)
+puts "+"
+puts $calculated_centre
+	    set calculated_centre [vector_add $calculated_centre $dots($i,position)]
+puts "="
+puts $calculated_centre
+	}
+    }
+
+puts "\n$calculated_centre (calculated total without boid $index)"
+    set perceived_centre [vector_div $calculated_centre [expr {$::NUM_BOIDS-1}]]
+puts "$perceived_centre (of [expr {$::NUM_BOIDS-1}] boids)"
+    set distance_to_centre [vector_sub $perceived_centre $dots($index,position)]
+puts "$distance_to_centre (boid $index distance from perceived centre)"
+
+    # Move boid 1% of distance towards centre
+    set r [vector_div $distance_to_centre 100]
+puts $r
+
+# I think this one is right
+  $::c moveto $::centre [expr {round([lindex $perceived_centre 0]/$::MULTIPLIER)}] \
+	              [expr {round([lindex $perceived_centre 1]/$::MULTIPLIER)}]
+
+    return $r
+}
+
+# Rule 2: Boids try to keep a small distance away from other objects (including other boids).
+proc rule2 { index } {
+    global dots
+
+    set c [list 0 0]
+
+    for { set i 0 } { $i < $::NUM_BOIDS } { incr i } {
+	if { $i != $index } {
+	    set distance [vector_distance $dots($i,position) $dots($index,position)]
+puts "Distance $distance"
+	    if { $distance < 1*$::MULTIPLIER } {
+		set c [vector_sub $c [list $distance $distance]]
+	    }
+	}
+    }
+
+    return $c
+#Vector c = 0;
+#
+#		FOR EACH BOID b
+#			IF b != bJ THEN
+#				IF |b.position - bJ.position| < 100 THEN
+#					c = c - (b.position - bJ.position)
+#				END IF
+#			END IF
+#		END
+#
+#		RETURN c
+}
+
+
+proc rule3 { index } {
+
+    global dots
+
+    set v [list 0 0]
+
+    for { set i 0 } { $i < $::NUM_BOIDS } { incr i } {
+	if { $i != $index } {
+	    set v [vector_add $v $dots($i,velocity)]
+	}
+    }
+
+    set v [vector_div $v [expr {$::NUM_BOIDS-1}]]
+    set v [vector_sub $v $dots($index,velocity)]
+
+    return [vector_div $v [expr {8}]]
+
+#		Vector pvJ
+#
+#		FOR EACH BOID b
+#			IF b != bJ THEN
+#				pvJ = pvJ + b.velocity
+#			END IF
+#		END
+#
+#		pvJ = pvJ / N-1
+#
+#		RETURN (pvJ - bJ.velocity) / 8}
+
+
+proc move_all_dots {} {
+    global dots
+
+    for { set i 0 } { $i < $::NUM_BOIDS } { incr i } {
+
+	set v1 [rule1 $i]
+draw_dots
+update idletasks
+after $::SPEED
+#	set v2 [rule2 $i]
+#	set v3 [rule3 $i]
+    
+#	set v4 [vector_sub [list [expr 128*$::MULTIPLIER] [expr 96*$::MULTIPLIER] ] $dots($i,position)]
+#	set v4 [vector_div $v4 100]
+
+	set dots($i,velocity) [vector_add $dots($i,velocity) $v1]
+#	set dots($i,velocity) [vector_add $dots($i,velocity) $v2]
+#	set dots($i,velocity) [vector_add $dots($i,velocity) $v3]
+#	set dots($i,velocity) [vector_add $dots($i,velocity) $v4]
+	set dots($i,position) [vector_add $dots($i,position) $dots($i,velocity)]
+    }
+
+    draw_dots
+
+    after $::SPEED move_all_dots
+}
+
+
+after $::SPEED move_all_dots
