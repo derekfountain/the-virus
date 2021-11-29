@@ -1,4 +1,5 @@
 #include "vectors.h"
+#include <stdio.h>
 
 #define ENABLE_TEST 0
 #if ENABLE_TEST
@@ -40,8 +41,10 @@ void test_vector_distance_f(void){}
 
 int16_t vector_distance_i( Vector *v1, Vector *v2 )
 {
+  //printf("VD: %d %d   %d %d\n", v1->x_i,v1->y_i,  v2->x_i,v2->y_i );
   int16_t x_sq = (v1->x_i - v2->x_i) * (v1->x_i - v2->x_i);
   int16_t y_sq = (v1->y_i - v2->y_i) * (v1->y_i - v2->y_i);
+  //printf("SM: %d %d\n", x_sq,y_sq );
 
   return x_sq + y_sq;
 }
@@ -56,8 +59,8 @@ Vector *vector_add_f( Vector *v1, Vector *v2 )
 
 Vector *vector_sub_f( Vector *v1, Vector *v2 )
 {
-  v1->x_f = v1->x_f - v2->x_f;
-  v1->y_f = v1->y_f - v2->y_f;
+  v1->x_f = subf16(v1->x_f, v2->x_f);
+  v1->y_f = subf16(v1->y_f, v2->y_f);
 
   return v1;
 }
@@ -80,8 +83,8 @@ Vector *vector_mul_f( Vector *v1, half_t mul )
 
 Vector *vector_div_f( Vector *v1, half_t fac )
 {
-  v1->x_f = v1->x_f / fac;
-  v1->y_f = v1->y_f / fac;
+  v1->x_f = divf16(v1->x_f, fac);
+  v1->y_f = divf16(v1->y_f, fac);
 
   return v1;
 }

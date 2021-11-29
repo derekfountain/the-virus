@@ -67,10 +67,9 @@ void draw_swarm( Draw_Mode mode )
   }
 }
 
-
-void clear_swarm( Draw_Mode mode )
+void draw_swarm_or(void)
 {
-  extern Vector previous_swarm[NUM_IN_SWARM];
+  extern Vector swarm[NUM_IN_SWARM];
 
   uint8_t i;
   for( i=0; i<NUM_IN_SWARM; i++ )
@@ -81,18 +80,36 @@ void clear_swarm( Draw_Mode mode )
     uint8_t *scr_byte = screen_line_starts[y];
     scr_byte += screen_line_offsets[x];
 
-    if( mode == OR_MODE )
-      *scr_byte |= screen_byte_values[x];
-    else
-      *scr_byte ^= screen_byte_values[x];
+    *scr_byte |= screen_byte_values[x];
 #else
     uint8_t *scr_byte = zx_pxy2saddr( x, y );
     uint8_t  val      = 1<<(x & 0x07);
 
-    if( mode == OR_MODE )
-      *scr_byte |= val;
-    else
-      *scr_byte ^= val;
+    *scr_byte |= val;
+#endif
+
+  }
+}
+
+void clear_swarm(void)
+{
+  extern Vector previous_swarm[NUM_IN_SWARM];
+
+  uint8_t i;
+  for( i=0; i<NUM_IN_SWARM; i++ )
+  {
+    uint8_t x = previous_swarm[i].x_i;
+    uint8_t y = previous_swarm[i].y_i;
+#if USE_LOOKUP
+    uint8_t *scr_byte = screen_line_starts[y];
+    scr_byte += screen_line_offsets[x];
+
+    *scr_byte ^= screen_byte_values[x];
+#else
+    uint8_t *scr_byte = zx_pxy2saddr( x, y );
+    uint8_t  val      = 1<<(x & 0x07);
+
+    *scr_byte ^= val;
 #endif
 
   }

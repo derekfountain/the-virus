@@ -1,15 +1,19 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include <arch/zx.h>
 
 #include "main.h"
 #include "draw_swarm.h"
 #include "vectors.h"
+#include "swarm_algorithm.h"
 
 Vector swarm[NUM_IN_SWARM];
 Vector previous_swarm[NUM_IN_SWARM];
 
 Vector goal;
+
+
 
 int main(void)
 {
@@ -25,8 +29,10 @@ int main(void)
 
   for( i=0; i<NUM_IN_SWARM; i++ )
   {
-    swarm[i].x_i = rand()%256;
-    swarm[i].y_i = rand()%192;
+    swarm[i].x_i = rand()%256; swarm[i].x_f = f16_i16( swarm[i].x_i );
+    swarm[i].y_i = rand()%192; swarm[i].y_f = f16_i16( swarm[i].y_i );
+    //printf("Init: %d, %d == %f, %f\n", swarm[i].x_i, swarm[i].y_i,
+    //                                   f32_f16( swarm[i].x_f ), f32_f16( swarm[i].y_f ) );
   }
 
   int j=0;
@@ -34,34 +40,54 @@ int main(void)
   {
     int i;
 
-//    memcpy( previous_swarm, swarm, sizeof(swarm) );
-
     for( i=0; i < NUM_IN_SWARM; i++ )
     {
-//      int16_t avoid_others_v = avoid_others(i);
-    
-      /* Extra rule to make the boids follow the red dot. */
-      /* Move 1% closer to it each iteration */
+      Vector avoid_others_v;
+      Vector move_to_goal_v;
 
-//      Vector v4 = goal;
-#if 0
+      avoid_others(i, &avoid_others_v);
+      //printf("Avoid others: vel_x=%f, vel_y=%f\n", f32_f16( avoid_others_v.velocity_x ), f32_f16( avoid_others_v.velocity_y ) );
 
-[vector_sub [list $::goal_x $::goal_y] $dots($i,position)]
-	set v4 [vector_div $v4 100]
+      move_to_goal_v.x_f = goal.x_f;
+      move_to_goal_v.y_f = goal.y_f;
+      //printf("1: goalpos_x=%f, goalpos_y=%f\n", f32_f16( move_to_goal_v.x_f ), f32_f16( move_to_goal_v.y_f ) );
 
-	set dots($i,velocity) [vector_add $dots($i,velocity) $v2]
-	set dots($i,velocity) [vector_add $dots($i,velocity) $v4]
+      //printf("2: pos_x=%f, pos_y=%f\n", f32_f16( swarm[i].x_f ), f32_f16( swarm[i].y_f ) );
+      vector_sub_f( &move_to_goal_v, &swarm[i] );
+      //printf("3: pos_x=%f, pos_y=%f\n", f32_f16( move_to_goal_v.x_f ), f32_f16( move_to_goal_v.y_f ) );
+      //printf("4: vel_x=%f, vel_y=%f\n", f32_f16( swarm[i].x_f ), f32_f16( swarm[i].y_f ) );
+      vector_div_f( &move_to_goal_v, f16_i32(100) );
+      //printf("Move to goal: vel_x=%f, vel_y=%f\n", f32_f16( move_to_goal_v.x_f ), f32_f16( move_to_goal_v.y_f ) );
+    move_to_goal_v.velocity_x = move_to_goal_v.x_f;
+    move_to_goal_v.velocity_y = move_to_goal_v.y_f;
 
-	limit_velocity $i
+      swarm[i].velocity_x = addf16( swarm[i].velocity_x, avoid_others_v.velocity_x );
+      swarm[i].velocity_y = addf16( swarm[i].velocity_y, avoid_others_v.velocity_y );
 
-	set dots($i,position) [vector_add $dots($i,position) $dots($i,velocity)]
-	set dots($i,position_int) "[expr {round([lindex $dots($i,position) 0])}] [expr {round([lindex $dots($i,position) 1])}]"
-#endif
+      swarm[i].velocity_x = addf16( swarm[i].velocity_x, move_to_goal_v.velocity_x );
+      swarm[i].velocity_y = addf16( swarm[i].velocity_y, move_to_goal_v.velocity_y );
   
+      // Limit velocity here
+
+      /* Finally, add calculated velocity to dot position */
+      swarm[i].x_f = addf16( swarm[i].x_f, swarm[i].velocity_x );
+      swarm[i].y_f = addf16( swarm[i].y_f, swarm[i].velocity_y );
+
+      /* Updated rounded version of position */
+      swarm[i].x_i = i16_f16( roundf16( swarm[i].x_f ) );
+      swarm[i].y_i = i16_f16( roundf16( swarm[i].y_f ) );
     }
 
-//    draw_swarm( XOR_MODE, previous_swarm );
-    draw_swarm( OR_MODE, swarm );
+    /* Clear the previous swarm - it's hard coded */
+    clear_swarm();
+
+    /* Draw the newly computed swarm - also hard coded */
+    draw_swarm_or();
+
+    /* Copy currently displayed swarm so the clear routine can remove it */
+    /* OPT I only need the int positions, so keeping those separate will make this faster */
+    memcpy( previous_swarm, swarm, sizeof(swarm) );
+
     j++;
   }
 

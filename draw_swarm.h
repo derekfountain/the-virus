@@ -12,6 +12,8 @@ typedef enum
 
 
 void init_draw_swarm(void);
-void draw_swarm( Draw_Mode mode, Vector vectors[NUM_IN_SWARM] );
+void draw_swarm( Draw_Mode mod );
+void draw_swarm_or( void );
+void clear_swarm( void );
 
 #endif
