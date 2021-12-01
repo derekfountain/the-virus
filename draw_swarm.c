@@ -42,7 +42,7 @@ void draw_swarm( Draw_Mode mode )
   extern Vector swarm[NUM_IN_SWARM];
 
   uint8_t i;
-  for( i=0; i<1/*NUM_IN_SWARM*/; i++ )
+  for( i=0; i<NUM_IN_SWARM; i++ )
   {
     uint8_t x = swarm[i].x_i;
     uint8_t y = swarm[i].y_i;
@@ -72,7 +72,7 @@ void draw_swarm_or(void)
   extern Vector swarm[NUM_IN_SWARM];
 
   uint8_t i;
-  for( i=0; i<1/*NUM_IN_SWARM*/; i++ )
+  for( i=0; i<NUM_IN_SWARM; i++ )
   {
     uint8_t x = swarm[i].x_i;
     uint8_t y = swarm[i].y_i;

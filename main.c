@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <arch/zx.h>
+#include <sys/ioctl.h>
 
 #include "main.h"
 #include "draw_swarm.h"
@@ -23,7 +24,10 @@ void main(void)
   goal.x_i = 128; goal.x_f = f16_i16( goal.x_i );
   goal.y_i =  96; goal.y_f = f16_i16( goal.y_i );
 
+  const half_t f100 = f16_i16( 100 );
+
   init_draw_swarm();
+  ioctl(1, IOCTL_OTERM_PAUSE, 0);
 
   test_vector_distance_f();
 
@@ -41,7 +45,7 @@ void main(void)
 
     for( i=0; i < NUM_IN_SWARM; i++ )
     {
-      //Vector avoid_others_v;
+//      Vector avoid_others_v;
       Vector move_to_goal_v;
 
       /*
@@ -61,19 +65,19 @@ void main(void)
       // printf("2: pos_x=%d, pos_y=%d\n", swarm[i].x_i, swarm[i].y_i );
       move_to_goal_v.x_i = move_to_goal_v.x_i - swarm[i].x_i;
       move_to_goal_v.y_i = move_to_goal_v.y_i - swarm[i].y_i;
-      //printf("Move to goal %d (before div100): vel_x=%d, vel_y=%d\n", i, move_to_goal_v.x_i, move_to_goal_v.y_i );
+      // printf("Move to goal %d (before div100): vel_x=%d, vel_y=%d\n", i, move_to_goal_v.x_i, move_to_goal_v.y_i );
 
       // Integer rounding is different between C and Tcl. Not sure how to handle it, this is closest.
-      move_to_goal_v.velocity_x = ( divf16( f16_i16(move_to_goal_v.x_i), f16_i16(100) ) );
-      move_to_goal_v.velocity_y = ( divf16( f16_i16(move_to_goal_v.y_i), f16_i16(100) ) );
+      move_to_goal_v.velocity_x = ( divf16( f16_i16(move_to_goal_v.x_i), f100 ) );
+      move_to_goal_v.velocity_y = ( divf16( f16_i16(move_to_goal_v.y_i), f100 ) );
       //printf("Move to goal %d: vel_x=%f, vel_y=%f\n\n", i, f32_f16( move_to_goal_v.velocity_x ), f32_f16( move_to_goal_v.velocity_y ) );
 
 
       /*
        * Add up total velocity
        */
-      // swarm[i].velocity_x = addf16( swarm[i].velocity_x, avoid_others_v.velocity_x );
-      // swarm[i].velocity_y = addf16( swarm[i].velocity_y, avoid_others_v.velocity_y );
+      //swarm[i].velocity_x = addf16( swarm[i].velocity_x, avoid_others_v.velocity_x );
+      //swarm[i].velocity_y = addf16( swarm[i].velocity_y, avoid_others_v.velocity_y );
 
       swarm[i].velocity_x = addf16( swarm[i].velocity_x, move_to_goal_v.velocity_x );
       swarm[i].velocity_y = addf16( swarm[i].velocity_y, move_to_goal_v.velocity_y );
@@ -82,8 +86,8 @@ void main(void)
       /*
        * Limit velocity
        */
-#if 0
-      const half_t SPEED_LIMIT = f16_i16(16);
+#if 1
+      const half_t SPEED_LIMIT = f16_i16(64);
 
       // This appears to be just squaring the velocity?
 //      printf("Vel in %d: vel_x=%f, vel_y=%f\n\n", i, f32_f16( swarm[i].velocity_x ), f32_f16( swarm[i].velocity_y ) );
@@ -111,17 +115,22 @@ void main(void)
 
 
       /* Finally, add calculated velocity to dot position */
+///      printf("Pre-update %d: x=%f, y=%f\n", i, f32_f16( swarm[i].x_f ), f32_f16( swarm[i].y_f ) );
+///      printf("Velocity   %d: x=%f, y=%f\n", i, f32_f16( swarm[i].velocity_x ), f32_f16( swarm[i].velocity_y ) );
+
       swarm[i].x_f = addf16( swarm[i].x_f, swarm[i].velocity_x );
       swarm[i].y_f = addf16( swarm[i].y_f, swarm[i].velocity_y );
+
+///      printf("Pos-update %d: x=%f, y=%f\n", i, f32_f16( swarm[i].x_f ), f32_f16( swarm[i].y_f ) );
 
       /* Updated rounded version of position */
       swarm[i].x_i = i16_f16( ( swarm[i].x_f ) );
       swarm[i].y_i = i16_f16( ( swarm[i].y_f ) );
+///      printf("Ints now   %d: x=%d, y=%d\n\n", i, swarm[i].x_i, swarm[i].y_i );
     }
 
     /* Clear the previous swarm - it's hard coded */
-    zx_cls( PAPER_WHITE );
-//    clear_swarm();
+    clear_swarm();
 
     /* Draw the newly computed swarm - also hard coded */
     draw_swarm_or();
