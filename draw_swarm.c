@@ -104,12 +104,12 @@ void clear_swarm(void)
     uint8_t *scr_byte = screen_line_starts[y];
     scr_byte += screen_line_offsets[x];
 
-    *scr_byte ^= screen_byte_values[x];
+    *scr_byte = 0;
 #else
     uint8_t *scr_byte = zx_pxy2saddr( x, y );
-    uint8_t  val      = 0x80 >> (x & 0x07);
+    //uint8_t  val      = 0x80 >> (x & 0x07);
 
-    *scr_byte ^= val;
+    *scr_byte = 0;
 #endif
 
   }
