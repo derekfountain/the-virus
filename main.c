@@ -86,7 +86,8 @@ void main(void)
       /*
        * Limit velocity
        */
-#if 0
+#if 1
+      const half_t SPEED_LIMIT = f16_f32(20);
       half_t x_sq = mulf16( swarm[i].velocity_x, swarm[i].velocity_x );
       half_t y_sq = mulf16( swarm[i].velocity_y, swarm[i].velocity_y );
       half_t mag = addf16( x_sq, y_sq );
@@ -101,13 +102,10 @@ void main(void)
       }
 //      printf("Vel ou %d: vel_x=%f, vel_y=%f\n\n", i, f32_f16( swarm[i].velocity_x ), f32_f16( swarm[i].velocity_y ) );
 #else
-  const half_t SPEED_LIMIT = f16_f32(1.5);
-      if( isgreaterf16( swarm[i].velocity_x, SPEED_LIMIT ) )
+      const half_t SPEED_LIMIT = f16_f32(3.0);
+      if( isgreaterf16( swarm[i].velocity_x, SPEED_LIMIT ) || isgreaterf16( swarm[i].velocity_y, SPEED_LIMIT ) )
       {
 	swarm[i].velocity_x = div2f16( swarm[i].velocity_x );
-      }
-      if( isgreaterf16( swarm[i].velocity_y, SPEED_LIMIT ) )
-      {
 	swarm[i].velocity_y = div2f16( swarm[i].velocity_y );
       }
 
@@ -116,18 +114,12 @@ void main(void)
 
 
       /* Finally, add calculated velocity to dot position */
-///      printf("Pre-update %d: x=%f, y=%f\n", i, f32_f16( swarm[i].x_f ), f32_f16( swarm[i].y_f ) );
-///      printf("Velocity   %d: x=%f, y=%f\n", i, f32_f16( swarm[i].velocity_x ), f32_f16( swarm[i].velocity_y ) );
-
       swarm[i].x_f = addf16( swarm[i].x_f, swarm[i].velocity_x );
       swarm[i].y_f = addf16( swarm[i].y_f, swarm[i].velocity_y );
-
-///      printf("Pos-update %d: x=%f, y=%f\n", i, f32_f16( swarm[i].x_f ), f32_f16( swarm[i].y_f ) );
 
       /* Updated rounded version of position */
       swarm[i].x_i = i16_f16( ( swarm[i].x_f ) );
       swarm[i].y_i = i16_f16( ( swarm[i].y_f ) );
-///      printf("Ints now   %d: x=%d, y=%d\n\n", i, swarm[i].x_i, swarm[i].y_i );
     }
 
     /* Clear the previous swarm - it's hard coded */
