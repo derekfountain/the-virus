@@ -32,7 +32,7 @@ void init_draw_swarm(void)
   {
     /* Tried merging these into one table, but the multiply-by-2 on lookup cost too much */
     screen_line_offsets[i] = i >> 3;
-    screen_byte_values[i]  = 1<<(i & 0x07);
+    screen_byte_values[i]  = 0x80 >> (i & 0x07);
   }
 #endif
 }
@@ -42,7 +42,7 @@ void draw_swarm( Draw_Mode mode )
   extern Vector swarm[NUM_IN_SWARM];
 
   uint8_t i;
-  for( i=0; i<NUM_IN_SWARM; i++ )
+  for( i=0; i<1/*NUM_IN_SWARM*/; i++ )
   {
     uint8_t x = swarm[i].x_i;
     uint8_t y = swarm[i].y_i;
@@ -56,7 +56,7 @@ void draw_swarm( Draw_Mode mode )
       *scr_byte ^= screen_byte_values[x];
 #else
     uint8_t *scr_byte = zx_pxy2saddr( x, y );
-    uint8_t  val      = 1<<(x & 0x07);
+    uint8_t  val      = 0x80 >> (x & 0x07);
 
     if( mode == OR_MODE )
       *scr_byte |= val;
@@ -72,7 +72,7 @@ void draw_swarm_or(void)
   extern Vector swarm[NUM_IN_SWARM];
 
   uint8_t i;
-  for( i=0; i<NUM_IN_SWARM; i++ )
+  for( i=0; i<1/*NUM_IN_SWARM*/; i++ )
   {
     uint8_t x = swarm[i].x_i;
     uint8_t y = swarm[i].y_i;
@@ -83,7 +83,7 @@ void draw_swarm_or(void)
     *scr_byte |= screen_byte_values[x];
 #else
     uint8_t *scr_byte = zx_pxy2saddr( x, y );
-    uint8_t  val      = 1<<(x & 0x07);
+    uint8_t  val      = 0x80 >> (x & 0x07);
 
     *scr_byte |= val;
 #endif
@@ -107,7 +107,7 @@ void clear_swarm(void)
     *scr_byte ^= screen_byte_values[x];
 #else
     uint8_t *scr_byte = zx_pxy2saddr( x, y );
-    uint8_t  val      = 1<<(x & 0x07);
+    uint8_t  val      = 0x80 >> (x & 0x07);
 
     *scr_byte ^= val;
 #endif
