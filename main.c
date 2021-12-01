@@ -86,13 +86,9 @@ void main(void)
       /*
        * Limit velocity
        */
-#if 1
-      const half_t SPEED_LIMIT = f16_i16(64);
-
-      // This appears to be just squaring the velocity?
-//      printf("Vel in %d: vel_x=%f, vel_y=%f\n\n", i, f32_f16( swarm[i].velocity_x ), f32_f16( swarm[i].velocity_y ) );
-      half_t x_sq = mulf16( subf16( f16_i16(0), swarm[i].velocity_x ), subf16( f16_i16(0), swarm[i].velocity_x ) );
-      half_t y_sq = mulf16( subf16( f16_i16(0), swarm[i].velocity_y ), subf16( f16_i16(0), swarm[i].velocity_y ) );
+#if 0
+      half_t x_sq = mulf16( swarm[i].velocity_x, swarm[i].velocity_x );
+      half_t y_sq = mulf16( swarm[i].velocity_y, swarm[i].velocity_y );
       half_t mag = addf16( x_sq, y_sq );
       if( isgreaterf16( mag, SPEED_LIMIT ) )
       {
@@ -104,12 +100,17 @@ void main(void)
 	swarm[i].velocity_y = mulf16( t_y, SPEED_LIMIT );
       }
 //      printf("Vel ou %d: vel_x=%f, vel_y=%f\n\n", i, f32_f16( swarm[i].velocity_x ), f32_f16( swarm[i].velocity_y ) );
+#else
+  const half_t SPEED_LIMIT = f16_f32(1.5);
+      if( isgreaterf16( swarm[i].velocity_x, SPEED_LIMIT ) )
+      {
+	swarm[i].velocity_x = div2f16( swarm[i].velocity_x );
+      }
+      if( isgreaterf16( swarm[i].velocity_y, SPEED_LIMIT ) )
+      {
+	swarm[i].velocity_y = div2f16( swarm[i].velocity_y );
+      }
 
-//    set magnitude [vector_distance {0 0} $dots($index,velocity)]
-//    if { $magnitude > $SPEED_LIMIT } {
-//	set t [vector_div $dots($index,velocity) $magnitude]
-//	set dots($index,velocity) [vector_mul $t $SPEED_LIMIT]
-//    }
 #endif
 
 
