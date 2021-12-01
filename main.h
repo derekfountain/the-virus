@@ -3,6 +3,6 @@
 
 #pragma printf %d %f
 
-#define NUM_IN_SWARM ((const uint8_t)10)
+#define NUM_IN_SWARM ((const uint8_t)3)
 
 #endif

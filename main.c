@@ -29,8 +29,8 @@ void main(void)
 
   for( i=0; i<NUM_IN_SWARM; i++ )
   {
-    swarm[i].x_i = rand()%256; swarm[i].x_f = f16_u16( swarm[i].x_i );
-    swarm[i].y_i = rand()%192; swarm[i].y_f = f16_u16( swarm[i].y_i );
+    swarm[i].x_i = rand()%256; swarm[i].x_f = f16_u16( swarm[i].x_i ); swarm[i].velocity_x = f16_f32( 0.1 );
+    swarm[i].y_i = rand()%192; swarm[i].y_f = f16_u16( swarm[i].y_i ); swarm[i].velocity_y = f16_f32( 0.1 );
     //printf("Init: %d, %d == %f, %f\n", swarm[i].x_i, swarm[i].y_i,
     //                                   f32_f16( swarm[i].x_f ), f32_f16( swarm[i].y_f ) );
   }
@@ -41,12 +41,19 @@ void main(void)
 
     for( i=0; i < NUM_IN_SWARM; i++ )
     {
-      Vector avoid_others_v;
+      //Vector avoid_others_v;
       Vector move_to_goal_v;
 
-      avoid_others(i, &avoid_others_v);
+      /*
+       * Avoid others
+       */
+      //avoid_others(i, &avoid_others_v);
       //printf("Avoid others: vel_x=%f, vel_y=%f\n", f32_f16( avoid_others_v.velocity_x ), f32_f16( avoid_others_v.velocity_y ) );
 
+
+      /*
+       * Move to goal
+       */
       move_to_goal_v.x_i = goal.x_i;
       move_to_goal_v.y_i = goal.y_i;
       //  printf("1: goalpos_x=%d, goalpos_y=%d\n", move_to_goal_v.x_i, move_to_goal_v.y_i );
@@ -54,24 +61,28 @@ void main(void)
       // printf("2: pos_x=%d, pos_y=%d\n", swarm[i].x_i, swarm[i].y_i );
       move_to_goal_v.x_i = move_to_goal_v.x_i - swarm[i].x_i;
       move_to_goal_v.y_i = move_to_goal_v.y_i - swarm[i].y_i;
-//      printf("Move to goal %d (before div100): vel_x=%d, vel_y=%d\n", i, move_to_goal_v.x_i, move_to_goal_v.y_i );
+      //printf("Move to goal %d (before div100): vel_x=%d, vel_y=%d\n", i, move_to_goal_v.x_i, move_to_goal_v.y_i );
 
       // Integer rounding is different between C and Tcl. Not sure how to handle it, this is closest.
       move_to_goal_v.velocity_x = ( divf16( f16_i16(move_to_goal_v.x_i), f16_i16(100) ) );
       move_to_goal_v.velocity_y = ( divf16( f16_i16(move_to_goal_v.y_i), f16_i16(100) ) );
       //printf("Move to goal %d: vel_x=%f, vel_y=%f\n\n", i, f32_f16( move_to_goal_v.velocity_x ), f32_f16( move_to_goal_v.velocity_y ) );
 
-      /* Add up total velocity */
-      swarm[i].velocity_x = addf16( swarm[i].velocity_x, avoid_others_v.velocity_x );
-      swarm[i].velocity_y = addf16( swarm[i].velocity_y, avoid_others_v.velocity_y );
+
+      /*
+       * Add up total velocity
+       */
+      // swarm[i].velocity_x = addf16( swarm[i].velocity_x, avoid_others_v.velocity_x );
+      // swarm[i].velocity_y = addf16( swarm[i].velocity_y, avoid_others_v.velocity_y );
 
       swarm[i].velocity_x = addf16( swarm[i].velocity_x, move_to_goal_v.velocity_x );
       swarm[i].velocity_y = addf16( swarm[i].velocity_y, move_to_goal_v.velocity_y );
   
 
-
-      // ERROR: Velocity is alway rounded to 0, 1 or -1 at this point, the Tcl isn;t
-      // Limit velocity here
+      /*
+       * Limit velocity
+       */
+#if 0
       const half_t SPEED_LIMIT = f16_i16(16);
 
       // This appears to be just squaring the velocity?
@@ -95,7 +106,7 @@ void main(void)
 //	set t [vector_div $dots($index,velocity) $magnitude]
 //	set dots($index,velocity) [vector_mul $t $SPEED_LIMIT]
 //    }
-
+#endif
 
 
 
@@ -104,12 +115,13 @@ void main(void)
       swarm[i].y_f = addf16( swarm[i].y_f, swarm[i].velocity_y );
 
       /* Updated rounded version of position */
-      swarm[i].x_i = i16_f16( roundf16( swarm[i].x_f ) );
-      swarm[i].y_i = i16_f16( roundf16( swarm[i].y_f ) );
+      swarm[i].x_i = i16_f16( ( swarm[i].x_f ) );
+      swarm[i].y_i = i16_f16( ( swarm[i].y_f ) );
     }
 
     /* Clear the previous swarm - it's hard coded */
-    clear_swarm();
+    zx_cls( PAPER_WHITE );
+//    clear_swarm();
 
     /* Draw the newly computed swarm - also hard coded */
     draw_swarm_or();
