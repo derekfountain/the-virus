@@ -15,6 +15,7 @@ void draw_swarm( Draw_Mode mod );
 void draw_swarm_or( void );
 void clear_swarm( void );
 
+void clear_player( uint8_t, uint8_t );
 void draw_player( uint8_t, uint8_t );
 
 #endif

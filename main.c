@@ -23,6 +23,8 @@ half_t swarm_velocity_y[NUM_IN_SWARM];
 
 int16_t  goal_x_i;
 int16_t  goal_y_i;
+int16_t  previous_goal_x_i;
+int16_t  previous_goal_y_i;
 
 int16_t  move_to_goal_x_i;
 int16_t  move_to_goal_y_i;
@@ -62,7 +64,7 @@ void main(void)
     swarm_y_i[i] = rand()%192; swarm_y_f[i] = f16_u16( swarm_y_i[i] ); swarm_velocity_y[i] = f16_f32( 0.1 );
   }
 
-#define TIME_TEST 1
+#define TIME_TEST 0
 #if TIME_TEST
   uint16_t countdown = 500;
 #endif
@@ -127,6 +129,7 @@ void main(void)
 
     /* Clear the previous swarm - it's hard coded */
     clear_swarm();
+    clear_player( previous_goal_x_i, previous_goal_y_i );
 
     /* Draw the newly computed swarm - also hard coded */
     draw_player( goal_x_i, goal_y_i );
@@ -134,5 +137,7 @@ void main(void)
 
     /* Copy currently displayed swarm so the clear routine can remove it */
     memcpy( previous_swarm_x_i, swarm_x_i, sizeof(swarm_x_i)+sizeof(swarm_y_i) );
+    previous_goal_x_i = goal_x_i;
+    previous_goal_y_i = goal_y_i;
   }
 }

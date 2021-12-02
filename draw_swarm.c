@@ -40,7 +40,7 @@ void draw_swarm( Draw_Mode mode )
 
     uint8_t x = swarm_x_i[i];
     uint8_t y = swarm_y_i[i];
-#if USE_LOOKUP
+
     uint8_t *scr_byte = screen_line_starts[y];
     scr_byte += screen_line_offsets[x];
 
@@ -48,16 +48,6 @@ void draw_swarm( Draw_Mode mode )
       *scr_byte |= screen_byte_values[x];
     else
       *scr_byte ^= screen_byte_values[x];
-#else
-    uint8_t *scr_byte = zx_pxy2saddr( x, y );
-    uint8_t  val      = 0x80 >> (x & 0x07);
-
-    if( mode == OR_MODE )
-      *scr_byte |= val;
-    else
-      *scr_byte ^= val;
-#endif
-
   }
 }
 
@@ -76,18 +66,11 @@ void draw_swarm_or(void)
 
     uint8_t x = swarm_x_i[i];
     uint8_t y = swarm_y_i[i];
-#if USE_LOOKUP
+
     uint8_t *scr_byte = screen_line_starts[y];
     scr_byte += screen_line_offsets[x];
 
     *scr_byte |= screen_byte_values[x];
-#else
-    uint8_t *scr_byte = zx_pxy2saddr( x, y );
-    uint8_t  val      = 0x80 >> (x & 0x07);
-
-    *scr_byte |= val;
-#endif
-
   }
 }
 
@@ -107,25 +90,36 @@ void clear_swarm(void)
 
     uint8_t x = previous_swarm_x_i[i];
     uint8_t y = previous_swarm_y_i[i];
-#if USE_LOOKUP
-    uint8_t *scr_byte = screen_line_starts[y];
-    scr_byte += screen_line_offsets[x];
 
-    *scr_byte = 0;
-#else
     uint8_t *scr_byte = zx_pxy2saddr( x, y );
-    //uint8_t  val      = 0x80 >> (x & 0x07);
 
     *scr_byte = 0;
-#endif
-
   }
 }
 
 void draw_player( uint8_t x, uint8_t y )
 {
   uint8_t *scr_byte = screen_line_starts[y];
-  scr_byte += screen_line_offsets[x];
 
-  *scr_byte |= screen_byte_values[x];
+  *(scr_byte + screen_line_offsets[x])   |= screen_byte_values[x];
+  *(scr_byte + screen_line_offsets[x+1]) |= screen_byte_values[x+1];
+
+  scr_byte = screen_line_starts[y+1];
+
+  *(scr_byte + screen_line_offsets[x])   |= screen_byte_values[x];
+  *(scr_byte + screen_line_offsets[x+1]) |= screen_byte_values[x+1];
+}
+
+
+void clear_player( uint8_t x, uint8_t y )
+{
+  uint8_t *scr_byte = screen_line_starts[y];
+
+  *(scr_byte + screen_line_offsets[x])   = 0;
+  *(scr_byte + screen_line_offsets[x+1]) = 0;
+
+  scr_byte = screen_line_starts[y+1];
+
+  *(scr_byte + screen_line_offsets[x])   = 0;
+  *(scr_byte + screen_line_offsets[x+1]) = 0;
 }
