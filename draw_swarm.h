@@ -2,7 +2,6 @@
 #define __DRAW_SWARM_H
 
 #include "main.h"
-#include "vectors.h"
 
 typedef enum
 {

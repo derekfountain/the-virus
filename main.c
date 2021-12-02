@@ -3,14 +3,23 @@
 #include <stdio.h>
 #include <arch/zx.h>
 #include <input.h>
+#include <math.h>
 #include <sys/ioctl.h>
 
 #include "main.h"
 #include "draw_swarm.h"
-#include "vectors.h"
 
-Vector swarm[NUM_IN_SWARM];
-Vector previous_swarm[NUM_IN_SWARM];
+/* Keep these together so the copy into 'previous' can be done in one go */
+int16_t swarm_x_i[NUM_IN_SWARM];
+int16_t swarm_y_i[NUM_IN_SWARM];
+int16_t previous_swarm_x_i[NUM_IN_SWARM];
+int16_t previous_swarm_y_i[NUM_IN_SWARM];
+
+half_t swarm_x_f[NUM_IN_SWARM];
+half_t swarm_y_f[NUM_IN_SWARM];
+
+half_t swarm_velocity_x[NUM_IN_SWARM];
+half_t swarm_velocity_y[NUM_IN_SWARM];
 
 int16_t  goal_x_i;
 int16_t  goal_y_i;
@@ -44,15 +53,13 @@ void main(void)
   }
 
   init_draw_swarm();
-  ioctl(1, IOCTL_OTERM_PAUSE, 0);
+  // ioctl(1, IOCTL_OTERM_PAUSE, 0);
 
   /* Starting points */
   for( i=0; i<NUM_IN_SWARM; i++ )
   {
-    swarm[i].x_i = rand()%256; swarm[i].x_f = f16_u16( swarm[i].x_i ); swarm[i].velocity_x = f16_f32( 0.1 );
-    swarm[i].y_i = rand()%192; swarm[i].y_f = f16_u16( swarm[i].y_i ); swarm[i].velocity_y = f16_f32( 0.1 );
-    //printf("Init: %d, %d == %f, %f\n", swarm[i].x_i, swarm[i].y_i,
-    //                                   f32_f16( swarm[i].x_f ), f32_f16( swarm[i].y_f ) );
+    swarm_x_i[i] = rand()%256; swarm_x_f[i] = f16_u16( swarm_x_i[i] ); swarm_velocity_x[i] = f16_f32( 0.1 );
+    swarm_y_i[i] = rand()%192; swarm_y_f[i] = f16_u16( swarm_y_i[i] ); swarm_velocity_y[i] = f16_f32( 0.1 );
   }
 
 #define TIME_TEST 1
@@ -69,10 +76,10 @@ void main(void)
   {
     int i;
 
-    if( in_key_pressed( IN_KEY_SCANCODE_q ) ) goal_y_i--;
-    if( in_key_pressed( IN_KEY_SCANCODE_a ) ) goal_y_i++;
-    if( in_key_pressed( IN_KEY_SCANCODE_o ) ) goal_x_i--;
-    if( in_key_pressed( IN_KEY_SCANCODE_p ) ) goal_x_i++;
+    if( in_key_pressed( IN_KEY_SCANCODE_q ) && goal_y_i )       goal_y_i-=2;
+    if( in_key_pressed( IN_KEY_SCANCODE_a ) && goal_y_i < 192 ) goal_y_i+=2;
+    if( in_key_pressed( IN_KEY_SCANCODE_o ) && goal_x_i )       goal_x_i-=2;
+    if( in_key_pressed( IN_KEY_SCANCODE_p ) && goal_x_i < 256 ) goal_x_i+=2;
 
     for( i=0; i < NUM_IN_SWARM; i++ )
     {
@@ -83,39 +90,39 @@ void main(void)
        */
       if( bump++ & 0x04 )
       {
-	swarm[i].velocity_x = addf16( swarm[i].velocity_x, random_values[rand()&0xff] );
-	swarm[i].velocity_y = addf16( swarm[i].velocity_y, random_values[rand()&0xff] );
+	swarm_velocity_x[i] = addf16( swarm_velocity_x[i], random_values[rand()&0xff] );
+	swarm_velocity_y[i] = addf16( swarm_velocity_y[i], random_values[rand()&0xff] );
       }
 
 
       /*
        * Move to goal. Calculate distance to goal, take 1% of it. Add that to velocity.
        */
-      move_to_goal_x_i = goal_x_i - swarm[i].x_i;
-      move_to_goal_y_i = goal_y_i - swarm[i].y_i;
+      move_to_goal_x_i = goal_x_i - swarm_x_i[i];
+      move_to_goal_y_i = goal_y_i - swarm_y_i[i];
 
-      swarm[i].velocity_x = addf16( swarm[i].velocity_x, divf16( f16_i16(move_to_goal_x_i), f100 ) );
-      swarm[i].velocity_y = addf16( swarm[i].velocity_y, divf16( f16_i16(move_to_goal_y_i), f100 ) );
+      swarm_velocity_x[i] = addf16( swarm_velocity_x[i], divf16( f16_i16(move_to_goal_x_i), f100 ) );
+      swarm_velocity_y[i] = addf16( swarm_velocity_y[i], divf16( f16_i16(move_to_goal_y_i), f100 ) );
   
 
       /*
        * Limit velocity
        */
       const half_t SPEED_LIMIT = f16_f32(2.75);
-      if( isgreaterf16( swarm[i].velocity_x, SPEED_LIMIT ) || isgreaterf16( swarm[i].velocity_y, SPEED_LIMIT ) )
+      if( isgreaterf16( swarm_velocity_x[i], SPEED_LIMIT ) || isgreaterf16( swarm_velocity_y[i], SPEED_LIMIT ) )
       {
-	swarm[i].velocity_x = div2f16( swarm[i].velocity_x );
-	swarm[i].velocity_y = div2f16( swarm[i].velocity_y );
+	swarm_velocity_x[i] = div2f16( swarm_velocity_x[i] );
+	swarm_velocity_y[i] = div2f16( swarm_velocity_y[i] );
       }
 
 
       /* Finally, add calculated velocity to dot position */
-      swarm[i].x_f = addf16( swarm[i].x_f, swarm[i].velocity_x );
-      swarm[i].y_f = addf16( swarm[i].y_f, swarm[i].velocity_y );
+      swarm_x_f[i] = addf16( swarm_x_f[i], swarm_velocity_x[i] );
+      swarm_y_f[i] = addf16( swarm_y_f[i], swarm_velocity_y[i] );
 
       /* Updated rounded version of position */
-      swarm[i].x_i = i16_f16( ( swarm[i].x_f ) );
-      swarm[i].y_i = i16_f16( ( swarm[i].y_f ) );
+      swarm_x_i[i] = i16_f16( ( swarm_x_f[i] ) );
+      swarm_y_i[i] = i16_f16( ( swarm_y_f[i] ) );
     }
 
     /* Clear the previous swarm - it's hard coded */
@@ -126,7 +133,6 @@ void main(void)
     draw_swarm_or();
 
     /* Copy currently displayed swarm so the clear routine can remove it */
-    /* OPT I only need the int positions, so keeping those separate will make this faster */
-    memcpy( previous_swarm, swarm, sizeof(swarm) );
+    memcpy( previous_swarm_x_i, swarm_x_i, sizeof(swarm_x_i)+sizeof(swarm_y_i) );
   }
 }
