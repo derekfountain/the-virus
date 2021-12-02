@@ -5,32 +5,60 @@
 #include <input.h>
 #include <math.h>
 #include <sys/ioctl.h>
+#include <intrinsic.h>
+#include <z80.h>
+#include <im2.h>
 
 #include "main.h"
 #include "draw_swarm.h"
 
 /* Keep these together so the copy into 'previous' can be done in one go */
-int16_t swarm_x_i[NUM_IN_SWARM];
-int16_t swarm_y_i[NUM_IN_SWARM];
-int16_t previous_swarm_x_i[NUM_IN_SWARM];
-int16_t previous_swarm_y_i[NUM_IN_SWARM];
+int16_t swarm_x_i[MAX_IN_SWARM];
+int16_t swarm_y_i[MAX_IN_SWARM];
+int16_t previous_swarm_x_i[MAX_IN_SWARM];
+int16_t previous_swarm_y_i[MAX_IN_SWARM];
 
-half_t swarm_x_f[NUM_IN_SWARM];
-half_t swarm_y_f[NUM_IN_SWARM];
+half_t swarm_x_f[MAX_IN_SWARM];
+half_t swarm_y_f[MAX_IN_SWARM];
 
-half_t swarm_velocity_x[NUM_IN_SWARM];
-half_t swarm_velocity_y[NUM_IN_SWARM];
+half_t swarm_velocity_x[MAX_IN_SWARM];
+half_t swarm_velocity_y[MAX_IN_SWARM];
 
-int16_t  goal_x_i;
-int16_t  goal_y_i;
-int16_t  previous_goal_x_i;
-int16_t  previous_goal_y_i;
+int16_t  player_x_i;
+int16_t  player_y_i;
+int16_t  previous_player_x_i;
+int16_t  previous_player_y_i;
 
-int16_t  move_to_goal_x_i;
-int16_t  move_to_goal_y_i;
+int16_t  move_to_player_x_i;
+int16_t  move_to_player_y_i;
 
 half_t   random_values[255];
 
+
+/*
+ * Standard SP1 interrupt set up for now.
+ */
+#define TABLE_HIGH_BYTE        ((unsigned int)0xD0)
+#define JUMP_POINT_HIGH_BYTE   ((unsigned int)0xD1)
+
+#define UI_256                 ((unsigned int)256)
+#define TABLE_ADDR             ((void*)(TABLE_HIGH_BYTE*UI_256))
+#define JUMP_POINT             ((unsigned char*)( (unsigned int)(JUMP_POINT_HIGH_BYTE*UI_256) + JUMP_POINT_HIGH_BYTE ))
+
+uint8_t int_fired = 0;
+IM2_DEFINE_ISR(isr)
+{
+  int_fired = 1;
+}
+
+void setup_int(void)
+{
+  memset( TABLE_ADDR, JUMP_POINT_HIGH_BYTE, 257 );
+  z80_bpoke( JUMP_POINT,   195 );
+  z80_wpoke( JUMP_POINT+1, (unsigned int)isr );
+  im2_init( TABLE_ADDR );
+  intrinsic_ei();
+}
 
 void main(void)
 {
@@ -40,8 +68,8 @@ void main(void)
   zx_cls( PAPER_WHITE );
 
   // Middle of screen for now.
-  goal_x_i = 128;
-  goal_y_i =  96;
+  player_x_i = 128;
+  player_y_i =  96;
 
   const half_t f100 = f16_i16( 100 );
 
@@ -58,11 +86,14 @@ void main(void)
   // ioctl(1, IOCTL_OTERM_PAUSE, 0);
 
   /* Starting points */
-  for( i=0; i<NUM_IN_SWARM; i++ )
+  for( i=0; i<MAX_IN_SWARM; i++ )
   {
     swarm_x_i[i] = rand()%256; swarm_x_f[i] = f16_u16( swarm_x_i[i] ); swarm_velocity_x[i] = f16_f32( 0.1 );
     swarm_y_i[i] = rand()%192; swarm_y_f[i] = f16_u16( swarm_y_i[i] ); swarm_velocity_y[i] = f16_f32( 0.1 );
   }
+
+  /* Currently unused, but useful for test and timing checks */
+  intrinsic_ei();
 
 #define TIME_TEST 0
 #if TIME_TEST
@@ -78,12 +109,12 @@ void main(void)
   {
     int i;
 
-    if( in_key_pressed( IN_KEY_SCANCODE_q ) && goal_y_i )       goal_y_i-=2;
-    if( in_key_pressed( IN_KEY_SCANCODE_a ) && goal_y_i < 192 ) goal_y_i+=2;
-    if( in_key_pressed( IN_KEY_SCANCODE_o ) && goal_x_i )       goal_x_i-=2;
-    if( in_key_pressed( IN_KEY_SCANCODE_p ) && goal_x_i < 256 ) goal_x_i+=2;
+    if( in_key_pressed( IN_KEY_SCANCODE_q ) && player_y_i )       player_y_i-=2;
+    if( in_key_pressed( IN_KEY_SCANCODE_a ) && player_y_i < 190 ) player_y_i+=2;
+    if( in_key_pressed( IN_KEY_SCANCODE_o ) && player_x_i )       player_x_i-=2;
+    if( in_key_pressed( IN_KEY_SCANCODE_p ) && player_x_i < 254 ) player_x_i+=2;
 
-    for( i=0; i < NUM_IN_SWARM; i++ )
+    for( i=0; i < MAX_IN_SWARM; i++ )
     {
       /*
        * Original algorithm attempts to move dots so they don't get too close
@@ -98,13 +129,13 @@ void main(void)
 
 
       /*
-       * Move to goal. Calculate distance to goal, take 1% of it. Add that to velocity.
+       * Move to player. Calculate distance to player, take 1% of it. Add that to velocity.
        */
-      move_to_goal_x_i = goal_x_i - swarm_x_i[i];
-      move_to_goal_y_i = goal_y_i - swarm_y_i[i];
+      move_to_player_x_i = player_x_i - swarm_x_i[i];
+      move_to_player_y_i = player_y_i - swarm_y_i[i];
 
-      swarm_velocity_x[i] = addf16( swarm_velocity_x[i], divf16( f16_i16(move_to_goal_x_i), f100 ) );
-      swarm_velocity_y[i] = addf16( swarm_velocity_y[i], divf16( f16_i16(move_to_goal_y_i), f100 ) );
+      swarm_velocity_x[i] = addf16( swarm_velocity_x[i], divf16( f16_i16(move_to_player_x_i), f100 ) );
+      swarm_velocity_y[i] = addf16( swarm_velocity_y[i], divf16( f16_i16(move_to_player_y_i), f100 ) );
   
 
       /*
@@ -125,19 +156,20 @@ void main(void)
       /* Updated rounded version of position */
       swarm_x_i[i] = i16_f16( ( swarm_x_f[i] ) );
       swarm_y_i[i] = i16_f16( ( swarm_y_f[i] ) );
+
     }
 
     /* Clear the previous swarm - it's hard coded */
     clear_swarm();
-    clear_player( previous_goal_x_i, previous_goal_y_i );
+    clear_player( previous_player_x_i, previous_player_y_i );
 
     /* Draw the newly computed swarm - also hard coded */
-    draw_player( goal_x_i, goal_y_i );
+    draw_player( player_x_i, player_y_i );
     draw_swarm_or();
 
     /* Copy currently displayed swarm so the clear routine can remove it */
     memcpy( previous_swarm_x_i, swarm_x_i, sizeof(swarm_x_i)+sizeof(swarm_y_i) );
-    previous_goal_x_i = goal_x_i;
-    previous_goal_y_i = goal_y_i;
+    previous_player_x_i = player_x_i;
+    previous_player_y_i = player_y_i;
   }
 }

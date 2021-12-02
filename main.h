@@ -5,6 +5,6 @@
 pragma printf %d %f
 #endif
 
-#define NUM_IN_SWARM ((const uint8_t)6)
+#define MAX_IN_SWARM ((const uint8_t)10)
 
 #endif

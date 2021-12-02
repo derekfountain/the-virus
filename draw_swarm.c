@@ -27,11 +27,11 @@ void init_draw_swarm(void)
 
 void draw_swarm( Draw_Mode mode )
 {
-  extern int16_t swarm_x_i[NUM_IN_SWARM];
-  extern int16_t swarm_y_i[NUM_IN_SWARM];
+  extern int16_t swarm_x_i[MAX_IN_SWARM];
+  extern int16_t swarm_y_i[MAX_IN_SWARM];
 
   uint8_t i;
-  for( i=0; i<NUM_IN_SWARM; i++ )
+  for( i=0; i<MAX_IN_SWARM; i++ )
   {
     if( swarm_x_i[i] < 0 || swarm_x_i[i] > 255
 	||
@@ -53,11 +53,11 @@ void draw_swarm( Draw_Mode mode )
 
 void draw_swarm_or(void)
 {
-  extern int16_t swarm_x_i[NUM_IN_SWARM];
-  extern int16_t swarm_y_i[NUM_IN_SWARM];
+  extern int16_t swarm_x_i[MAX_IN_SWARM];
+  extern int16_t swarm_y_i[MAX_IN_SWARM];
 
   uint8_t i;
-  for( i=0; i<NUM_IN_SWARM; i++ )
+  for( i=0; i<MAX_IN_SWARM; i++ )
   {
     if( swarm_x_i[i] < 0 || swarm_x_i[i] > 255
 	||
@@ -77,11 +77,11 @@ void draw_swarm_or(void)
 
 void clear_swarm(void)
 {
-  extern int16_t previous_swarm_x_i[NUM_IN_SWARM];
-  extern int16_t previous_swarm_y_i[NUM_IN_SWARM];
+  extern int16_t previous_swarm_x_i[MAX_IN_SWARM];
+  extern int16_t previous_swarm_y_i[MAX_IN_SWARM];
 
   uint8_t i;
-  for( i=0; i<NUM_IN_SWARM; i++ )
+  for( i=0; i<MAX_IN_SWARM; i++ )
   {
     if( previous_swarm_x_i[i] < 0 || previous_swarm_x_i[i] > 255
 	||
