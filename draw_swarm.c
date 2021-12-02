@@ -91,6 +91,7 @@ void draw_swarm_or(void)
   }
 }
 
+
 void clear_swarm(void)
 {
   extern Vector previous_swarm[NUM_IN_SWARM];
@@ -115,3 +116,10 @@ void clear_swarm(void)
   }
 }
 
+void draw_player( uint8_t x, uint8_t y )
+{
+  uint8_t *scr_byte = screen_line_starts[y];
+  scr_byte += screen_line_offsets[x];
+
+  *scr_byte |= screen_byte_values[x];
+}

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <arch/zx.h>
+#include <input.h>
 #include <sys/ioctl.h>
 
 #include "main.h"
@@ -14,6 +15,7 @@ Vector previous_swarm[NUM_IN_SWARM];
 
 Vector goal;
 
+half_t random_values[255];
 
 
 void main(void)
@@ -25,6 +27,15 @@ void main(void)
   goal.y_i =  96; goal.y_f = f16_i16( goal.y_i );
 
   const half_t f100 = f16_i16( 100 );
+
+  /* Create a pool of random floating point numbers for the jitter */
+  for(i=0;i<255;i++)
+  {
+    random_values[i] = f16_f32( (rand()%100) / 1000.0 );
+    if( i & 0x01 )
+      random_values[i] = negf16(random_values[i]);
+    //printf("%f ", f32_f16(random_values[i]));
+  }
 
   init_draw_swarm();
   ioctl(1, IOCTL_OTERM_PAUSE, 0);
@@ -39,21 +50,30 @@ void main(void)
     //                                   f32_f16( swarm[i].x_f ), f32_f16( swarm[i].y_f ) );
   }
 
+  uint8_t bump=0;
   while(1)
   {
     int i;
 
+    if( in_key_pressed( IN_KEY_SCANCODE_q ) ) goal.y_i--;
+    if( in_key_pressed( IN_KEY_SCANCODE_a ) ) goal.y_i++;
+    if( in_key_pressed( IN_KEY_SCANCODE_o ) ) goal.x_i--;
+    if( in_key_pressed( IN_KEY_SCANCODE_p ) ) goal.x_i++;
+
     for( i=0; i < NUM_IN_SWARM; i++ )
     {
-//      Vector avoid_others_v;
       Vector move_to_goal_v;
 
       /*
-       * Avoid others
+       * Original algorithm attempts to move dots so they don't get too close
+       * to each other. That's not posssible on the Spectrum. I get the milling
+       * around behaviour just introducing some random jitter.
        */
-      //avoid_others(i, &avoid_others_v);
-      //printf("Avoid others: vel_x=%f, vel_y=%f\n", f32_f16( avoid_others_v.velocity_x ), f32_f16( avoid_others_v.velocity_y ) );
-
+      if( bump++ & 0x04 )
+      {
+	swarm[i].velocity_x = addf16( swarm[i].velocity_x, random_values[rand()&0xff] );
+	swarm[i].velocity_y = addf16( swarm[i].velocity_y, random_values[rand()&0xff] );
+      }
 
       /*
        * Move to goal
@@ -76,9 +96,6 @@ void main(void)
       /*
        * Add up total velocity
        */
-      //swarm[i].velocity_x = addf16( swarm[i].velocity_x, avoid_others_v.velocity_x );
-      //swarm[i].velocity_y = addf16( swarm[i].velocity_y, avoid_others_v.velocity_y );
-
       swarm[i].velocity_x = addf16( swarm[i].velocity_x, move_to_goal_v.velocity_x );
       swarm[i].velocity_y = addf16( swarm[i].velocity_y, move_to_goal_v.velocity_y );
   
@@ -86,7 +103,7 @@ void main(void)
       /*
        * Limit velocity
        */
-#if 1
+#if 0
       const half_t SPEED_LIMIT = f16_f32(20);
       half_t x_sq = mulf16( swarm[i].velocity_x, swarm[i].velocity_x );
       half_t y_sq = mulf16( swarm[i].velocity_y, swarm[i].velocity_y );
@@ -126,6 +143,7 @@ void main(void)
     clear_swarm();
 
     /* Draw the newly computed swarm - also hard coded */
+    draw_player( goal.x_i, goal.y_i );
     draw_swarm_or();
 
     /* Copy currently displayed swarm so the clear routine can remove it */
