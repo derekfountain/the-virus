@@ -12,18 +12,25 @@
 Vector swarm[NUM_IN_SWARM];
 Vector previous_swarm[NUM_IN_SWARM];
 
-Vector goal;
+int16_t  goal_x_i;
+int16_t  goal_y_i;
 
-half_t random_values[255];
+int16_t  move_to_goal_x_i;
+int16_t  move_to_goal_y_i;
+
+half_t   random_values[255];
 
 
 void main(void)
 {
   uint8_t i;
 
+  zx_border( INK_BLUE );
+  zx_cls( PAPER_WHITE );
+
   // Middle of screen for now.
-  goal.x_i = 128; goal.x_f = f16_i16( goal.x_i );
-  goal.y_i =  96; goal.y_f = f16_i16( goal.y_i );
+  goal_x_i = 128;
+  goal_y_i =  96;
 
   const half_t f100 = f16_i16( 100 );
 
@@ -62,19 +69,17 @@ void main(void)
   {
     int i;
 
-    if( in_key_pressed( IN_KEY_SCANCODE_q ) ) goal.y_i--;
-    if( in_key_pressed( IN_KEY_SCANCODE_a ) ) goal.y_i++;
-    if( in_key_pressed( IN_KEY_SCANCODE_o ) ) goal.x_i--;
-    if( in_key_pressed( IN_KEY_SCANCODE_p ) ) goal.x_i++;
+    if( in_key_pressed( IN_KEY_SCANCODE_q ) ) goal_y_i--;
+    if( in_key_pressed( IN_KEY_SCANCODE_a ) ) goal_y_i++;
+    if( in_key_pressed( IN_KEY_SCANCODE_o ) ) goal_x_i--;
+    if( in_key_pressed( IN_KEY_SCANCODE_p ) ) goal_x_i++;
 
     for( i=0; i < NUM_IN_SWARM; i++ )
     {
-      Vector move_to_goal_v;
-
       /*
        * Original algorithm attempts to move dots so they don't get too close
        * to each other. That's not posssible on the Spectrum. I get the milling
-       * around behaviour just introducing some random jitter.
+       * around behaviour by introducing some random jitter.
        */
       if( bump++ & 0x04 )
       {
@@ -82,59 +87,26 @@ void main(void)
 	swarm[i].velocity_y = addf16( swarm[i].velocity_y, random_values[rand()&0xff] );
       }
 
-      /*
-       * Move to goal
-       */
-      move_to_goal_v.x_i = goal.x_i;
-      move_to_goal_v.y_i = goal.y_i;
-      //  printf("1: goalpos_x=%d, goalpos_y=%d\n", move_to_goal_v.x_i, move_to_goal_v.y_i );
-
-      // printf("2: pos_x=%d, pos_y=%d\n", swarm[i].x_i, swarm[i].y_i );
-      move_to_goal_v.x_i = move_to_goal_v.x_i - swarm[i].x_i;
-      move_to_goal_v.y_i = move_to_goal_v.y_i - swarm[i].y_i;
-      // printf("Move to goal %d (before div100): vel_x=%d, vel_y=%d\n", i, move_to_goal_v.x_i, move_to_goal_v.y_i );
-
-      // Integer rounding is different between C and Tcl. Not sure how to handle it, this is closest.
-      move_to_goal_v.velocity_x = ( divf16( f16_i16(move_to_goal_v.x_i), f100 ) );
-      move_to_goal_v.velocity_y = ( divf16( f16_i16(move_to_goal_v.y_i), f100 ) );
-      //printf("Move to goal %d: vel_x=%f, vel_y=%f\n\n", i, f32_f16( move_to_goal_v.velocity_x ), f32_f16( move_to_goal_v.velocity_y ) );
-
 
       /*
-       * Add up total velocity
+       * Move to goal. Calculate distance to goal, take 1% of it. Add that to velocity.
        */
-      swarm[i].velocity_x = addf16( swarm[i].velocity_x, move_to_goal_v.velocity_x );
-      swarm[i].velocity_y = addf16( swarm[i].velocity_y, move_to_goal_v.velocity_y );
+      move_to_goal_x_i = goal_x_i - swarm[i].x_i;
+      move_to_goal_y_i = goal_y_i - swarm[i].y_i;
+
+      swarm[i].velocity_x = addf16( swarm[i].velocity_x, divf16( f16_i16(move_to_goal_x_i), f100 ) );
+      swarm[i].velocity_y = addf16( swarm[i].velocity_y, divf16( f16_i16(move_to_goal_y_i), f100 ) );
   
 
       /*
        * Limit velocity
        */
-#if 0
-      const half_t SPEED_LIMIT = f16_f32(10);
-      half_t x_sq = mulf16( swarm[i].velocity_x, swarm[i].velocity_x );
-      half_t y_sq = mulf16( swarm[i].velocity_y, swarm[i].velocity_y );
-      half_t mag = addf16( x_sq, y_sq );
-      if( isgreaterf16( mag, SPEED_LIMIT ) )
-      {
-//	printf("Mag: %f\n", f32_f16( mag ) );
-	half_t t_x = divf16( swarm[i].velocity_x, mag );
-	half_t t_y = divf16( swarm[i].velocity_y, mag );
-
-	swarm[i].velocity_x = mulf16( t_x, SPEED_LIMIT );
-	swarm[i].velocity_y = mulf16( t_y, SPEED_LIMIT );
-      }
-//      printf("Vel ou %d: vel_x=%f, vel_y=%f\n\n", i, f32_f16( swarm[i].velocity_x ), f32_f16( swarm[i].velocity_y ) );
-#else
       const half_t SPEED_LIMIT = f16_f32(2.75);
       if( isgreaterf16( swarm[i].velocity_x, SPEED_LIMIT ) || isgreaterf16( swarm[i].velocity_y, SPEED_LIMIT ) )
       {
 	swarm[i].velocity_x = div2f16( swarm[i].velocity_x );
 	swarm[i].velocity_y = div2f16( swarm[i].velocity_y );
       }
-
-#endif
-
 
 
       /* Finally, add calculated velocity to dot position */
@@ -150,7 +122,7 @@ void main(void)
     clear_swarm();
 
     /* Draw the newly computed swarm - also hard coded */
-    draw_player( goal.x_i, goal.y_i );
+    draw_player( goal_x_i, goal_y_i );
     draw_swarm_or();
 
     /* Copy currently displayed swarm so the clear routine can remove it */
