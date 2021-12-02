@@ -55,10 +55,14 @@ void draw_swarm_or(void)
 {
   extern int16_t swarm_x_i[MAX_IN_SWARM];
   extern int16_t swarm_y_i[MAX_IN_SWARM];
+  extern uint8_t swarm_active[MAX_IN_SWARM];
 
   uint8_t i;
   for( i=0; i<MAX_IN_SWARM; i++ )
   {
+    if( !swarm_active[i] )
+      continue;
+
     if( swarm_x_i[i] < 0 || swarm_x_i[i] > 255
 	||
 	swarm_y_i[i] < 0 || swarm_y_i[i] > 191 )
@@ -67,10 +71,17 @@ void draw_swarm_or(void)
     uint8_t x = swarm_x_i[i];
     uint8_t y = swarm_y_i[i];
 
-    uint8_t *scr_byte = screen_line_starts[y];
-    scr_byte += screen_line_offsets[x];
+    if( *(zx_pxy2aaddr(x,y)) == PAPER_RED )
+    {
+      swarm_active[i] = 0;
+    }
+    else
+    {
+      uint8_t *scr_byte = screen_line_starts[y];
+      scr_byte += screen_line_offsets[x];
 
-    *scr_byte |= screen_byte_values[x];
+      *scr_byte |= screen_byte_values[x];
+    }
   }
 }
 
@@ -79,10 +90,14 @@ void clear_swarm(void)
 {
   extern int16_t previous_swarm_x_i[MAX_IN_SWARM];
   extern int16_t previous_swarm_y_i[MAX_IN_SWARM];
+  extern uint8_t swarm_active[MAX_IN_SWARM];
 
   uint8_t i;
   for( i=0; i<MAX_IN_SWARM; i++ )
   {
+    if( !swarm_active[i] )
+      continue;
+
     if( previous_swarm_x_i[i] < 0 || previous_swarm_x_i[i] > 255
 	||
 	previous_swarm_y_i[i] < 0 || previous_swarm_y_i[i] > 191 )

@@ -24,6 +24,8 @@ half_t swarm_y_f[MAX_IN_SWARM];
 half_t swarm_velocity_x[MAX_IN_SWARM];
 half_t swarm_velocity_y[MAX_IN_SWARM];
 
+uint8_t swarm_active[MAX_IN_SWARM];
+
 int16_t  player_x_i;
 int16_t  player_y_i;
 int16_t  previous_player_x_i;
@@ -71,6 +73,8 @@ void main(void)
   player_x_i = 128;
   player_y_i =  96;
 
+  *(zx_cxy2aaddr(5,5)) = PAPER_RED;
+
   const half_t f100 = f16_i16( 100 );
 
   /* Create a pool of random floating point numbers for the jitter */
@@ -90,6 +94,7 @@ void main(void)
   {
     swarm_x_i[i] = rand()%256; swarm_x_f[i] = f16_u16( swarm_x_i[i] ); swarm_velocity_x[i] = f16_f32( 0.1 );
     swarm_y_i[i] = rand()%192; swarm_y_f[i] = f16_u16( swarm_y_i[i] ); swarm_velocity_y[i] = f16_f32( 0.1 );
+    swarm_active[i] = 1;
   }
 
   /* Currently unused, but useful for test and timing checks */
@@ -116,6 +121,9 @@ void main(void)
 
     for( i=0; i < MAX_IN_SWARM; i++ )
     {
+      if( !swarm_active[i] )
+	continue;
+
       /*
        * Original algorithm attempts to move dots so they don't get too close
        * to each other. That's not posssible on the Spectrum. I get the milling
