@@ -8,7 +8,6 @@
 #include "main.h"
 #include "draw_swarm.h"
 #include "vectors.h"
-#include "swarm_algorithm.h"
 
 Vector swarm[NUM_IN_SWARM];
 Vector previous_swarm[NUM_IN_SWARM];
