@@ -40,8 +40,7 @@ void main(void)
   init_draw_swarm();
   ioctl(1, IOCTL_OTERM_PAUSE, 0);
 
-  test_vector_distance_f();
-
+  /* Starting points */
   for( i=0; i<NUM_IN_SWARM; i++ )
   {
     swarm[i].x_i = rand()%256; swarm[i].x_f = f16_u16( swarm[i].x_i ); swarm[i].velocity_x = f16_f32( 0.1 );
@@ -50,8 +49,17 @@ void main(void)
     //                                   f32_f16( swarm[i].x_f ), f32_f16( swarm[i].y_f ) );
   }
 
+#define TIME_TEST 1
+#if TIME_TEST
+  uint16_t countdown = 500;
+#endif
+
   uint8_t bump=0;
-  while(1)
+  while(1
+#if TIME_TEST
+	&& --countdown
+#endif
+    )
   {
     int i;
 
@@ -104,7 +112,7 @@ void main(void)
        * Limit velocity
        */
 #if 0
-      const half_t SPEED_LIMIT = f16_f32(20);
+      const half_t SPEED_LIMIT = f16_f32(10);
       half_t x_sq = mulf16( swarm[i].velocity_x, swarm[i].velocity_x );
       half_t y_sq = mulf16( swarm[i].velocity_y, swarm[i].velocity_y );
       half_t mag = addf16( x_sq, y_sq );
@@ -119,7 +127,7 @@ void main(void)
       }
 //      printf("Vel ou %d: vel_x=%f, vel_y=%f\n\n", i, f32_f16( swarm[i].velocity_x ), f32_f16( swarm[i].velocity_y ) );
 #else
-      const half_t SPEED_LIMIT = f16_f32(3.0);
+      const half_t SPEED_LIMIT = f16_f32(2.75);
       if( isgreaterf16( swarm[i].velocity_x, SPEED_LIMIT ) || isgreaterf16( swarm[i].velocity_y, SPEED_LIMIT ) )
       {
 	swarm[i].velocity_x = div2f16( swarm[i].velocity_x );
