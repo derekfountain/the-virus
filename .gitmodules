@@ -1,0 +1,3 @@
+[submodule "zxspectrum_be"]
+	path = zxspectrum_be
+	url = git@github.com:derekfountain/zxspectrum_be.git
