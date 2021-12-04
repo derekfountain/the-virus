@@ -125,4 +125,4 @@ clean_tmp:
 
 .PHONY: clean
 clean :
-	rm -f *.tap *.cpre *.bin *.map *.sym *.o *.lis stv*.inc *~ $(BE_ENUMS) $(TAGGABLE_SRC)
+	rm -f *.tap *.cpre *.bin *.map *.sym *.o *.lis stv*.inc TAGS *~ $(BE_ENUMS) $(TAGGABLE_SRC)

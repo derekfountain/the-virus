@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <math.h>
 
+/*
+ * A virion is a single particle of a virus. We all knew that, right?
+ */
 typedef struct _virion
 {
   int16_t x_i;

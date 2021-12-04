@@ -30,7 +30,7 @@ half_t   random_values[255];
 
 
 /*
- * Standard SP1 interrupt set up for now.
+ * Standard interrupt set up for now.
  */
 #define TABLE_HIGH_BYTE        ((unsigned int)0xD0)
 #define JUMP_POINT_HIGH_BYTE   ((unsigned int)0xD1)
