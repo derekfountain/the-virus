@@ -10,21 +10,11 @@
 #include <im2.h>
 
 #include "main.h"
+#include "virion.h"
 #include "draw_swarm.h"
 
-/* Keep these together so the copy into 'previous' can be done in one go */
-int16_t swarm_x_i[MAX_IN_SWARM];
-int16_t swarm_y_i[MAX_IN_SWARM];
-int16_t previous_swarm_x_i[MAX_IN_SWARM];
-int16_t previous_swarm_y_i[MAX_IN_SWARM];
-
-half_t swarm_x_f[MAX_IN_SWARM];
-half_t swarm_y_f[MAX_IN_SWARM];
-
-half_t swarm_velocity_x[MAX_IN_SWARM];
-half_t swarm_velocity_y[MAX_IN_SWARM];
-
-uint8_t swarm_active[MAX_IN_SWARM];
+VIRION          swarm[MAX_IN_SWARM];
+VIRION previous_swarm[MAX_IN_SWARM];
 
 int16_t  player_x_i;
 int16_t  player_y_i;
@@ -92,15 +82,15 @@ void main(void)
   /* Starting points */
   for( i=0; i<MAX_IN_SWARM; i++ )
   {
-    swarm_x_i[i] = rand()%256; swarm_x_f[i] = f16_u16( swarm_x_i[i] ); swarm_velocity_x[i] = f16_f32( 0.1 );
-    swarm_y_i[i] = rand()%192; swarm_y_f[i] = f16_u16( swarm_y_i[i] ); swarm_velocity_y[i] = f16_f32( 0.1 );
-    swarm_active[i] = 1;
+    swarm[i].x_i = rand()%256; swarm[i].x_f = f16_u16( swarm[i].x_i ); swarm[i].velocity_x = f16_f32( 0.1 );
+    swarm[i].y_i = rand()%192; swarm[i].y_f = f16_u16( swarm[i].y_i ); swarm[i].velocity_y = f16_f32( 0.1 );
+    swarm[i].active = 1;
   }
 
   /* Currently unused, but useful for test and timing checks */
   intrinsic_ei();
 
-#define TIME_TEST 0
+#define TIME_TEST 1
 #if TIME_TEST
   uint16_t countdown = 500;
 #endif
@@ -121,7 +111,7 @@ void main(void)
 
     for( i=0; i < MAX_IN_SWARM; i++ )
     {
-      if( !swarm_active[i] )
+      if( !swarm[i].active )
 	continue;
 
       /*
@@ -131,39 +121,39 @@ void main(void)
        */
       if( bump++ & 0x04 )
       {
-	swarm_velocity_x[i] = addf16( swarm_velocity_x[i], random_values[rand()&0xff] );
-	swarm_velocity_y[i] = addf16( swarm_velocity_y[i], random_values[rand()&0xff] );
+	swarm[i].velocity_x = addf16( swarm[i].velocity_x, random_values[rand()&0xff] );
+	swarm[i].velocity_y = addf16( swarm[i].velocity_y, random_values[rand()&0xff] );
       }
 
 
       /*
        * Move to player. Calculate distance to player, take 1% of it. Add that to velocity.
        */
-      move_to_player_x_i = player_x_i - swarm_x_i[i];
-      move_to_player_y_i = player_y_i - swarm_y_i[i];
+      move_to_player_x_i = player_x_i - swarm[i].x_i;
+      move_to_player_y_i = player_y_i - swarm[i].y_i;
 
-      swarm_velocity_x[i] = addf16( swarm_velocity_x[i], divf16( f16_i16(move_to_player_x_i), f100 ) );
-      swarm_velocity_y[i] = addf16( swarm_velocity_y[i], divf16( f16_i16(move_to_player_y_i), f100 ) );
+      swarm[i].velocity_x = addf16( swarm[i].velocity_x, divf16( f16_i16(move_to_player_x_i), f100 ) );
+      swarm[i].velocity_y = addf16( swarm[i].velocity_y, divf16( f16_i16(move_to_player_y_i), f100 ) );
   
 
       /*
        * Limit velocity
        */
       const half_t SPEED_LIMIT = f16_f32(2.75);
-      if( isgreaterf16( swarm_velocity_x[i], SPEED_LIMIT ) || isgreaterf16( swarm_velocity_y[i], SPEED_LIMIT ) )
+      if( isgreaterf16( swarm[i].velocity_x, SPEED_LIMIT ) || isgreaterf16( swarm[i].velocity_y, SPEED_LIMIT ) )
       {
-	swarm_velocity_x[i] = div2f16( swarm_velocity_x[i] );
-	swarm_velocity_y[i] = div2f16( swarm_velocity_y[i] );
+	swarm[i].velocity_x = div2f16( swarm[i].velocity_x );
+	swarm[i].velocity_y = div2f16( swarm[i].velocity_y );
       }
 
 
       /* Finally, add calculated velocity to dot position */
-      swarm_x_f[i] = addf16( swarm_x_f[i], swarm_velocity_x[i] );
-      swarm_y_f[i] = addf16( swarm_y_f[i], swarm_velocity_y[i] );
+      swarm[i].x_f = addf16( swarm[i].x_f, swarm[i].velocity_x );
+      swarm[i].y_f = addf16( swarm[i].y_f, swarm[i].velocity_y );
 
       /* Updated rounded version of position */
-      swarm_x_i[i] = i16_f16( ( swarm_x_f[i] ) );
-      swarm_y_i[i] = i16_f16( ( swarm_y_f[i] ) );
+      swarm[i].x_i = i16_f16( ( swarm[i].x_f ) );
+      swarm[i].y_i = i16_f16( ( swarm[i].y_f ) );
 
     }
 
@@ -176,7 +166,7 @@ void main(void)
     draw_swarm_or();
 
     /* Copy currently displayed swarm so the clear routine can remove it */
-    memcpy( previous_swarm_x_i, swarm_x_i, sizeof(swarm_x_i)+sizeof(swarm_y_i) );
+    memcpy( previous_swarm, swarm, sizeof(swarm) );
     previous_player_x_i = player_x_i;
     previous_player_y_i = player_y_i;
   }

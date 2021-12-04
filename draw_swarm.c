@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <arch/zx.h>
+#include "virion.h"
 #include "draw_swarm.h"
 
 /*
@@ -25,6 +26,7 @@ void init_draw_swarm(void)
   }
 }
 
+#if 0
 void draw_swarm( Draw_Mode mode )
 {
   extern int16_t swarm_x_i[MAX_IN_SWARM];
@@ -50,30 +52,29 @@ void draw_swarm( Draw_Mode mode )
       *scr_byte ^= screen_byte_values[x];
   }
 }
+#endif
 
 void draw_swarm_or(void)
 {
-  extern int16_t swarm_x_i[MAX_IN_SWARM];
-  extern int16_t swarm_y_i[MAX_IN_SWARM];
-  extern uint8_t swarm_active[MAX_IN_SWARM];
+  extern VIRION swarm[MAX_IN_SWARM];
 
   uint8_t i;
   for( i=0; i<MAX_IN_SWARM; i++ )
   {
-    if( !swarm_active[i] )
+    if( !swarm[i].active )
       continue;
 
-    if( swarm_x_i[i] < 0 || swarm_x_i[i] > 255
+    if( swarm[i].x_i < 0 || swarm[i].x_i > 255
 	||
-	swarm_y_i[i] < 0 || swarm_y_i[i] > 191 )
+	swarm[i].y_i < 0 || swarm[i].y_i > 191 )
       continue;
 
-    uint8_t x = swarm_x_i[i];
-    uint8_t y = swarm_y_i[i];
+    uint8_t x = swarm[i].x_i;
+    uint8_t y = swarm[i].y_i;
 
     if( *(zx_pxy2aaddr(x,y)) == PAPER_RED )
     {
-      swarm_active[i] = 0;
+      swarm[i].active = 0;
     }
     else
     {
@@ -88,29 +89,28 @@ void draw_swarm_or(void)
 
 void clear_swarm(void)
 {
-  extern int16_t previous_swarm_x_i[MAX_IN_SWARM];
-  extern int16_t previous_swarm_y_i[MAX_IN_SWARM];
-  extern uint8_t swarm_active[MAX_IN_SWARM];
+  extern VIRION previous_swarm[MAX_IN_SWARM];
 
   uint8_t i;
   for( i=0; i<MAX_IN_SWARM; i++ )
   {
-    if( !swarm_active[i] )
+    if( !previous_swarm[i].active )
       continue;
 
-    if( previous_swarm_x_i[i] < 0 || previous_swarm_x_i[i] > 255
+    if( previous_swarm[i].x_i < 0 || previous_swarm[i].x_i > 255
 	||
-	previous_swarm_y_i[i] < 0 || previous_swarm_y_i[i] > 191 )
+	previous_swarm[i].y_i < 0 || previous_swarm[i].y_i > 191 )
       continue;
 
-    uint8_t x = previous_swarm_x_i[i];
-    uint8_t y = previous_swarm_y_i[i];
+    uint8_t x = previous_swarm[i].x_i;
+    uint8_t y = previous_swarm[i].y_i;
 
     uint8_t *scr_byte = zx_pxy2saddr( x, y );
 
     *scr_byte = 0;
   }
 }
+
 
 void draw_player( uint8_t x, uint8_t y )
 {

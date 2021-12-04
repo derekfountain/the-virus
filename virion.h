@@ -1,0 +1,22 @@
+#ifndef __VIRION_H
+#define __VIRION_H
+
+#include <stdint.h>
+#include <math.h>
+
+typedef struct _virion
+{
+  int16_t x_i;
+  int16_t y_i;
+
+  half_t  x_f;
+  half_t  y_f;
+
+  half_t  velocity_x;
+  half_t  velocity_y;
+
+  uint8_t active;
+
+} VIRION;
+
+#endif
