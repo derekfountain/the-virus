@@ -39,6 +39,14 @@ MAP=stv.map
 TAGGABLE_SRC_GENERATOR=./generate_taggable_src.pl
 TAGGABLE_SRC=stv.taggable_src
 
+BE_MAP_EXTRACTOR=./zxspectrum_be/extract_enums.tcl
+BE_ENUMS=./stv_enums.inc
+BE_ENUMS_LIST=./enums_list.lis
+BE_STRUCT_EXTRACTOR=./zxspectrum_be/extract_structs.tcl
+BE_STRUCTS=./stv_structs.inc
+BE_STATICS_EXTRACTOR=./zxspectrum_be/extract_statics.tcl
+BE_STATICS=./stv_statics.inc
+
 TAGS_GENERATOR=etags
 TAGS=TAGS
 
@@ -60,7 +68,8 @@ PREPROCESSED = $(C_OBJECTS:.o=.cpre)
 
 # For now, if any header changes, recompile the lot.
 HEADERS = main.h \
-          draw_swarm.h
+          draw_swarm.h \
+	  virion.h
 
 # Run the preprocessor on *.c files to get *.cpre files
 %.cpre: %.c $(PRAGMA_FILE) $(HEADERS)
@@ -89,6 +98,18 @@ $(SYM_OUTPUT): $(EXEC)
 $(TAGGABLE_SRC): $(SYM_OUTPUT)
 	$(TAGGABLE_SRC_GENERATOR) $(SYM_OUTPUT) *.c.lis > $(TAGGABLE_SRC)
 
+# BE enums extractor runs after a successful build
+$(BE_ENUMS): $(EXEC)
+	$(BE_MAP_EXTRACTOR) --enum-list $(BE_ENUMS_LIST) *.h *.c > $(BE_ENUMS)
+
+# BE structs extractor runs after a successful build, plus it requires the enum list
+$(BE_STRUCTS): $(EXEC) $(BE_ENUMS)
+	$(BE_STRUCT_EXTRACTOR)  --enum-list $(BE_ENUMS_LIST) $(HEADERS) *.c > $(BE_STRUCTS)
+
+# Statics processing needs preprocessor output plus the symbols table
+$(BE_STATICS): $(PREPROCESSED) $(SYM_OUTPUT)
+	$(BE_STATICS_EXTRACTOR) --symbols-file $(SYM_OUTPUT) *.cpre > $(BE_STATICS)
+
 # TAGS file generated each time the binary is rebuilt for any reason
 $(TAGS): $(EXEC)
 	$(TAGS_GENERATOR) *.h *.c
@@ -104,4 +125,4 @@ clean_tmp:
 
 .PHONY: clean
 clean :
-	rm -f *.tap *.bin *.map *.sym *.o *.lis *~
+	rm -f *.tap *.cpre *.bin *.map *.sym *.o *.lis stv*.inc *~ $(BE_ENUMS) $(TAGGABLE_SRC)

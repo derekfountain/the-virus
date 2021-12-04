@@ -13,6 +13,8 @@
 #include "virion.h"
 #include "draw_swarm.h"
 
+unsigned char version[8] = "ver0.01";
+
 VIRION          swarm[MAX_IN_SWARM];
 VIRION previous_swarm[MAX_IN_SWARM];
 

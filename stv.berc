@@ -1,0 +1,25 @@
+// Example to open ss1.ss:
+//
+// newbe -i stv.berc -y stv.sym ss1.ss
+
+include "zxspectrum_be/stdint.berc"
+
+// Format is on wikipedia if I need to decode this. For now
+// it's just a 16 bit number.
+def half_t struct
+  {
+   n16  hex  "half_t"
+  }
+
+// These are generated.
+//
+include "stv_enums.inc"
+include "stv_structs.inc"
+include "stv_statics.inc"
+
+
+
+def main struct
+{
+  at _version buf 8 asc "version"
+}

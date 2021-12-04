@@ -3,7 +3,7 @@
 
 #include "main.h"
 
-typedef enum
+typedef enum _draw_mode
 {
   OR_MODE,
   XOR_MODE
