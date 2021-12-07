@@ -56,7 +56,7 @@ void setup_int(void)
 
 void main(void)
 {
-  uint8_t i;
+  uint16_t i;
 
   zx_border( INK_BLUE );
   zx_cls( PAPER_WHITE );
@@ -70,9 +70,9 @@ void main(void)
   *(zx_cxy2aaddr(5,5)) = PAPER_RED;
 
   /* Create a pool of random numbers for the jitter. These are added to the velocity occasionally */
-  for(i=0;i<255;i++)
+  for(i=0;i<256;i++)
   {
-    random_values[i] = rand()%8;
+    random_values[i] = rand()%100;
     if( i & 0x01 )
       random_values[i] = -(random_values[i]);
     // printf("%d ", random_values[i]);
@@ -122,8 +122,13 @@ void main(void)
        */
       if( bump++ & 0x04 )
       {
-	swarm[i].velocity_x += random_values[rand()&0xff];
-	swarm[i].velocity_y += random_values[rand()&0xff];
+	uint16_t r = rand() / 256;
+
+	uint16_t t = *(random_values+r);
+	swarm[i].velocity_x += t;
+	r = rand() / 256;
+	t = *(random_values+r);
+	swarm[i].velocity_y += t;
       }
 
 
@@ -153,24 +158,24 @@ void main(void)
        * Limit velocity
        */
 #if 1
-      const int16_t SPEED_LIMIT = 200;
+      const int16_t SPEED_LIMIT = 300;
       if( swarm[i].velocity_x > SPEED_LIMIT )
       {
 	swarm[i].velocity_x /= 2;
-	if( swarm[i].velocity_x == 0 ) swarm[i].velocity_x = 1;
+	if( swarm[i].velocity_x == 0 ) swarm[i].velocity_x = 50;
       } else if( swarm[i].velocity_x < -SPEED_LIMIT )
       {
 	swarm[i].velocity_x /= 2;
-	if( swarm[i].velocity_x == 0 ) swarm[i].velocity_x = -1;
+	if( swarm[i].velocity_x == 0 ) swarm[i].velocity_x = -50;
       }
       else if( swarm[i].velocity_y > SPEED_LIMIT )
       {
 	swarm[i].velocity_y /= 2;
-	if( swarm[i].velocity_y == 0 ) swarm[i].velocity_y = 1;
+	if( swarm[i].velocity_y == 0 ) swarm[i].velocity_y = 50;
       } else if( swarm[i].velocity_y < -SPEED_LIMIT )
       {
 	swarm[i].velocity_y /= 2;
-	if( swarm[i].velocity_y == 0 ) swarm[i].velocity_y = -1;
+	if( swarm[i].velocity_y == 0 ) swarm[i].velocity_y = -50;
       }
 
 #endif
