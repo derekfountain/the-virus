@@ -15,8 +15,8 @@ typedef struct _virion
   half_t  x_f;
   half_t  y_f;
 
-  half_t  velocity_x;
-  half_t  velocity_y;
+  int16_t  velocity_x;
+  int16_t  velocity_y;
 
   uint8_t active;
 

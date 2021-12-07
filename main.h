@@ -1,10 +1,10 @@
 #ifndef __MAIN_H
 #define __MAIN_H
 
-#if 0
-pragma printf %d %f
+#if 1
+#pragma printf %d
 #endif
 
-#define MAX_IN_SWARM ((const uint8_t)10)
+#define MAX_IN_SWARM ((const uint8_t)15)
 
 #endif

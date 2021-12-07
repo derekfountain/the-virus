@@ -26,7 +26,7 @@ int16_t  previous_player_y_i;
 int16_t  move_to_player_x_i;
 int16_t  move_to_player_y_i;
 
-half_t   random_values[255];
+int16_t  random_values[255];
 
 
 /*
@@ -61,38 +61,37 @@ void main(void)
   zx_border( INK_BLUE );
   zx_cls( PAPER_WHITE );
 
+  ioctl(1, IOCTL_OTERM_PAUSE, 0);
+
   // Middle of screen for now.
   player_x_i = 128;
   player_y_i =  96;
 
   *(zx_cxy2aaddr(5,5)) = PAPER_RED;
 
-  const half_t f100 = f16_i16( 100 );
-
-  /* Create a pool of random floating point numbers for the jitter */
+  /* Create a pool of random numbers for the jitter. These are added to the velocity occasionally */
   for(i=0;i<255;i++)
   {
-    random_values[i] = f16_f32( (rand()%100) / 1000.0 );
+    random_values[i] = rand()%8;
     if( i & 0x01 )
-      random_values[i] = negf16(random_values[i]);
-    //printf("%f ", f32_f16(random_values[i]));
+      random_values[i] = -(random_values[i]);
+    // printf("%d ", random_values[i]);
   }
 
   init_draw_swarm();
-  // ioctl(1, IOCTL_OTERM_PAUSE, 0);
 
   /* Starting points */
   for( i=0; i<MAX_IN_SWARM; i++ )
   {
-    swarm[i].x_i = rand()%256; swarm[i].x_f = f16_u16( swarm[i].x_i ); swarm[i].velocity_x = f16_f32( 0.1 );
-    swarm[i].y_i = rand()%192; swarm[i].y_f = f16_u16( swarm[i].y_i ); swarm[i].velocity_y = f16_f32( 0.1 );
+    swarm[i].x_i = rand()%256; swarm[i].x_f = f16_u16( swarm[i].x_i ); swarm[i].velocity_x = 100;
+    swarm[i].y_i = rand()%192; swarm[i].y_f = f16_u16( swarm[i].y_i ); swarm[i].velocity_y = 100;
     swarm[i].active = 1;
   }
 
   /* Currently unused, but useful for test and timing checks */
   intrinsic_ei();
 
-#define TIME_TEST 1
+#define TIME_TEST 0
 #if TIME_TEST
   uint16_t countdown = 500;
 #endif
@@ -123,39 +122,63 @@ void main(void)
        */
       if( bump++ & 0x04 )
       {
-	swarm[i].velocity_x = addf16( swarm[i].velocity_x, random_values[rand()&0xff] );
-	swarm[i].velocity_y = addf16( swarm[i].velocity_y, random_values[rand()&0xff] );
+	swarm[i].velocity_x += random_values[rand()&0xff];
+	swarm[i].velocity_y += random_values[rand()&0xff];
       }
 
 
       /*
        * Move to player. Calculate distance to player, take 1% of it. Add that to velocity.
        */
-      move_to_player_x_i = player_x_i - swarm[i].x_i;
-      move_to_player_y_i = player_y_i - swarm[i].y_i;
+      move_to_player_x_i = player_x_i*100 - swarm[i].x_i*100;
+      move_to_player_y_i = player_y_i*100 - swarm[i].y_i*100;
+//      printf("%d: dot at %d,%d, distance to player x,y=%d,%d\n", i, swarm[i].x_i, swarm[i].y_i,
+//	     move_to_player_x_i, move_to_player_y_i);
 
-      swarm[i].velocity_x = addf16( swarm[i].velocity_x, divf16( f16_i16(move_to_player_x_i), f100 ) );
-      swarm[i].velocity_y = addf16( swarm[i].velocity_y, divf16( f16_i16(move_to_player_y_i), f100 ) );
+      int16_t t_x = move_to_player_x_i/100;
+      int16_t t_y = move_to_player_y_i/100;
+//      t_x /= 100;
+//      t_y /= 100;
+//      printf("%d: scaled, that's x,y=%d,%d\n", i, t_x, t_y);
+
+      swarm[i].velocity_x += t_x;
+      swarm[i].velocity_y += t_y;
+//      printf("%d: now vx,vy=%d,%d\n", i, swarm[i].velocity_x, swarm[i].velocity_y);
   
+//      swarm[i].velocity_x /= 100;
+//      swarm[i].velocity_y /= 100;
+//      printf("%d: final vx,vy=%d,%d\n\n", i, swarm[i].velocity_x, swarm[i].velocity_y);
 
       /*
        * Limit velocity
        */
-      const half_t SPEED_LIMIT = f16_f32(2.75);
-      if( isgreaterf16( swarm[i].velocity_x, SPEED_LIMIT ) || isgreaterf16( swarm[i].velocity_y, SPEED_LIMIT ) )
+#if 1
+      const int16_t SPEED_LIMIT = 200;
+      if( swarm[i].velocity_x > SPEED_LIMIT )
       {
-	swarm[i].velocity_x = div2f16( swarm[i].velocity_x );
-	swarm[i].velocity_y = div2f16( swarm[i].velocity_y );
+	swarm[i].velocity_x /= 2;
+	if( swarm[i].velocity_x == 0 ) swarm[i].velocity_x = 1;
+      } else if( swarm[i].velocity_x < -SPEED_LIMIT )
+      {
+	swarm[i].velocity_x /= 2;
+	if( swarm[i].velocity_x == 0 ) swarm[i].velocity_x = -1;
+      }
+      else if( swarm[i].velocity_y > SPEED_LIMIT )
+      {
+	swarm[i].velocity_y /= 2;
+	if( swarm[i].velocity_y == 0 ) swarm[i].velocity_y = 1;
+      } else if( swarm[i].velocity_y < -SPEED_LIMIT )
+      {
+	swarm[i].velocity_y /= 2;
+	if( swarm[i].velocity_y == 0 ) swarm[i].velocity_y = -1;
       }
 
+#endif
 
+//      printf("%d: adding vx,vy=%d,%d\n", i, swarm[i].velocity_x, swarm[i].velocity_y);
       /* Finally, add calculated velocity to dot position */
-      swarm[i].x_f = addf16( swarm[i].x_f, swarm[i].velocity_x );
-      swarm[i].y_f = addf16( swarm[i].y_f, swarm[i].velocity_y );
-
-      /* Updated rounded version of position */
-      swarm[i].x_i = i16_f16( ( swarm[i].x_f ) );
-      swarm[i].y_i = i16_f16( ( swarm[i].y_f ) );
+      swarm[i].x_i += swarm[i].velocity_x/100;
+      swarm[i].y_i += swarm[i].velocity_y/100;
 
     }
 

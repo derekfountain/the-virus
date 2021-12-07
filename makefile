@@ -20,7 +20,7 @@ AS=zcc
 APPMAKE=z88dk-appmake
 TARGET=+zx
 VERBOSITY=-vn
-CRT=31
+CRT=4
 
 PRAGMA_FILE=zpragma.inc
 
