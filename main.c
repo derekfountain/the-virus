@@ -54,6 +54,29 @@ void setup_int(void)
   intrinsic_ei();
 }
 
+static uint32_t usqrt4(uint32_t val) {
+    uint32_t a, b;
+
+    if (val < 2) return val; /* avoid div/0 */
+
+    a = (uint32_t)1255;       /* starting point is relatively unimportant */
+
+    b = val / a; a = (a+b) /2;
+    b = val / a; a = (a+b) /2;
+    b = val / a; a = (a+b) /2;
+    b = val / a; a = (a+b) /2;
+
+    b = val / a; a = (a+b) /2;
+    b = val / a; a = (a+b) /2;
+    b = val / a; a = (a+b) /2;
+    b = val / a; a = (a+b) /2;
+    b = val / a; a = (a+b) /2;
+
+    return a;
+}
+
+#pragma printf %f %lf %d %ld
+
 void main(void)
 {
   uint16_t i;
@@ -83,8 +106,8 @@ void main(void)
   /* Starting points */
   for( i=0; i<MAX_IN_SWARM; i++ )
   {
-    swarm[i].x_i = rand()%256; swarm[i].x_f = f16_u16( swarm[i].x_i ); swarm[i].velocity_x = 100;
-    swarm[i].y_i = rand()%192; swarm[i].y_f = f16_u16( swarm[i].y_i ); swarm[i].velocity_y = 100;
+    swarm[i].x_i = rand()%256; swarm[i].x_f = f16_u16( swarm[i].x_i ); swarm[i].velocity_x = 0;
+    swarm[i].y_i = rand()%192; swarm[i].y_f = f16_u16( swarm[i].y_i ); swarm[i].velocity_y = 0;
     swarm[i].active = 1;
   }
 
@@ -112,15 +135,16 @@ void main(void)
 
     for( i=0; i < MAX_IN_SWARM; i++ )
     {
-      if( !swarm[i].active )
-	continue;
+      swarm[i].active=1;
+//      if( !swarm[i].active )
+//	continue;
 
       /*
        * Original algorithm attempts to move dots so they don't get too close
        * to each other. That's not posssible on the Spectrum. I get the milling
        * around behaviour by introducing some random jitter.
        */
-      if( bump++ & 0x04 )
+      if(0 && bump++ & 0x04 )
       {
 	uint16_t r = rand() / 256;
 
@@ -137,53 +161,68 @@ void main(void)
        */
       move_to_player_x_i = player_x_i*100 - swarm[i].x_i*100;
       move_to_player_y_i = player_y_i*100 - swarm[i].y_i*100;
-//      printf("%d: dot at %d,%d, distance to player x,y=%d,%d\n", i, swarm[i].x_i, swarm[i].y_i,
-//	     move_to_player_x_i, move_to_player_y_i);
+//      printf("%d: MTP dot at %d,%d, distance x,y=%d,%d v is %d,%d\n",
+//	     i,
+//	     swarm[i].x_i, swarm[i].y_i,
+//	     move_to_player_x_i, move_to_player_y_i,
+//	     swarm[i].velocity_x, swarm[i].velocity_y);
 
       int16_t t_x = move_to_player_x_i/100;
       int16_t t_y = move_to_player_y_i/100;
-//      t_x /= 100;
-//      t_y /= 100;
 //      printf("%d: scaled, that's x,y=%d,%d\n", i, t_x, t_y);
 
       swarm[i].velocity_x += t_x;
       swarm[i].velocity_y += t_y;
-//      printf("%d: now vx,vy=%d,%d\n", i, swarm[i].velocity_x, swarm[i].velocity_y);
-  
-//      swarm[i].velocity_x /= 100;
-//      swarm[i].velocity_y /= 100;
-//      printf("%d: final vx,vy=%d,%d\n\n", i, swarm[i].velocity_x, swarm[i].velocity_y);
+//      printf("%d: final move to player vel vx,vy=%d,%d\n\n", i, swarm[i].velocity_x, swarm[i].velocity_y);
+
+
+
 
       /*
        * Limit velocity
        */
-#if 1
-      const int16_t SPEED_LIMIT = 300;
-      if( swarm[i].velocity_x > SPEED_LIMIT )
+      const int32_t SPEED_LIMIT = 250;
+      uint32_t mag = usqrt4( ((uint32_t)swarm[i].velocity_x * (uint32_t)swarm[i].velocity_x)
+			     +
+ 			     ((uint32_t)swarm[i].velocity_y * (uint32_t)swarm[i].velocity_y)
+			     );
+      if( mag > SPEED_LIMIT )
       {
-	swarm[i].velocity_x /= 2;
-	if( swarm[i].velocity_x == 0 ) swarm[i].velocity_x = 50;
-      } else if( swarm[i].velocity_x < -SPEED_LIMIT )
-      {
-	swarm[i].velocity_x /= 2;
-	if( swarm[i].velocity_x == 0 ) swarm[i].velocity_x = -50;
-      }
-      else if( swarm[i].velocity_y > SPEED_LIMIT )
-      {
-	swarm[i].velocity_y /= 2;
-	if( swarm[i].velocity_y == 0 ) swarm[i].velocity_y = 50;
-      } else if( swarm[i].velocity_y < -SPEED_LIMIT )
-      {
-	swarm[i].velocity_y /= 2;
-	if( swarm[i].velocity_y == 0 ) swarm[i].velocity_y = -50;
+//	printf("%d: preg vx,vy=%d,%d mag %ld\n", i, swarm[i].velocity_x, swarm[i].velocity_y, mag);
+        int32_t dx = ((int32_t)swarm[i].velocity_x)*(int32_t)100;
+	int32_t dy = ((int32_t)swarm[i].velocity_y)*(int32_t)100;
+
+//	printf("%d: int1 dx,dy=%ld,%ld mag %ld\n", i, dx, dy, mag);
+
+        dx = dx/(int32_t)mag;
+	dy = dy/(int32_t)mag;
+
+//	printf("%d: int2 dx,dy=%ld,%ld mag %ld\n", i, dx, dy, mag);
+
+	dx *= SPEED_LIMIT;
+	dy *= SPEED_LIMIT;
+
+//	printf("%d: int3 dx,dy=%ld,%ld mag %ld\n", i, dx, dy, mag);
+
+	dx /= (int32_t)100;
+	dy /= (int32_t)100;
+
+//	printf("%d: int4 dx,dy=%ld,%ld mag %ld\n", i, dx, dy, mag);
+
+	swarm[i].velocity_x = (int16_t)((dx)*(int32_t)1);
+	swarm[i].velocity_y = (int16_t)((dy)*(int32_t)1);
+//      printf("%d: post vx,vy=%d,%d\n", i, swarm[i].velocity_x, swarm[i].velocity_y);
       }
 
-#endif
 
-//      printf("%d: adding vx,vy=%d,%d\n", i, swarm[i].velocity_x, swarm[i].velocity_y);
+
+
+
+      //    printf("%d: adding vx,vy=%d,%d div 100\n", i, swarm[i].velocity_x, swarm[i].velocity_y);
       /* Finally, add calculated velocity to dot position */
       swarm[i].x_i += swarm[i].velocity_x/100;
       swarm[i].y_i += swarm[i].velocity_y/100;
+      //printf("%d: putting dot at x,y=%d,%d\n\n", i, swarm[i].x_i, swarm[i].y_i);
 
     }
 
