@@ -26,7 +26,7 @@ int16_t  previous_player_y_i;
 int16_t  move_to_player_x_i;
 int16_t  move_to_player_y_i;
 
-int16_t  random_values[255];
+int8_t   random_values[255];
 
 
 /*
@@ -152,9 +152,13 @@ void main(void)
        * That's not posssible on the Spectrum, there's nowhere near enough CPU power to
        * iterate all of the swarm each iteration of this loop. I get the milling around behaviour
        * by introducing some random jitter.
+       * This used to pick from the random pool at random, but that was a bit expensive CPUwise.
+       * This implementation cycles the pool of random numbers, but you can't really tell from
+       * the swarm's on screen behaviour.
        */
-      swarm[i].velocity_x += *(random_values+(rand()/256));
-      swarm[i].velocity_y += *(random_values+(rand()/256));
+      static uint8_t r=0;
+      swarm[i].velocity_x += *(random_values+r++);
+      swarm[i].velocity_y += *(random_values+r);
 
 
       /*
