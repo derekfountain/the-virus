@@ -11,7 +11,7 @@
 
 #include "main.h"
 #include "virion.h"
-#include "draw_swarm.h"
+#include "player.h"
 
 unsigned char version[8] = "ver0.01";
 
@@ -78,7 +78,7 @@ void main(void)
     // printf("%d ", random_values[i]);
   }
 
-  init_draw_swarm();
+  init_draw_virion_tables();
 
   /* Starting points */
   for( i=0; i<MAX_IN_SWARM; i++ )
@@ -178,18 +178,20 @@ void main(void)
        */
       swarm[i].x_i += swarm[i].velocity_x/100;
       swarm[i].y_i += swarm[i].velocity_y/100;
+
+      /* Remove it from its old screen position */
+      clear_virion( &swarm[i] );
+
+      /* Put it in its new place */
+      draw_virion( &swarm[i] );
+
+      /* Note the new place ready for removing it next time round */
+      swarm[i].previous_x_i = swarm[i].x_i;
+      swarm[i].previous_y_i = swarm[i].y_i;
     }
 
-    /* Clear the previous swarm - it's hard coded */
-    clear_swarm();
     clear_player( previous_player_x_i, previous_player_y_i );
-
-    /* Draw the newly computed swarm - also hard coded */
     draw_player( player_x_i, player_y_i );
-    draw_swarm_or();
-
-    /* Copy currently displayed swarm so the clear routine can remove it */
-    memcpy( previous_swarm, swarm, sizeof(swarm) );
     previous_player_x_i = player_x_i;
     previous_player_y_i = player_y_i;
   }

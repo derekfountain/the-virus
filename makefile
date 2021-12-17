@@ -57,18 +57,20 @@ EXEC_OUTPUT=stv
 SYM_OUTPUT=stv.sym
 
 OBJECTS = main.o \
-          draw_swarm.o
+	  player.o \
+          virion.o
 
 # Objects built from C files (as opposed to ASMs)
 C_OBJECTS = main.o \
-            draw_swarm.o
+            player.o \
+            virion.o
 
 # A .cpre is the output of the C preprocessor
 PREPROCESSED = $(C_OBJECTS:.o=.cpre)
 
 # For now, if any header changes, recompile the lot.
 HEADERS = main.h \
-          draw_swarm.h \
+	  player.h \
 	  virion.h
 
 # Run the preprocessor on *.c files to get *.cpre files

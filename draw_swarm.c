@@ -12,6 +12,9 @@ uint8_t *screen_line_starts[192];
 uint8_t  screen_line_offsets[256];
 uint8_t  screen_byte_values[256];
 
+/*
+ * Initialise the lookup tables
+ */
 void init_draw_swarm(void)
 {
   uint16_t i;
@@ -26,33 +29,6 @@ void init_draw_swarm(void)
   }
 }
 
-#if 0
-void draw_swarm( Draw_Mode mode )
-{
-  extern int16_t swarm_x_i[MAX_IN_SWARM];
-  extern int16_t swarm_y_i[MAX_IN_SWARM];
-
-  uint8_t i;
-  for( i=0; i<MAX_IN_SWARM; i++ )
-  {
-    if( swarm_x_i[i] < 0 || swarm_x_i[i] > 255
-	||
-	swarm_y_i[i] < 0 || swarm_y_i[i] > 191 )
-      continue;
-
-    uint8_t x = swarm_x_i[i];
-    uint8_t y = swarm_y_i[i];
-
-    uint8_t *scr_byte = screen_line_starts[y];
-    scr_byte += screen_line_offsets[x];
-
-    if( mode == OR_MODE )
-      *scr_byte |= screen_byte_values[x];
-    else
-      *scr_byte ^= screen_byte_values[x];
-  }
-}
-#endif
 
 void draw_swarm_or(void)
 {
@@ -109,6 +85,49 @@ void clear_swarm(void)
 
     *scr_byte = 0;
   }
+}
+
+void clear_virion( VIRION *v )
+{
+  if( ! v->active )
+    return;
+
+  if( v->previous_x_i < 0 || v->previous_x_i > 255
+      ||
+      v->previous_y_i < 0 || v->previous_y_i > 191 )
+    return;
+
+  uint8_t x = v->previous_x_i;
+  uint8_t y = v->previous_y_i;
+
+  /* I could cache this screen address... */
+  uint8_t *scr_byte = screen_line_starts[y];
+  scr_byte += screen_line_offsets[x];
+
+  /*
+   * I can't XOR this because if two virions are in the same place
+   * they go off and back on again and I end up with trails of dots.
+   */
+  *scr_byte &= ~screen_byte_values[x];
+}
+
+void draw_virion( VIRION *v )
+{
+  if( ! v->active )
+    return;
+
+  if( v->x_i < 0 || v->x_i > 255
+      ||
+      v->y_i < 0 || v->y_i > 191 )
+    return;
+
+  uint8_t x = v->x_i;
+  uint8_t y = v->y_i;
+
+  uint8_t *scr_byte = screen_line_starts[y];
+  scr_byte += screen_line_offsets[x];
+
+  *scr_byte |= screen_byte_values[x];
 }
 
 

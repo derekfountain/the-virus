@@ -2,7 +2,6 @@
 #define __VIRION_H
 
 #include <stdint.h>
-#include <math.h>
 
 /*
  * A virion is a single particle of a virus. We all knew that, right?
@@ -17,6 +16,13 @@ typedef struct _virion
 
   uint8_t active;
 
+  int16_t previous_x_i;
+  int16_t previous_y_i;
+
 } VIRION;
+
+void init_draw_virion_tables(void);
+void draw_virion( VIRION* );
+void clear_virion( VIRION* );
 
 #endif

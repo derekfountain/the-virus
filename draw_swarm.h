@@ -2,6 +2,7 @@
 #define __DRAW_SWARM_H
 
 #include "main.h"
+#include "virion.h"
 
 typedef enum _draw_mode
 {
