@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <arch/zx.h>
 #include <input.h>
-#include <math.h>
 #include <sys/ioctl.h>
 #include <intrinsic.h>
 #include <z80.h>
@@ -15,19 +14,12 @@
 
 unsigned char version[8] = "ver0.01";
 
-VIRION          swarm[MAX_IN_SWARM];
-VIRION previous_swarm[MAX_IN_SWARM];
-
-int16_t  player_x_i;
-int16_t  player_y_i;
-int16_t  previous_player_x_i;
-int16_t  previous_player_y_i;
+VIRION   swarm[MAX_IN_SWARM];
 
 int16_t  move_to_player_x_i;
 int16_t  move_to_player_y_i;
 
 int8_t   random_values[255];
-
 
 /*
  * Standard interrupt set up for now.
@@ -63,9 +55,7 @@ void main(void)
 
   ioctl(1, IOCTL_OTERM_PAUSE, 0);
 
-  // Middle of screen for now.
-  player_x_i = 128;
-  player_y_i =  96;
+  init_player();
 
   *(zx_cxy2aaddr(5,5)) = PAPER_RED;
 
@@ -104,10 +94,7 @@ void main(void)
   {
     int i;
 
-    if( in_key_pressed( IN_KEY_SCANCODE_q ) && player_y_i )       player_y_i-=2;
-    if( in_key_pressed( IN_KEY_SCANCODE_a ) && player_y_i < 190 ) player_y_i+=2;
-    if( in_key_pressed( IN_KEY_SCANCODE_o ) && player_x_i )       player_x_i-=2;
-    if( in_key_pressed( IN_KEY_SCANCODE_p ) && player_x_i < 254 ) player_x_i+=2;
+    move_player();
 
     /*
      * Update each dot's velocity and then location based on empirically derived rules. This actually
@@ -125,12 +112,12 @@ void main(void)
        * the player is at x=0 then 0*0=0, and if the swarm dot is at x=255 then 0-65280=-65280. The
        * result will be in the range 255 to -255.
        */
-      swarm[i].velocity_x += (((int32_t)player_x_i*(int32_t)256) - (int32_t)swarm[i].x_i*(int32_t)256) / (int16_t)256;
-      swarm[i].velocity_y += (((int32_t)player_y_i*(int32_t)256) - (int32_t)swarm[i].y_i*(int32_t)256) / (int16_t)256;
+      swarm[i].velocity_x += (((int32_t)query_player_x()*(int32_t)256) - (int32_t)swarm[i].x_i*(int32_t)256) / (int16_t)256;
+      swarm[i].velocity_y += (((int32_t)query_player_y()*(int32_t)256) - (int32_t)swarm[i].y_i*(int32_t)256) / (int16_t)256;
 
 
       /*
-       * Limit velocity. This ugly and causes stuttering sort of behaviour, but it's the best
+       * Limit velocity. This is ugly and causes stuttering sort of behaviour, but it's the best
        * I could get without a square root.
        */
       const int16_t SPEED_LIMIT = 350;
@@ -189,9 +176,8 @@ void main(void)
       swarm[i].previous_y_i = swarm[i].y_i;
     }
 
-    clear_player( previous_player_x_i, previous_player_y_i );
-    draw_player( player_x_i, player_y_i );
-    previous_player_x_i = player_x_i;
-    previous_player_y_i = player_y_i;
+    clear_player();
+    draw_player();
   }
 }
+

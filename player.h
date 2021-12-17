@@ -15,7 +15,11 @@ typedef enum _direction
   DIRECTION_NW,
 } DIRECTION;
 
-void clear_player( uint8_t x, uint8_t y );
-void draw_player( uint8_t x, uint8_t y );
+void init_player( void );
+int16_t query_player_x( void );
+int16_t query_player_y( void );
+void move_player( void );
+void clear_player( void );
+void draw_player( void );
 
 #endif
