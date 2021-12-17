@@ -1,7 +1,7 @@
 #ifndef __MAIN_H
 #define __MAIN_H
 
-#if 1
+#if 0
 #pragma printf %f %d %ld
 #endif
 

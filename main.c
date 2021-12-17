@@ -75,7 +75,6 @@ void main(void)
     random_values[i] = rand()%50;
     if( i & 0x01 )
       random_values[i] = -(random_values[i]);
-    // printf("%d ", random_values[i]);
   }
 
   init_draw_virion_tables();
