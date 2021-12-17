@@ -151,14 +151,24 @@ void main(void)
        * Original algorithm attempts to move dots so they don't get too close to each other.
        * That's not posssible on the Spectrum, there's nowhere near enough CPU power to
        * iterate all of the swarm each iteration of this loop. I get the milling around behaviour
-       * by introducing some random jitter.
-       * This used to pick from the random pool at random, but that was a bit expensive CPUwise.
-       * This implementation cycles the pool of random numbers, but you can't really tell from
-       * the swarm's on screen behaviour.
+       * by introducing some random jitter. However, this only happens to dots which are moving
+       * slowly. This means they crowd the player, but when moving at speed they tend to clump
+       * together, which makes guding the swarm easier.
        */
-      static uint8_t r=0;
-      swarm[i].velocity_x += *(random_values+r++);
-      swarm[i].velocity_y += *(random_values+r);
+      const int16_t JITTER_LIMIT = 35;
+      if( swarm[i].velocity_x < JITTER_LIMIT && swarm[i].velocity_x > -JITTER_LIMIT
+	  ||
+	  swarm[i].velocity_y < JITTER_LIMIT && swarm[i].velocity_y > -JITTER_LIMIT )
+      {
+	/*
+	 * This used to pick from the random pool at random, but that was a bit expensive CPUwise.
+	 * This implementation cycles the pool of random numbers, but you can't really tell from
+	 * the swarm's on screen behaviour.
+	 */
+	static uint8_t r=0;
+	swarm[i].velocity_x += *(random_values+r++);
+	swarm[i].velocity_y += *(random_values+r);
+      }
 
 
       /*
