@@ -2,6 +2,7 @@
 #define __PLAYER_H
 
 #include <stdint.h>
+#include "controls.h"
 
 typedef enum _direction
 {
@@ -15,9 +16,9 @@ typedef enum _direction
   DIRECTION_NW,
 } DIRECTION;
 
-void init_player( void );
-int16_t query_player_x( void );
-int16_t query_player_y( void );
+void init_player( CONTROL );
+uint8_t query_player_x( void );
+uint8_t query_player_y( void );
 void move_player( void );
 void clear_player( void );
 void draw_player( void );

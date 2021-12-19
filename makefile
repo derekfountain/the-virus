@@ -24,7 +24,7 @@ CRT=4
 
 PRAGMA_FILE=zpragma.inc
 
-#C_OPT_FLAGS=-SO3 --max-allocs-per-node200000 -DNDEBUG --std-c99 --list
+#C_OPT_FLAGS=-SO2 --max-allocs-per-node200000 -DNDEBUG --std-c99 --list
 C_OPT_FLAGS=--c-code-in-asm --std-c99 --list
 
 CFLAGS=$(TARGET) $(VERBOSITY) -c $(C_OPT_FLAGS) -preserve -compiler sdcc -clib=sdcc_iy -pragma-include:$(PRAGMA_FILE)
@@ -58,11 +58,19 @@ SYM_OUTPUT=stv.sym
 
 OBJECTS = main.o \
 	  player.o \
+	  controls.o \
+	  int.o \
+	  levels.o \
+	  swarm.o \
           virion.o
 
 # Objects built from C files (as opposed to ASMs)
 C_OBJECTS = main.o \
             player.o \
+	    controls.o \
+	    int.o \
+            levels.o \
+	    swarm.o \
             virion.o
 
 # A .cpre is the output of the C preprocessor
@@ -71,6 +79,10 @@ PREPROCESSED = $(C_OBJECTS:.o=.cpre)
 # For now, if any header changes, recompile the lot.
 HEADERS = main.h \
 	  player.h \
+	  levels.h \
+	  controls.h \
+	  int.h \
+	  swarm.h \
 	  virion.h
 
 # Run the preprocessor on *.c files to get *.cpre files
