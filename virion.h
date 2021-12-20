@@ -24,6 +24,5 @@ typedef struct _virion
 void init_draw_virion_tables(void);
 void draw_virion( VIRION* );
 void clear_virion( VIRION* );
-void apply_virion_logic( VIRION* );
 
 #endif

@@ -3,6 +3,7 @@
 
 CONTROL select_controls( void )
 {
-  return JOYSTICK;
+  return KEYBOARD;
+//  return JOYSTICK;
 }
 

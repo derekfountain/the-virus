@@ -29,6 +29,7 @@ uint8_t i;
 
 void main(void)
 {
+  zx_cls( PAPER_WHITE );
 
   /* Set up interrupts */
   setup_int();
@@ -38,6 +39,8 @@ void main(void)
 
   /* Ask user for controls - keyboard or joystick */
   CONTROL selected_control = select_controls();
+
+  uint8_t current_level = select_level();
 
   /* Outer infinite loop, level selection */
   while( 1 )
@@ -55,19 +58,16 @@ void main(void)
 	random_values[r] = -(random_values[r]);
     }
 
-    uint8_t current_level = select_level();
-
-    zx_border( INK_BLUE );
-    zx_cls( PAPER_WHITE );
+    LEVEL *level = get_level(current_level);
 
     /* ioctl(1, IOCTL_OTERM_PAUSE, 0); */
 
     init_player( selected_control );
 
-    *(zx_cxy2aaddr(5,5)) = PAPER_RED;
+    draw_level( level );
 
     /* Starting points */
-    for( i=0; i<MAX_IN_SWARM; i++ )
+    for( i=0; i<level->starting_num_virions; i++ )
     {
       swarm[i].x_i = rand()%256; swarm[i].velocity_x = 100;
       swarm[i].y_i = rand()%192; swarm[i].velocity_y = 100;
@@ -75,6 +75,7 @@ void main(void)
     }
 
 #define TIME_TEST 0
+/* Keep this time test at less than 20 seconds with MAX_SWARM=25 */
 #if TIME_TEST
     uint16_t countdown = 500;
 #endif
@@ -92,6 +93,9 @@ void main(void)
        * updates every other dot each pass, every other-other dot being left to do the same as it did
        * in the previous iteration. This allows twice as many dots to be managed, at the expense of
        * more accurate behaviour.
+       *
+       * The loop is always over the maximum number, regardless of how many are in play. This keeps the
+       * speed reasonably consistent.
        */
       static uint8_t every_other_dot=0;
       every_other_dot ^= 1;
@@ -114,15 +118,16 @@ void main(void)
 	const int16_t SPEED_LIMIT = 350;
 	if( swarm[i].velocity_x > SPEED_LIMIT || swarm[i].velocity_x < -SPEED_LIMIT )
 	{
-	  if( swarm[i].velocity_x / 2 != 0 )
-	    swarm[i].velocity_x /= 2;
+	  int16_t div2 = swarm[i].velocity_x / 2;
+	  if( div2 != 0 )
+	    swarm[i].velocity_x = div2;
 	}
 	if( swarm[i].velocity_y > SPEED_LIMIT || swarm[i].velocity_y < -SPEED_LIMIT )
 	{
-	  if( swarm[i].velocity_y / 2 != 0 )
-	    swarm[i].velocity_y /= 2;
+	  int16_t div2 = swarm[i].velocity_y / 2;
+	  if( div2 != 0 )
+	    swarm[i].velocity_y = div2;
 	}
-
 
 	/*
 	 * Original algorithm attempts to move dots so they don't get too close to each other.
@@ -159,7 +164,8 @@ void main(void)
 	/* Remove it from its old screen position */
 	clear_virion( &swarm[i] );
 
-	apply_virion_logic( &swarm[i] );
+	if( swarm[i].active )
+	  apply_virion_logic( level, &swarm[i] );
 
 	/* Put it in its new place */
 	draw_virion( &swarm[i] );
@@ -173,10 +179,11 @@ void main(void)
       draw_player();
 
       /* If number in swarm == 0, level is now cleared so break */
+      if( level->current_num_virions == 0 )
+	break;
     }
 
-    /* Choose new level? */
-
+    current_level++;
   }
 
 }

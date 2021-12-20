@@ -60,6 +60,7 @@ OBJECTS = main.o \
 	  player.o \
 	  controls.o \
 	  int.o \
+	  level.o \
 	  levels.o \
 	  swarm.o \
           virion.o
@@ -69,6 +70,7 @@ C_OBJECTS = main.o \
             player.o \
 	    controls.o \
 	    int.o \
+	  level.o \
             levels.o \
 	    swarm.o \
             virion.o
@@ -79,6 +81,7 @@ PREPROCESSED = $(C_OBJECTS:.o=.cpre)
 # For now, if any header changes, recompile the lot.
 HEADERS = main.h \
 	  player.h \
+	  level.h \
 	  levels.h \
 	  controls.h \
 	  int.h \
