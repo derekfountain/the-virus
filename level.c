@@ -4,6 +4,26 @@
 #include "levels.h"
 #include "main.h"
 
+uint8_t  current_num_virions;
+uint8_t  current_frame;
+uint16_t frames_before_change;
+uint16_t immune_frames;
+
+
+void init_level( LEVEL *level )
+{
+  zx_border( level->border_colour );
+
+  current_num_virions  = level->starting_num_virions;
+  current_frame        = 0;
+  frames_before_change = 0;
+  immune_frames        = 0;
+ 
+  (level->draw_frame)();
+
+  return;
+}
+
 void apply_virion_logic( LEVEL *level, VIRION *v )
 {
   if( ! v->active )
@@ -22,11 +42,11 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
   if( attribute == PAPER_RED )
   {
     v->active = 0;
-    level->current_num_virions--;
+    current_num_virions--;
   }
   else if( attribute == PAPER_GREEN )
   {
-    if( level->current_num_virions < level->max_virions )
+    if( current_num_virions < level->max_virions )
     {
       extern VIRION swarm[MAX_IN_SWARM];
       
@@ -36,11 +56,17 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
 	if( ! swarm[i].active )
 	{
 	  swarm[i].active = 1;
-	  level->current_num_virions++;
+	  current_num_virions++;
 	  break;
 	}
       }
     }
   }
   
+}
+
+
+uint8_t get_current_num_virions(void)
+{
+  return current_num_virions;
 }
