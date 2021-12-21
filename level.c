@@ -3,21 +3,19 @@
 #include "level.h"
 #include "levels.h"
 #include "main.h"
+#include "int.h"
+#include "swarm.h"
 
-uint8_t  current_num_virions;
 uint8_t  current_frame;
 uint16_t frames_before_change;
-uint16_t immune_frames;
-
 
 void init_level( LEVEL *level )
 {
   zx_border( level->border_colour );
 
-  current_num_virions  = level->starting_num_virions;
+  set_swarm_size( level->starting_num_virions );
   current_frame        = 0;
   frames_before_change = 0;
-  immune_frames        = 0;
  
   (level->draw_frame)();
 
@@ -41,32 +39,30 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
 
   if( attribute == PAPER_RED )
   {
-    v->active = 0;
-    current_num_virions--;
+    /* If virion isn't immune, or its immunity has expired, deactivate it */
+    if( !v->immunity_start ||
+	(GET_TICKER > (v->immunity_start + level->immune_frames)) )
+    {
+      /* Deactivate this one */
+      deactivate_virion( v );
+
+      /* For when/if it's reactivated */
+      change_immunity( v, MAKE_NON_IMMUNE );
+    }
   }
   else if( attribute == PAPER_GREEN )
   {
-    if( current_num_virions < level->max_virions )
+    if( get_active_swarm_size() < level->max_virions )
     {
-      extern VIRION swarm[MAX_IN_SWARM];
-      
-      uint8_t i;
-      for( i=0; i<MAX_IN_SWARM; i++ )
-      {
-	if( ! swarm[i].active )
-	{
-	  swarm[i].active = 1;
-	  current_num_virions++;
-	  break;
-	}
-      }
+      /* Active any currently inactive virion in the swarm, it starts off immune */
+      activate_virion_in_swarm( START_IMMUNE );
+
+      /*
+       * Virion which has triggered the new one becomes immune so it doesn't create lots
+       * while it's in the activation area
+       */
+      change_immunity( v, MAKE_IMMUNE );
     }
   }
   
-}
-
-
-uint8_t get_current_num_virions(void)
-{
-  return current_num_virions;
 }

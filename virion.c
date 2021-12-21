@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <arch/zx.h>
 #include "virion.h"
+#include "int.h"
+#include "swarm.h"
 
 /*
  * Line starts is the display file address. column 0.
@@ -54,6 +56,25 @@ void clear_virion( VIRION *v )
 }
 
 
+void activate_virion( VIRION *v )
+{
+  if( !v->active )
+  {
+    v->active = 1;
+    set_swarm_size( get_active_swarm_size() + 1 );
+  }
+}
+
+void deactivate_virion( VIRION *v )
+{
+  if( v->active )
+  {
+    v->active = 0;
+    set_swarm_size( get_active_swarm_size() - 1 );
+  }
+}
+
+
 void draw_virion( VIRION *v )
 {
   if( ! v->active )
@@ -73,4 +94,12 @@ void draw_virion( VIRION *v )
   *scr_byte |= screen_byte_values[x];
 }
 
+
+void change_immunity( VIRION *v, uint8_t new_state )
+{
+  if( new_state == MAKE_IMMUNE )
+    v->immunity_start = GET_TICKER;
+  else
+    v->immunity_start = 0;
+}
 

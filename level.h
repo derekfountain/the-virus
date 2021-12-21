@@ -13,11 +13,12 @@ typedef struct __level
 
   uint8_t  border_colour;
 
+  uint8_t immune_frames;
+
   void   (*draw_frame)(void);
 } LEVEL;
 
 
 void apply_virion_logic( LEVEL*, VIRION* );
-uint8_t get_current_num_virions(void);
 
 #endif

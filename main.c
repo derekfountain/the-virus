@@ -71,7 +71,7 @@ void main(void)
       draw_player();
 
       /* If number in swarm == 0, level is now cleared so break */
-      if( get_current_num_virions() == 0 )
+      if( get_active_swarm_size() == 0 )
 	break;
     }
 

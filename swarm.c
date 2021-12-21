@@ -6,8 +6,10 @@
 #include "player.h"
 #include "virion.h"
 #include "level.h"
+#include "int.h"
 
 VIRION   swarm[MAX_IN_SWARM];
+uint8_t  current_num_virions;
 
 int16_t  move_to_player_x_i;
 int16_t  move_to_player_y_i;
@@ -30,9 +32,12 @@ void init_swarm( uint8_t size, int16_t vel )
     swarm[p].velocity_y = vel;
 
     swarm[p].active = 0;
-
+    swarm[p].immunity_start = GET_TICKER;   /* Start immune */
+    
     swarm[p].previous_x_i = -1;
     swarm[p].previous_y_i = -1;
+
+    
   }
 
   /* Activate those used in this level */
@@ -152,4 +157,39 @@ void refresh_random_values( void )
   }
   
   return;
+}
+
+
+uint8_t activate_virion_in_swarm( uint8_t start )
+{
+  uint8_t i;
+  for( i=0; i<MAX_IN_SWARM; i++ )
+  {
+    if( ! swarm[i].active )
+    {
+      swarm[i].active = 1;
+      current_num_virions++;
+
+      if( start == START_IMMUNE )
+	change_immunity( &swarm[i], MAKE_IMMUNE );
+      else
+	change_immunity( &swarm[i], MAKE_NON_IMMUNE );
+	
+      return i;
+    }
+  }
+
+  return INVALID_VIRION;
+}
+
+
+void set_swarm_size( uint8_t size )
+{
+  current_num_virions = size;
+}
+
+
+uint8_t get_active_swarm_size( void )
+{
+  return current_num_virions;
 }

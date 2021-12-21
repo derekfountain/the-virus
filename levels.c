@@ -9,11 +9,13 @@ LEVEL levels[] =
   {MAX_IN_SWARM, MAX_IN_SWARM,
    100,
    INK_BLUE,
+   50,
    draw_level0_frame,
   },
   {8, MAX_IN_SWARM,
    100,
    INK_RED,
+   50,
    draw_level1_frame,
   },
 };
