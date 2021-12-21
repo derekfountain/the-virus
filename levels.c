@@ -42,10 +42,11 @@ void draw_level1_frame(void)
 void draw_level( LEVEL *level )
 {
   zx_border( level->border_colour );
-  level->current_num_virions = level->starting_num_virions;
-  level->current_frame = 0;
+
+  level->current_num_virions  = level->starting_num_virions;
+  level->current_frame        = 0;
   level->frames_before_change = 0;
-  level->immune_frames = 0;
+  level->immune_frames        = 0;
  
   (level->draw_frame)();
 
