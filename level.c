@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdlib.h>
 #include <arch/zx.h>
 #include "level.h"
 #include "levels.h"
@@ -64,5 +65,17 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
       change_immunity( v, MAKE_IMMUNE );
     }
   }
-  
+  else if( attribute == PAPER_BLACK )
+  {
+    v->x_i = rand()&255;
+    v->y_i = rand()&191;
+
+    v->velocity_x = 0;
+    v->velocity_y = 0;
+
+    v->immunity_start = GET_TICKER;   /* Start immune */
+    
+    v->previous_x_i = -1;
+    v->previous_y_i = -1;
+  }
 }

@@ -25,8 +25,8 @@ void init_swarm( uint8_t size, int16_t vel )
   /* Starting points */
   for( p=0; p<MAX_IN_SWARM; p++ )
   {
-    swarm[p].x_i = rand()%256;
-    swarm[p].y_i = rand()%192;
+    swarm[p].x_i = rand()&255;
+    swarm[p].y_i = rand()&191;
 
     swarm[p].velocity_x = vel;
     swarm[p].velocity_y = vel;

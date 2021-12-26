@@ -15,6 +15,10 @@ extern uint8_t *screen_line_starts[192];
 extern uint8_t  screen_line_offsets[256];
 extern uint8_t  screen_byte_values[256];
 
+// Need to add player velocity
+// constant movement
+// unable to enter black regions
+
 void init_player( CONTROL c )
 {
   /* Middle of screen */

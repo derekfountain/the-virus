@@ -63,17 +63,19 @@ OBJECTS = main.o \
 	  level.o \
 	  levels.o \
 	  swarm.o \
-          virion.o
+          virion.o \
+	  game_over.o
 
 # Objects built from C files (as opposed to ASMs)
 C_OBJECTS = main.o \
             player.o \
 	    controls.o \
 	    int.o \
-	  level.o \
+	    level.o \
             levels.o \
 	    swarm.o \
-            virion.o
+            virion.o \
+	    game_over.o
 
 # A .cpre is the output of the C preprocessor
 PREPROCESSED = $(C_OBJECTS:.o=.cpre)
@@ -86,7 +88,8 @@ HEADERS = main.h \
 	  controls.h \
 	  int.h \
 	  swarm.h \
-	  virion.h
+	  virion.h \
+	  game_over.h
 
 # Run the preprocessor on *.c files to get *.cpre files
 %.cpre: %.c $(PRAGMA_FILE) $(HEADERS)

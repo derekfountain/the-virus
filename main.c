@@ -14,6 +14,7 @@
 #include "controls.h"
 #include "int.h"
 #include "swarm.h"
+#include "game_over.h"
 
 unsigned char version[8] = "ver0.01";
 
@@ -51,7 +52,7 @@ void main(void)
     init_swarm( level->starting_num_virions,
                 level->starting_velocity );
 
-#define TIME_TEST 0
+#define TIME_TEST 1
 /* Keep this time test at less than 20 seconds with MAX_SWARM=25 */
 #if TIME_TEST
     uint16_t countdown = 500;
@@ -75,7 +76,10 @@ void main(void)
 	break;
     }
 
-    current_level++;
+    if( ++current_level == NUM_LEVELS )
+    {
+      game_over();
+    }
   }
 
 }
