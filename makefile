@@ -1,5 +1,5 @@
 # Shake-the-virus, a ZX Spectrum game
-# Copyright (C) 2021 Derek Fountain
+# Copyright (C) 2022 Derek Fountain
 # 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

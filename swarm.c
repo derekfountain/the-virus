@@ -1,3 +1,22 @@
+/*
+ * Shake the Virus, a ZX Spectrum game.
+ * Copyright (C) 2022 Derek Fountain
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -16,7 +35,7 @@ int16_t  move_to_player_y_i;
 
 int8_t   random_values[255];
 
-uint8_t every_other_dot=1;
+uint8_t  every_other_dot=1;
 
 void init_swarm( uint8_t size, int16_t vel )
 {
@@ -36,8 +55,6 @@ void init_swarm( uint8_t size, int16_t vel )
     
     swarm[p].previous_x_i = -1;
     swarm[p].previous_y_i = -1;
-
-    
   }
 
   /* Activate those used in this level */
@@ -135,6 +152,15 @@ void update_swarm( LEVEL *level )
     /* Note the new place ready for removing it next time round */
     swarm[i].previous_x_i = swarm[i].x_i;
     swarm[i].previous_y_i = swarm[i].y_i;
+
+    /* If this virion is immune, check if its immunity has run out */
+    if( swarm[i].immunity_start )
+    {
+      if( GET_TICKER > (swarm[i].immunity_start+level->immune_frames) )
+      {
+	swarm[i].immunity_start = 0;
+      }
+    }
   }
 
   return;
