@@ -52,7 +52,7 @@ void main(void)
     init_swarm( level->starting_num_virions,
                 level->starting_velocity );
 
-#define TIME_TEST 1
+#define TIME_TEST 0
 /* Keep this time test at less than 20 seconds with MAX_SWARM=25 */
 #if TIME_TEST
     uint16_t countdown = 500;
@@ -64,7 +64,9 @@ void main(void)
 #endif
       )
     {
-      move_player();
+      /* Small hack here to allow bumping through the levels */
+      if( move_player() )
+	break;
 
       update_swarm( level );
       

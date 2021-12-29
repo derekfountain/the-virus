@@ -65,7 +65,7 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
       change_immunity( v, MAKE_IMMUNE );
     }
   }
-  else if( attribute == PAPER_BLACK )
+  else if( attribute == PAPER_BLUE )
   {
     v->x_i = rand()&255;
     v->y_i = rand()&191;
@@ -73,9 +73,21 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
     v->velocity_x = 0;
     v->velocity_y = 0;
 
-    v->immunity_start = GET_TICKER;   /* Start immune */
+    v->immunity_start = GET_TICKER;
     
     v->previous_x_i = -1;
     v->previous_y_i = -1;
+  }
+  else if( attribute == PAPER_BLACK )
+  {
+    /*
+     * I'd prefer a better "bounce" dynamic, but it's expensive to work out
+     * where the virion has come from and hence which direction it should
+     * bounce off in. This produces a reasonable approximation.
+     * No immunity here, which means they tend to get a bit stuck under the
+     * black cell, which actually works nicely.
+     */
+    v->velocity_x = -(v->velocity_x);
+    v->velocity_y = -(v->velocity_y);
   }
 }

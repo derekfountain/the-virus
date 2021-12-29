@@ -19,7 +19,7 @@ typedef enum _direction
 void init_player( CONTROL );
 uint8_t query_player_x( void );
 uint8_t query_player_y( void );
-void move_player( void );
+uint8_t move_player( void );
 void clear_player( void );
 void draw_player( void );
 

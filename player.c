@@ -38,7 +38,7 @@ uint8_t query_player_y( void )
   return player_y_i;
 }
 
-void move_player( void )
+uint8_t move_player( void )
 {
   if( control == KEYBOARD )
   {
@@ -56,6 +56,8 @@ void move_player( void )
     if( (kempston_input & IN_STICK_LEFT)  && player_x_i )       player_x_i-=2;
     if( (kempston_input & IN_STICK_RIGHT) && player_x_i < 254 ) player_x_i+=2;
   }
+
+  return ( in_key_pressed( IN_KEY_SCANCODE_1 ) );
 }
 
 void draw_player( void )
