@@ -6,6 +6,7 @@
 
 typedef enum _direction
 {
+  DIRECTION_STATIONARY,
   DIRECTION_N,
   DIRECTION_NE,
   DIRECTION_E,
