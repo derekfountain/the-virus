@@ -88,9 +88,12 @@ void main(void)
 	break;
 
       update_swarm( level );
-      
-      clear_player();
-      draw_player();
+
+      /*
+       * Player was cleared and redrawn here, but it sufferred a bit of
+       * flicker. I moved it to the ISR, so it happens in top border
+       * time. See int.c.
+       */
 
       /* If number in swarm == 0, level is now cleared so break */
       if( get_active_swarm_size() == 0 )

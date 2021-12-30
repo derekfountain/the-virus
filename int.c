@@ -23,6 +23,7 @@
 #include <z80.h>
 #include <im2.h>
 #include <string.h>
+#include "player.h"
 
 /*
  * Timer ticker for the 50Hz interrupt signal which fires
@@ -69,6 +70,10 @@ IM2_DEFINE_ISR(isr)
       ticker_500ms++;
       interrupt_service_required_500ms = 1;
   }
+
+  /* This is better done here, it's smoother on screen */
+  clear_player();
+  draw_player();
 }
 
 /*
