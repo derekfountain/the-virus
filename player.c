@@ -234,7 +234,7 @@ uint8_t move_player( void )
       if( player_y == 190 )
       {
 	/* Hit the floor */
-        player_y+=2;
+        player_y-=2;
         player_x-=2;
 	direction = DIRECTION_NW;
       }
