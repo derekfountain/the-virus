@@ -25,6 +25,7 @@
 
 LEVEL levels[] = 
 {
+  /* Training levels */
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
@@ -57,14 +58,18 @@ LEVEL levels[] =
     NAMED_ARG("Immune frames",        250),
     NAMED_ARG("Draw frame handler",   draw_level3_frame),
   },
+
+  /* Bit harder */
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
-    NAMED_ARG("Border colour",        INK_BLUE),
+    NAMED_ARG("Border colour",        INK_GREEN),
     NAMED_ARG("Immune frames",        250),
     NAMED_ARG("Draw frame handler",   draw_level4_frame),
   },
+
+  /* Introduce a moving block */
 };
 
 uint8_t select_level(void)
@@ -123,29 +128,28 @@ void draw_level3_frame(void)
 
 void draw_level4_frame(void)
 {
-/* This one doesn't work, replace it. */
-  /* Big red blocks */
   *(zx_cxy2aaddr(5,20))   = PAPER_RED;
   *(zx_cxy2aaddr(6,20))   = PAPER_RED;
   *(zx_cxy2aaddr(5,21))   = PAPER_RED;
   *(zx_cxy2aaddr(6,21))   = PAPER_RED;
 
-  *(zx_cxy2aaddr(26,20))  = PAPER_RED;
-  *(zx_cxy2aaddr(27,20))  = PAPER_RED;
-  *(zx_cxy2aaddr(26,21))  = PAPER_RED;
-  *(zx_cxy2aaddr(27,21))  = PAPER_RED;
+  uint8_t trail[][2] =
+    {
+      {4,20}, {4,21},
+      {4,19}, {5,19}, {6,19}, {7,19}, {8,19}, {9,19}, {10,19}, {11,19}, {12,19}, {13,19}, {14,19}, {15,19},
+      {4,22}, {5,22}, {6,22}, {7,22}, {8,22}, {9,22}, {10,22}, {11,22}, {12,22}, {13,22}, {14,22}, {15,22}, {16,22}, {17,22},{18,22},
+      {18,21},{18,20},{18,19},
+      {15,18},{18,18},
+      {15,17},{18,17},
+      {15,16},{18,16},
+      {15,15},{18,15},
+      {15,14},{18,14},
+    };
 
   uint8_t i;
-  for( i=0; i<32; i+=2 )
+  for( i=0; i<sizeof(trail)/2; i++ )
   {
-    *(zx_cxy2aaddr(i,0))  = PAPER_BLACK;
-    *(zx_cxy2aaddr(i,12))  = PAPER_BLACK;
-    *(zx_cxy2aaddr(i,23))  = PAPER_BLACK;
-  }
-  for( i=0; i<24; i+=2 )
-  {
-    *(zx_cxy2aaddr(16,i))  = PAPER_BLACK;
-    *(zx_cxy2aaddr(16,i))  = PAPER_BLACK;
+    *(zx_cxy2aaddr(trail[i][0],trail[i][1]))  = PAPER_BLACK;
   }
   
 }

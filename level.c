@@ -106,12 +106,13 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
   {
     /*
      * I'd prefer a better "bounce" dynamic, but it's expensive to work out
-     * where the virion has come from and hence which direction it should
-     * bounce off in. This produces a reasonable approximation.
-     * No immunity here, which means they tend to get a bit stuck under the
-     * black cell, which actually works nicely.
+     * where the virion has come from, how it's hit the black block (i.e.
+     * which side of the cell) and hence which direction it should bounce
+     * off in. This produces a reasonable approximation.
      */
-    v->velocity_x = -(v->velocity_x);
-    v->velocity_y = -(v->velocity_y);
+    v->velocity_x = -(v->velocity_x);	
+    v->velocity_y = -(v->velocity_y);	
+    v->x_i        = v->previous_x_i;
+    v->y_i        = v->previous_y_i;
   }
 }
