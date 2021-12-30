@@ -35,10 +35,6 @@ extern uint8_t *screen_line_starts[192];
 extern uint8_t  screen_line_offsets[256];
 extern uint8_t  screen_byte_values[256];
 
-// Need to add player velocity
-// constant movement
-// unable to enter black regions
-
 void init_player( CONTROL c )
 {
   /* Middle of screen */
@@ -48,16 +44,6 @@ void init_player( CONTROL c )
   control = c;
 
   direction = DIRECTION_STATIONARY;
-}
-
-uint8_t query_player_x( void )
-{
-  return player_x;
-}
-
-uint8_t query_player_y( void )
-{
-  return player_y;
 }
 
 /*

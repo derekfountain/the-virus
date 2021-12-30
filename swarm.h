@@ -40,14 +40,16 @@ void refresh_random_values( void );
  */
 uint8_t activate_virion_in_swarm( uint8_t );
 
+extern uint8_t current_num_virions;
+
 /*
  * Set the number of virions in the swarm. Probably a bad idea, this.
  */
-void set_swarm_size( uint8_t );
+#define SET_SWARM_SIZE(N) current_num_virions = ((uint8_t)(N))
 
 /*
- * Answers the number of virions currently active in the swarm
+ * Macro to provide the number of virions currently active in the swarm
  */
-uint8_t get_active_swarm_size( void );
+#define GET_ACTIVE_SWARM_SIZE ((uint8_t)(current_num_virions))
 
 #endif

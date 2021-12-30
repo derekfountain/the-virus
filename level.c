@@ -33,7 +33,7 @@ void init_level( LEVEL *level )
 {
   zx_border( level->border_colour );
 
-  set_swarm_size( level->starting_num_virions );
+  SET_SWARM_SIZE( level->starting_num_virions );
   current_frame        = 0;
   frames_before_change = 0;
  
@@ -74,7 +74,7 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
     /* If virion isn't immune, trigger an inactive one back to life */
     if( !v->immunity_start )
     {
-      if( get_active_swarm_size() < level->max_virions )
+      if( GET_ACTIVE_SWARM_SIZE < level->max_virions )
       {
 	/* Active any currently inactive virion in the swarm, it starts off immune */
 	activate_virion_in_swarm( START_IMMUNE );

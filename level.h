@@ -32,7 +32,7 @@ typedef struct __level
 
   uint8_t  border_colour;
 
-  uint8_t immune_frames;
+  uint16_t immune_frames;
 
   void   (*draw_frame)(void);
 } LEVEL;

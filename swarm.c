@@ -30,9 +30,6 @@
 VIRION   swarm[MAX_IN_SWARM];
 uint8_t  current_num_virions;
 
-int16_t  move_to_player_x_i;
-int16_t  move_to_player_y_i;
-
 int8_t   random_values[255];
 
 uint8_t  every_other_dot=1;
@@ -86,8 +83,8 @@ void update_swarm( LEVEL *level )
      * the player is at x=0 then 0*0=0, and if the swarm dot is at x=255 then 0-65280=-65280. The
      * result will be in the range 255 to -255.
      */
-    swarm[i].velocity_x += (((int32_t)query_player_x()*(int32_t)256) - (int32_t)swarm[i].x_i*(int32_t)256) / (int16_t)256;
-    swarm[i].velocity_y += (((int32_t)query_player_y()*(int32_t)256) - (int32_t)swarm[i].y_i*(int32_t)256) / (int16_t)256;
+    swarm[i].velocity_x += (((int32_t)QUERY_PLAYER_X*(int32_t)256) - (int32_t)swarm[i].x_i*(int32_t)256) / (int16_t)256;
+    swarm[i].velocity_y += (((int32_t)QUERY_PLAYER_Y*(int32_t)256) - (int32_t)swarm[i].y_i*(int32_t)256) / (int16_t)256;
 
 
     /*
@@ -206,16 +203,4 @@ uint8_t activate_virion_in_swarm( uint8_t start )
   }
 
   return INVALID_VIRION;
-}
-
-
-void set_swarm_size( uint8_t size )
-{
-  current_num_virions = size;
-}
-
-
-uint8_t get_active_swarm_size( void )
-{
-  return current_num_virions;
 }

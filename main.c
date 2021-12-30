@@ -96,7 +96,7 @@ void main(void)
        */
 
       /* If number in swarm == 0, level is now cleared so break */
-      if( get_active_swarm_size() == 0 )
+      if( GET_ACTIVE_SWARM_SIZE == 0 )
 	break;
     }
 

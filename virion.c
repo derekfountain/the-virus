@@ -80,7 +80,7 @@ void activate_virion( VIRION *v )
   if( !v->active )
   {
     v->active = 1;
-    set_swarm_size( get_active_swarm_size() + 1 );
+    SET_SWARM_SIZE( GET_ACTIVE_SWARM_SIZE + 1 );
     change_immunity( v, MAKE_IMMUNE );
   }
 }
@@ -90,7 +90,7 @@ void deactivate_virion( VIRION *v )
   if( v->active )
   {
     v->active = 0;
-    set_swarm_size( get_active_swarm_size() - 1 );
+    SET_SWARM_SIZE( GET_ACTIVE_SWARM_SIZE - 1 );
   }
 }
 

@@ -30,7 +30,7 @@ LEVEL levels[] =
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
-    NAMED_ARG("Immune frames",        50),
+    NAMED_ARG("Immune frames",        250),
     NAMED_ARG("Draw frame handler",   draw_level0_frame),
   },
   {
@@ -38,7 +38,7 @@ LEVEL levels[] =
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
-    NAMED_ARG("Immune frames",        50),
+    NAMED_ARG("Immune frames",        250),
     NAMED_ARG("Draw frame handler",   draw_level1_frame),
   },
   {
@@ -46,7 +46,7 @@ LEVEL levels[] =
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
-    NAMED_ARG("Immune frames",        500),
+    NAMED_ARG("Immune frames",        250),
     NAMED_ARG("Draw frame handler",   draw_level2_frame),
   },
   {
@@ -54,7 +54,7 @@ LEVEL levels[] =
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
-    NAMED_ARG("Immune frames",        50),
+    NAMED_ARG("Immune frames",        250),
     NAMED_ARG("Draw frame handler",   draw_level3_frame),
   },
   {
@@ -62,7 +62,7 @@ LEVEL levels[] =
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
-    NAMED_ARG("Immune frames",        50),
+    NAMED_ARG("Immune frames",        250),
     NAMED_ARG("Draw frame handler",   draw_level4_frame),
   },
 };
@@ -100,7 +100,11 @@ void draw_level2_frame(void)
 {
   /* Introduce green block */
   *(zx_cxy2aaddr(5,5))   = PAPER_RED;
+
   *(zx_cxy2aaddr(25,15)) = PAPER_GREEN;
+  *(zx_cxy2aaddr(26,15)) = PAPER_GREEN;
+  *(zx_cxy2aaddr(25,16)) = PAPER_GREEN;
+  *(zx_cxy2aaddr(26,16)) = PAPER_GREEN;
 }
 
 void draw_level3_frame(void)
