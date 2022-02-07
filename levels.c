@@ -33,14 +33,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Immune frames",        250),
     NAMED_ARG("Draw frame handler",   draw_level0_frame),
-  },
-  {
-    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
-    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
-    NAMED_ARG("Border colour",        INK_BLUE),
-    NAMED_ARG("Immune frames",        250),
-    NAMED_ARG("Draw frame handler",   draw_level1_frame),
+    NAMED_ARG("Caption",              "Red cells kill the virus! Hurrah!"),
   },
   {
     NAMED_ARG("Starting num virions", 8),
@@ -48,15 +41,26 @@ LEVEL levels[] =
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Immune frames",        250),
-    NAMED_ARG("Draw frame handler",   draw_level2_frame),
+    NAMED_ARG("Draw frame handler",   draw_level1_frame),
+    NAMED_ARG("Caption",              "Green cells make things worse! Boo!"),
   },
   {
-    NAMED_ARG("Starting num virions", 12),
+    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Immune frames",        250),
+    NAMED_ARG("Draw frame handler",   draw_level2_frame),
+    NAMED_ARG("Caption",              "Black cells just get in the way"),
+  },
+  {
+    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
+    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting velocity",    100),
+    NAMED_ARG("Border colour",        INK_BLUE),
+    NAMED_ARG("Immune frames",        50),
     NAMED_ARG("Draw frame handler",   draw_level3_frame),
+    NAMED_ARG("Caption",              "Blue cells just confuse things"),
   },
 
   /* Bit harder */
@@ -67,6 +71,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_GREEN),
     NAMED_ARG("Immune frames",        250),
     NAMED_ARG("Draw frame handler",   draw_level4_frame),
+    NAMED_ARG("Caption",              "Let's try something a bit harder"),
   },
 
   /* Introduce a moving block */
@@ -104,64 +109,23 @@ void draw_level0_frame(void)
 
 void draw_level1_frame(void)
 {
-  /* Single red block in corner, 4 black blocks in a X around it */
-  *(zx_cxy2aaddr(5,5))  = PAPER_RED;
-
-  *(zx_cxy2aaddr(2,8))  = PAPER_BLACK;
-  *(zx_cxy2aaddr(8,8))  = PAPER_BLACK;
-  *(zx_cxy2aaddr(8,2))  = PAPER_BLACK;
-  *(zx_cxy2aaddr(2,2))  = PAPER_BLACK;
+  /* Introduce green block */
+#include "level1.inc"
 }
 
 void draw_level2_frame(void)
 {
-  /* Introduce green block */
-  *(zx_cxy2aaddr(5,5))   = PAPER_RED;
-
-  *(zx_cxy2aaddr(25,15)) = PAPER_GREEN;
-  *(zx_cxy2aaddr(26,15)) = PAPER_GREEN;
-  *(zx_cxy2aaddr(25,16)) = PAPER_GREEN;
-  *(zx_cxy2aaddr(26,16)) = PAPER_GREEN;
+  /* Single red block in corner, 4 black blocks in a X around it */
+#include "level2.inc"
 }
 
 void draw_level3_frame(void)
 {
-  /* Big red block surrounded by green blocks */
-  *(zx_cxy2aaddr(5,5))   = PAPER_RED;
-  *(zx_cxy2aaddr(5,6))   = PAPER_RED;
-  *(zx_cxy2aaddr(6,5))   = PAPER_RED;
-  *(zx_cxy2aaddr(6,6))   = PAPER_RED;
-
-  *(zx_cxy2aaddr(2,9))   = PAPER_GREEN;
-  *(zx_cxy2aaddr(9,9))   = PAPER_GREEN;
-  *(zx_cxy2aaddr(9,2))   = PAPER_GREEN;
-  *(zx_cxy2aaddr(2,2))   = PAPER_GREEN;
+  /* Big red block surrounded by blue blocks */
+#include "level3.inc"
 }
 
 void draw_level4_frame(void)
 {
-  *(zx_cxy2aaddr(5,20))   = PAPER_RED;
-  *(zx_cxy2aaddr(6,20))   = PAPER_RED;
-  *(zx_cxy2aaddr(5,21))   = PAPER_RED;
-  *(zx_cxy2aaddr(6,21))   = PAPER_RED;
-
-  uint8_t trail[][2] =
-    {
-      {4,20}, {4,21},
-      {4,19}, {5,19}, {6,19}, {7,19}, {8,19}, {9,19}, {10,19}, {11,19}, {12,19}, {13,19}, {14,19}, {15,19},
-      {4,22}, {5,22}, {6,22}, {7,22}, {8,22}, {9,22}, {10,22}, {11,22}, {12,22}, {13,22}, {14,22}, {15,22}, {16,22}, {17,22},{18,22},
-      {18,21},{18,20},{18,19},
-      {15,18},{18,18},
-      {15,17},{18,17},
-      {15,16},{18,16},
-      {15,15},{18,15},
-      {15,14},{18,14},
-    };
-
-  uint8_t i;
-  for( i=0; i<sizeof(trail)/2; i++ )
-  {
-    *(zx_cxy2aaddr(trail[i][0],trail[i][1]))  = PAPER_BLACK;
-  }
-  
+#include "level4.inc"
 }

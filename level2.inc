@@ -2,6 +2,9 @@
 /* made manually are likely to be lost unless you're careful. */
 // LEVEL DESIGNER PASSTHROUGH START
 // LEVEL DESIGNER PASSTHROUGH END
+uint8_t level_black[][2] = { {3,3},{7,3},{7,7},{3,7},{255,255} };
+draw_cells( level_black, PAPER_BLACK );
+
 uint8_t level_red[][2] = { {5,5},{255,255} };
 draw_cells( level_red, PAPER_RED );
 

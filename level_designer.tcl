@@ -26,13 +26,6 @@ set ::BLACK             "black"
 set ::GREEN             "green"
 set ::BLUE              "blue"
 
-set ::RED_CHAR          {0x80}
-set ::BLACK_CHAR        {0x83}
-set ::BLACK_COLOUR      "0x10, 0x06, 0x11, 0x07 ; ink yellow, paper white"
-
-set ::GREEN_CHAR       {0x81}
-set ::GREEN_COLOUR     "0x10, 0x06, 0x11, 0x02 ; ink yellow, paper red"
-
 set ::HIGHLIT_OUTLINE   "yellow"
 set ::UNHIGHLIT_OUTLINE "gray"
 
@@ -178,7 +171,7 @@ if { [file exists $::filename] } {
                 # Create a tag in the layout dict like e.g.
                 #  _0x31 = red
                 #
-                set tagName "_${y}x${x}"
+                set tagName "_${x}x${y}"
                 dict set existingLayout $tagName $colour 
             }
         } elseif { [regexp {// LEVEL DESIGNER PASSTHROUGH START} $line unused] } {
@@ -199,10 +192,10 @@ for { set x 0 } { $x < $::WIDTH_TILES } { incr x } {
     for { set y 0 } { $y < $::HEIGHT_TILES } { incr y } {
     
         # Generate a tag name for the canvas cell named for example
-        #  _0x31
-        # where 0 is the row, 31 is the column
+        #  _0x23
+        # where 0 is the row, 23 is the column
         #
-        set tagName "_${y}x${x}"
+        set tagName "_${x}x${y}"
         .c create rectangle [expr {$x*($::BLOCK_SIZE+2)}] \
                             [expr {$y*($::BLOCK_SIZE+2)}] \
                             [expr {$x*($::BLOCK_SIZE+2)+$::BLOCK_SIZE}] \

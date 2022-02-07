@@ -100,7 +100,7 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
     v->previous_x_i = -1;
     v->previous_y_i = -1;
 
-    change_immunity( v, MAKE_IMMUNE );
+    //change_immunity( v, MAKE_IMMUNE );
   }
   else if( attribute == PAPER_BLACK )
   {

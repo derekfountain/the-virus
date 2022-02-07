@@ -35,6 +35,8 @@ typedef struct __level
   uint16_t immune_frames;
 
   void   (*draw_frame)(void);
+
+  uint8_t *caption;
 } LEVEL;
 
 
