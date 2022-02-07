@@ -84,10 +84,22 @@ LEVEL *get_level( uint8_t lev )
 }
 
 
+void draw_cells( uint8_t cells[][2], uint8_t colour )
+{
+  uint8_t i=0;
+
+  while( cells[i][0] != 0xFF )
+  {
+    *(zx_cxy2aaddr(cells[i][0],cells[i][1])) = colour;
+
+    i++;
+  }
+}
+
 void draw_level0_frame(void)
 {
   /* Starter level, single red block in corner */
-  *(zx_cxy2aaddr(5,5))  = PAPER_RED;
+#include "level0.inc"
 }
 
 void draw_level1_frame(void)
