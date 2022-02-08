@@ -204,3 +204,13 @@ uint8_t activate_virion_in_swarm( uint8_t start )
 
   return INVALID_VIRION;
 }
+
+#include <stdio.h>
+void printf_swarm_details(void)
+{
+  printf("Virions left: %d\n",GET_ACTIVE_SWARM_SIZE);
+  uint8_t i;
+  for(i=0;i<GET_ACTIVE_SWARM_SIZE;i++)
+    printf("Virion %d, active %d, x=%d, y=%d\n",i,swarm[i].active,swarm[i].x_i,swarm[i].y_i);
+}
+

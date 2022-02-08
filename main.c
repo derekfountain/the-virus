@@ -84,8 +84,13 @@ void main(void)
       )
     {
       /* Small hack here to allow bumping through the levels */
-      if( move_player() )
+      uint8_t mp_result = move_player();
+      if( mp_result == 1 )
 	break;
+      if( mp_result == 2 )
+      {
+        printf_swarm_details();
+      }
 
       update_swarm( level );
 

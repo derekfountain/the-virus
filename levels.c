@@ -31,7 +31,7 @@ LEVEL levels[] =
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
-    NAMED_ARG("Immune frames",        250),
+    NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Draw frame handler",   draw_level0_frame),
     NAMED_ARG("Caption",              "Red cells kill the virus! Hurrah!"),
   },
@@ -40,7 +40,7 @@ LEVEL levels[] =
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
-    NAMED_ARG("Immune frames",        250),
+    NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Draw frame handler",   draw_level1_frame),
     NAMED_ARG("Caption",              "Green cells make things worse! Boo!"),
   },
@@ -49,7 +49,7 @@ LEVEL levels[] =
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
-    NAMED_ARG("Immune frames",        250),
+    NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Draw frame handler",   draw_level2_frame),
     NAMED_ARG("Caption",              "Black cells just get in the way"),
   },
@@ -58,7 +58,7 @@ LEVEL levels[] =
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
-    NAMED_ARG("Immune frames",        50),
+    NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Draw frame handler",   draw_level3_frame),
     NAMED_ARG("Caption",              "Blue cells just confuse things"),
   },
@@ -69,9 +69,19 @@ LEVEL levels[] =
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_GREEN),
-    NAMED_ARG("Immune frames",        250),
+    NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Draw frame handler",   draw_level4_frame),
     NAMED_ARG("Caption",              "Let's try something a bit harder"),
+  },
+
+  {
+    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
+    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting velocity",    100),
+    NAMED_ARG("Border colour",        INK_GREEN),
+    NAMED_ARG("Immune frames",        0),
+    NAMED_ARG("Draw frame handler",   draw_level5_frame),
+    NAMED_ARG("Caption",              ""),
   },
 
   /* Introduce a moving block */
@@ -127,5 +137,12 @@ void draw_level3_frame(void)
 
 void draw_level4_frame(void)
 {
+  /* Red, blue and black across centre */
 #include "level4.inc"
+}
+
+void draw_level5_frame(void)
+{
+  /* */
+#include "level5.inc"
 }

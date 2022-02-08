@@ -32,6 +32,7 @@
 void init_swarm( uint8_t, int16_t );
 void update_swarm( LEVEL * );
 void refresh_random_values( void );
+void printf_swarm_details(void);
 
 /*
  * Find any deactivated virion in the swarm and reactivate it.

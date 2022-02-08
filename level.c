@@ -91,16 +91,21 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
   }
   else if( attribute == PAPER_BLUE )
   {
-    v->x_i = rand()&255;
-    v->y_i = rand()&191;
-
     v->velocity_x = 0;
     v->velocity_y = 0;
 
     v->previous_x_i = -1;
     v->previous_y_i = -1;
 
-    //change_immunity( v, MAKE_IMMUNE );
+    /* If the virion transports onto a black block it gets stuck in it, so don't allow that */
+    do
+    {
+      v->x_i = rand()&255;
+      v->y_i = rand()&191;
+    }
+    while( *(zx_pxy2aaddr(v->x_i,v->y_i)) == PAPER_BLACK );
+
+    change_immunity( v, MAKE_IMMUNE );
   }
   else if( attribute == PAPER_BLACK )
   {

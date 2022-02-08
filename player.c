@@ -43,7 +43,7 @@ void init_player( CONTROL c )
 
   control = c;
 
-  direction = DIRECTION_STATIONARY;
+  direction = DIRECTION_N;
 }
 
 /*
@@ -281,7 +281,13 @@ uint8_t move_player( void )
   }
 
   /* Return the level bump magic key */
-  return ( in_key_pressed( IN_KEY_SCANCODE_1 ) );
+
+  if( in_key_pressed( IN_KEY_SCANCODE_1 ) )
+    return 1;
+  else if( in_key_pressed( IN_KEY_SCANCODE_2 ) )
+    return 2;
+  else
+    return 0;
 }
 
 

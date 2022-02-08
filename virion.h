@@ -29,13 +29,14 @@
  */
 typedef struct _virion
 {
+  uint8_t  active;
+
   int16_t   x_i;
   int16_t   y_i;
 
   int16_t   velocity_x;
   int16_t   velocity_y;
 
-  uint8_t  active;
   uint16_t immunity_start;
 
   int16_t  previous_x_i;
