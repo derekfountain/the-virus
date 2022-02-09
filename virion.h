@@ -49,6 +49,7 @@ void draw_virion( VIRION* );
 void clear_virion( VIRION* );
 void activate_virion( VIRION* );
 void deactivate_virion( VIRION* );
+void random_reappear_virion( VIRION* );
 void change_immunity( VIRION *, uint8_t );
 
 #endif

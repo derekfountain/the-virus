@@ -24,7 +24,8 @@
 #include "level.h"
 
 /* Invalid index in swarm */
-#define INVALID_VIRION   ((uint8_t)255)
+#define INVALID_VIRION     ((uint8_t)255)
+#define INVALID_VIRION_PTR ((VIRION*)NULL)
 
 #define START_NON_IMMUNE ((uint8_t)0)
 #define START_IMMUNE     ((uint8_t)1)
@@ -39,7 +40,7 @@ void printf_swarm_details(void);
  * Arg is whether to start it immune or not.
  * Answers the swarm index of the activated virion.
  */
-uint8_t activate_virion_in_swarm( uint8_t );
+VIRION *activate_virion_in_swarm( uint8_t );
 
 extern uint8_t current_num_virions;
 

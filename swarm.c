@@ -140,8 +140,7 @@ void update_swarm( LEVEL *level )
     /* Remove it from its old screen position */
     clear_virion( &swarm[i] );
 
-    if( swarm[i].active )
-      apply_virion_logic( level, &swarm[i] );
+    apply_virion_logic( level, &swarm[i] );
 
     /* Put it in its new place */
     draw_virion( &swarm[i] );
@@ -183,7 +182,7 @@ void refresh_random_values( void )
 }
 
 
-uint8_t activate_virion_in_swarm( uint8_t start )
+VIRION *activate_virion_in_swarm( uint8_t start )
 {
   uint8_t i;
   for( i=0; i<MAX_IN_SWARM; i++ )
@@ -198,11 +197,11 @@ uint8_t activate_virion_in_swarm( uint8_t start )
       else
 	change_immunity( &swarm[i], MAKE_NON_IMMUNE );
 	
-      return i;
+      return &swarm[i];
     }
   }
 
-  return INVALID_VIRION;
+  return INVALID_VIRION_PTR;
 }
 
 #include <stdio.h>
@@ -210,7 +209,7 @@ void printf_swarm_details(void)
 {
   printf("Virions left: %d\n",GET_ACTIVE_SWARM_SIZE);
   uint8_t i;
-  for(i=0;i<GET_ACTIVE_SWARM_SIZE;i++)
+  for(i=0;i<MAX_IN_SWARM;i++)
     printf("Virion %d, active %d, x=%d, y=%d\n",i,swarm[i].active,swarm[i].x_i,swarm[i].y_i);
 }
 

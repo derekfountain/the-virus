@@ -18,6 +18,7 @@
  */
 
 #include <stdint.h>
+#include <stdlib.h>
 #include <arch/zx.h>
 #include "virion.h"
 #include "int.h"
@@ -112,6 +113,32 @@ void draw_virion( VIRION *v )
   scr_byte += screen_line_offsets[x];
 
   *scr_byte |= screen_byte_values[x];
+}
+
+
+/*
+ * Random reappear code, called on blue blocks and when a virion is reactivated
+ * via a green block. Put it somewhere other than a black block.
+ */
+void random_reappear_virion( VIRION *v )
+{
+  v->velocity_x = 0;
+  v->velocity_y = 0;
+
+  v->previous_x_i = -1;
+  v->previous_y_i = -1;
+
+  /* If the virion transports onto a black block it gets stuck in it, so don't allow that */
+  do
+  {
+    v->x_i = rand()&255;
+    v->y_i = rand()&191;
+  }
+  while( *(zx_pxy2aaddr(v->x_i,v->y_i)) == PAPER_BLACK );
+
+  change_immunity( v, MAKE_IMMUNE );
+
+  return;
 }
 
 

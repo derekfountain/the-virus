@@ -88,9 +88,7 @@ void main(void)
       if( mp_result == 1 )
 	break;
       if( mp_result == 2 )
-      {
         printf_swarm_details();
-      }
 
       update_swarm( level );
 

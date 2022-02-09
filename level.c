@@ -77,35 +77,15 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
       if( GET_ACTIVE_SWARM_SIZE < level->max_virions )
       {
 	/* Active any currently inactive virion in the swarm, it starts off immune */
-	activate_virion_in_swarm( START_IMMUNE );
-
-	/*
-	 * Virion which has triggered the new one becomes immune so it doesn't create lots
-	 * while it's in the activation area. If it happens to wander into to a red zone
-	 * then it'll be immune, which might be an issue. Depends if this is noticable
-	 * during gameplay.
-	 */
-	change_immunity( v, MAKE_IMMUNE );
+	VIRION *reactivated_virion = activate_virion_in_swarm( START_IMMUNE );
+	if( reactivated_virion != INVALID_VIRION_PTR )
+	  random_reappear_virion( reactivated_virion );
       }
     }
   }
   else if( attribute == PAPER_BLUE )
   {
-    v->velocity_x = 0;
-    v->velocity_y = 0;
-
-    v->previous_x_i = -1;
-    v->previous_y_i = -1;
-
-    /* If the virion transports onto a black block it gets stuck in it, so don't allow that */
-    do
-    {
-      v->x_i = rand()&255;
-      v->y_i = rand()&191;
-    }
-    while( *(zx_pxy2aaddr(v->x_i,v->y_i)) == PAPER_BLACK );
-
-    change_immunity( v, MAKE_IMMUNE );
+    random_reappear_virion( v );
   }
   else if( attribute == PAPER_BLACK )
   {
@@ -113,7 +93,8 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
      * I'd prefer a better "bounce" dynamic, but it's expensive to work out
      * where the virion has come from, how it's hit the black block (i.e.
      * which side of the cell) and hence which direction it should bounce
-     * off in. This produces a reasonable approximation.
+     * off in. Putting it back where it came from pointing the other way
+     * is best I can do.
      */
     v->velocity_x = -(v->velocity_x);	
     v->velocity_y = -(v->velocity_y);	
