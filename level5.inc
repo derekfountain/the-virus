@@ -2,15 +2,12 @@
 /* made manually are likely to be lost unless you're careful. */
 // LEVEL DESIGNER PASSTHROUGH START
 // LEVEL DESIGNER PASSTHROUGH END
-uint8_t level_blue[][2] = { {11,11},{11,12},{21,11},{21,12},{255,255} };
-draw_cells( level_blue, PAPER_BLUE );
-
-uint8_t level_green[][2] = { {12,17},{15,17},{17,17},{20,17},{20,6},{17,6},{15,6},{12,6},{9,7},{23,7},{23,16},{9,16},{255,255} };
+uint8_t level_green[][2] = { {2,19},{4,21},{255,255} };
 draw_cells( level_green, PAPER_GREEN );
 
-uint8_t level_black[][2] = { {13,14},{13,9},{19,9},{19,14},{16,11},{16,12},{255,255} };
+uint8_t level_black[][2] = { {0,16},{1,17},{2,18},{3,19},{4,20},{5,21},{6,22},{7,23},{255,255} };
 draw_cells( level_black, PAPER_BLACK );
 
-uint8_t level_red[][2] = { {14,10},{18,10},{18,13},{14,13},{255,255} };
+uint8_t level_red[][2] = { {2,20},{2,21},{3,21},{4,22},{1,19},{255,255} };
 draw_cells( level_red, PAPER_RED );
 
