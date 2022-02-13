@@ -102,3 +102,18 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
     v->y_i        = v->previous_y_i;
   }
 }
+
+void update_level( LEVEL *level )
+{
+  if( interrupt_service_required_500ms )
+  {
+    interrupt_service_required_500ms = 0;
+
+    if( level->border_colour == INK_WHITE )
+      level->border_colour = INK_BLACK;
+    else
+      level->border_colour++;
+
+    zx_border( level->border_colour );
+  }
+}

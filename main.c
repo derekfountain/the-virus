@@ -90,10 +90,13 @@ void main(void)
       if( mp_result == 2 )
         printf_swarm_details();
 
+      /* Update level displayed on screen. Swarm logic is applied to updated level.  */
+      update_level( level );
+
       update_swarm( level );
 
       /*
-       * Player was cleared and redrawn here, but it sufferred a bit of
+       * Player was cleared and redrawn here, but it suffered a bit of
        * flicker. I moved it to the ISR, so it happens in top border
        * time. See int.c.
        */

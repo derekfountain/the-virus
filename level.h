@@ -40,6 +40,7 @@ typedef struct __level
 } LEVEL;
 
 
+void update_level( LEVEL* );
 void apply_virion_logic( LEVEL*, VIRION* );
 
 #endif
