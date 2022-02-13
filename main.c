@@ -19,7 +19,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 #include <arch/zx.h>
 #include <input.h>
 #include <sys/ioctl.h>
@@ -87,9 +86,10 @@ void main(void)
       uint8_t mp_result = move_player();
       if( mp_result == 1 )
 	break;
+#if STDIO_DEBUG
       if( mp_result == 2 )
         printf_swarm_details();
-
+#endif
       /* Update level displayed on screen. Swarm logic is applied to updated level.  */
       update_level( level );
 

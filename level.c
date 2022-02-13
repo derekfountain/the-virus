@@ -31,6 +31,9 @@ uint16_t frames_before_change;
 
 void init_level( LEVEL *level )
 {
+  /* Reset timer */
+  interrupt_service_required_500ms = 0;
+
   zx_border( level->border_colour );
 
   SET_SWARM_SIZE( level->starting_num_virions );

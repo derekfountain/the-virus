@@ -20,7 +20,9 @@
 #ifndef __MAIN_H
 #define __MAIN_H
 
-#if 0
+#define STDIO_DEBUG 0
+
+#if STDIO_DEBUG
 #pragma printf %f %d %ld
 #endif
 

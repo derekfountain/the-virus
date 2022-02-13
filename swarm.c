@@ -204,6 +204,8 @@ VIRION *activate_virion_in_swarm( uint8_t start )
   return INVALID_VIRION_PTR;
 }
 
+#if STDIO_DEBUG
+
 #include <stdio.h>
 void printf_swarm_details(void)
 {
@@ -213,3 +215,4 @@ void printf_swarm_details(void)
     printf("Virion %d, active %d, x=%d, y=%d\n",i,swarm[i].active,swarm[i].x_i,swarm[i].y_i);
 }
 
+#endif
