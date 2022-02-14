@@ -226,16 +226,25 @@ void draw_level5_frame( LEVEL *level, LEVEL_PHASE phase )
 
 typedef struct _level6_data
 {
-  uint8_t x;
+  uint8_t border_colour;
 } LEVEL6_DATA;
 void draw_level6_frame( LEVEL *level, LEVEL_PHASE phase )
 {
   if( phase == PHASE_UPDATE )
   {
-    level->level_data = (LEVEL6_DATA*)malloc( sizeof(LEVEL6_DATA) );
+    LEVEL6_DATA *l6_data = level->level_data;
+
+    if( l6_data->border_colour == INK_WHITE )
+      l6_data->border_colour = INK_BLACK;
+    else
+      l6_data->border_colour++;
+
+    zx_border( l6_data->border_colour );
   }
   else if( phase == PHASE_INIT )
   {
+    level->level_data = (LEVEL6_DATA*)malloc( sizeof(LEVEL6_DATA) );
+    ((LEVEL6_DATA*)(level->level_data))->border_colour = INK_BLACK;
 #include "level6.inc"
   }
   else if( phase == PHASE_FINALISE )
