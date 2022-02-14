@@ -40,9 +40,14 @@ void init_level( LEVEL *level )
   current_frame        = 0;
   frames_before_change = 0;
  
-  (level->draw_frame)();
+  (level->level_handler)( level, PHASE_INIT );
 
   return;
+}
+
+void finalise_level( LEVEL *level )
+{
+  (level->level_handler)( level, PHASE_FINALISE );
 }
 
 void apply_virion_logic( LEVEL *level, VIRION *v )

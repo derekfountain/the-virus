@@ -106,6 +106,9 @@ void main(void)
 	break;
     }
 
+    /* Reclaim memory, etc */
+    finalise_level( level );
+
     if( ++current_level == NUM_LEVELS )
     {
       zx_border( INK_MAGENTA );

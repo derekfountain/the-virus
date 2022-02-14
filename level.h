@@ -23,6 +23,13 @@
 #include <stdint.h>
 #include "virion.h"
 
+typedef enum _level_phase
+{
+  PHASE_INIT,
+  PHASE_UPDATE,
+  PHASE_FINALISE,
+} LEVEL_PHASE;
+
 typedef struct __level
 {
   uint8_t  starting_num_virions;
@@ -34,13 +41,17 @@ typedef struct __level
 
   uint16_t immune_frames;
 
-  void   (*draw_frame)(void);
+  void   (*level_handler)( struct __level*, LEVEL_PHASE );
 
   uint8_t *caption;
+
+  void    *level_data;
 } LEVEL;
 
 
+void init_level( LEVEL * );
 void update_level( LEVEL* );
+void finalise_level( LEVEL * );
 void apply_virion_logic( LEVEL*, VIRION* );
 
 #endif
