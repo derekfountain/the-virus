@@ -113,9 +113,9 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
 
 void update_level( LEVEL *level )
 {
-  if( interrupt_service_required_500ms )
+  if( interrupt_service_required_100ms )
   {
-    interrupt_service_required_500ms = 0;
+    interrupt_service_required_100ms = 0;
     (level->level_handler)( level, PHASE_UPDATE );
   }
 }

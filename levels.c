@@ -224,9 +224,19 @@ void draw_level5_frame( LEVEL *level, LEVEL_PHASE phase )
   }
 }
 
+void _2x2( uint8_t x, uint8_t y, uint8_t colour )
+{
+  uint8_t cells[4][2] = { {0,0},{1,0},{1,1},{0,1} };
+
+  uint8_t i;
+  for(i=0;i<4;i++)
+    *(zx_cxy2aaddr(cells[i][0]+x,cells[i][1]+y)) = colour;
+}
+
 typedef struct _level6_data
 {
-  uint8_t border_colour;
+  uint8_t x;
+  uint8_t y;
 } LEVEL6_DATA;
 void draw_level6_frame( LEVEL *level, LEVEL_PHASE phase )
 {
@@ -234,18 +244,20 @@ void draw_level6_frame( LEVEL *level, LEVEL_PHASE phase )
   {
     LEVEL6_DATA *l6_data = level->level_data;
 
-    if( l6_data->border_colour == INK_WHITE )
-      l6_data->border_colour = INK_BLACK;
-    else
-      l6_data->border_colour++;
+    _2x2( l6_data->x, l6_data->y, PAPER_WHITE );
+    if( l6_data->x++ == 28 )
+      l6_data->x = 2;
+    _2x2( l6_data->x, l6_data->y, PAPER_RED );
 
-    zx_border( l6_data->border_colour );
   }
   else if( phase == PHASE_INIT )
   {
-    level->level_data = (LEVEL6_DATA*)malloc( sizeof(LEVEL6_DATA) );
-    ((LEVEL6_DATA*)(level->level_data))->border_colour = INK_BLACK;
-#include "level6.inc"
+    LEVEL6_DATA *l6d = (LEVEL6_DATA*)malloc( sizeof(LEVEL6_DATA) );
+    level->level_data = l6d;
+
+    l6d->x = 2;
+    l6d->y = 11;
+    _2x2( l6d->x, l6d->y, PAPER_RED );
   }
   else if( phase == PHASE_FINALISE )
   {
