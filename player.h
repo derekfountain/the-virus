@@ -23,19 +23,6 @@
 #include <stdint.h>
 #include "controls.h"
 
-typedef enum _direction
-{
-  DIRECTION_STATIONARY = 0,
-  DIRECTION_N          = 0x01,
-  DIRECTION_NE         = 0x03,
-  DIRECTION_NW         = 0x05,
-  DIRECTION_S          = 0x04,
-  DIRECTION_SE         = 0x14,
-  DIRECTION_SW         = 0x24,
-  DIRECTION_E          = 0x40,
-  DIRECTION_W          = 0x80,
-} DIRECTION;
-
 void init_player( CONTROL );
 uint8_t move_player( void );
 void clear_player( void );

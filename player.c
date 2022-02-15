@@ -20,6 +20,7 @@
 #include <stdint.h>
 #include <arch/zx.h>
 #include <input.h>
+#include "main.h"
 #include "player.h"
 
 uint8_t  player_x;

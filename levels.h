@@ -23,7 +23,7 @@
 #include <stdint.h>
 #include "level.h"
 
-#define NUM_LEVELS 7
+#define NUM_LEVELS 8
 
 void init_level( LEVEL* );
 uint8_t select_level(void);
