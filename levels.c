@@ -91,7 +91,7 @@ LEVEL levels[] =
     NAMED_ARG("Level data",           NULL),
   },
 
-  /* Introduce a moving block */
+  /* Introduce moving blocks */
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
@@ -110,6 +110,17 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_RED),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level7_frame),
+    NAMED_ARG("Caption",              ""),
+    NAMED_ARG("Level data",           NULL),
+  },
+
+  {
+    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
+    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting velocity",    100),
+    NAMED_ARG("Border colour",        INK_RED),
+    NAMED_ARG("Immune frames",        0),
+    NAMED_ARG("Level handler",        draw_level8_frame),
     NAMED_ARG("Caption",              ""),
     NAMED_ARG("Level data",           NULL),
   },
@@ -147,6 +158,16 @@ void _2x2( uint8_t x, uint8_t y, uint8_t colour )
   for(i=0;i<4;i++)
     *(zx_cxy2aaddr(cells[i][0]+x,cells[i][1]+y)) = colour;
 }
+
+void _5x1( uint8_t x, uint8_t y, uint8_t colour )
+{
+  uint8_t i;
+
+  uint8_t level_red[][2] = { {0,1},{1,1},{2,1},{3,1},{4,1} };
+  for(i=0;i<5;i++)
+    *(zx_cxy2aaddr(level_red[i][0]+x,level_red[i][1]+y)) = colour;
+}
+
 
 void draw_level0_frame( LEVEL *level, LEVEL_PHASE phase )
 {
@@ -321,6 +342,53 @@ void draw_level7_frame( LEVEL *level, LEVEL_PHASE phase )
     l7d->y = 2;
     l7d->d = DIRECTION_E;
     _2x2( l7d->x, l7d->y, PAPER_RED );
+  }
+  else if( phase == PHASE_FINALISE )
+  {
+    free( level->level_data );
+  }
+}
+
+
+typedef struct _level8_data
+{
+  uint8_t   x;
+  DIRECTION d;
+} LEVEL8_DATA;
+void draw_level8_frame( LEVEL *level, LEVEL_PHASE phase )
+{
+  if( phase == PHASE_UPDATE )
+  {
+    LEVEL8_DATA *l8_data = level->level_data;
+
+    _5x1( l8_data->x, 10, PAPER_WHITE );
+
+    if( l8_data->d == DIRECTION_E )
+      l8_data->x++;
+    else
+      l8_data->x--;
+
+    if( l8_data->x == 27 )
+    {
+      l8_data->d = DIRECTION_W;
+    }
+    else if( l8_data->x == 0 )
+    {
+      l8_data->d = DIRECTION_E;
+    }
+
+    _5x1( l8_data->x, 10, PAPER_RED );
+  }
+  else if( phase == PHASE_INIT )
+  {
+    LEVEL8_DATA *l8d = (LEVEL8_DATA*)malloc( sizeof(LEVEL8_DATA) );
+    level->level_data = l8d;
+
+    l8d->x = 0;
+    l8d->d = DIRECTION_E;
+    _5x1( l8d->x, 10, PAPER_RED );
+
+#include "level8.inc"
   }
   else if( phase == PHASE_FINALISE )
   {

@@ -19,7 +19,6 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include "swarm.h"
 #include "main.h"
 #include "player.h"
