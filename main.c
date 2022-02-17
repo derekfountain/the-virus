@@ -63,9 +63,12 @@ void main(void)
     /* Refresh the pool of random values so patterns don't appear */
     refresh_random_values();
 
-    init_player( selected_control );
+    /* Hide dot while caption is on screen */
+    hide_player();
 
     init_level( level );
+
+    init_player( selected_control );
 
     init_swarm( level->starting_num_virions,
                 level->starting_velocity );

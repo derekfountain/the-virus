@@ -34,7 +34,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level0_frame),
-    NAMED_ARG("Caption",              "Red cells kill the virus! Hurrah!"),
+    NAMED_ARG("Caption",              "  Red cells kill the virus!     "),
     NAMED_ARG("Level data",           NULL),
   },
   {
@@ -44,7 +44,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level1_frame),
-    NAMED_ARG("Caption",              "Green cells make things worse! Boo!"),
+    NAMED_ARG("Caption",              "Green cells make things worse!  "),
     NAMED_ARG("Level data",           NULL),
   },
   {
@@ -54,7 +54,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level2_frame),
-    NAMED_ARG("Caption",              "Black cells just get in the way"),
+    NAMED_ARG("Caption",              " Black cells get in the way!    "),
     NAMED_ARG("Level data",           NULL),
   },
   {
@@ -64,7 +64,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level3_frame),
-    NAMED_ARG("Caption",              "Blue cells just confuse things"),
+    NAMED_ARG("Caption",              "  Blue cells confuse things!    "),
     NAMED_ARG("Level data",           NULL),
   },
 
@@ -76,7 +76,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level4_frame),
-    NAMED_ARG("Caption",              "Let's try something a bit harder"),
+    NAMED_ARG("Caption",              "         Got it? OK!            "),
     NAMED_ARG("Level data",           NULL),
   },
 
@@ -87,7 +87,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level5_frame),
-    NAMED_ARG("Caption",              ""),
+    NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
 
@@ -99,7 +99,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_RED),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level6_frame),
-    NAMED_ARG("Caption",              ""),
+    NAMED_ARG("Caption",              "Oh, and sometimes things move!  "),
     NAMED_ARG("Level data",           NULL),
   },
 
@@ -110,7 +110,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_RED),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level7_frame),
-    NAMED_ARG("Caption",              ""),
+    NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
 
@@ -121,7 +121,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_RED),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level8_frame),
-    NAMED_ARG("Caption",              ""),
+    NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
 };
@@ -275,11 +275,10 @@ void draw_level6_frame( LEVEL *level, LEVEL_PHASE phase )
   {
     LEVEL6_DATA *l6_data = level->level_data;
 
-    _2x2( l6_data->x, 11, PAPER_WHITE );
+    *(zx_cxy2aaddr(l6_data->x,11)) = PAPER_WHITE;
     if( l6_data->x++ == 28 )
       l6_data->x = 2;
-    _2x2( l6_data->x, 11, PAPER_RED );
-
+    *(zx_cxy2aaddr(l6_data->x,11)) = PAPER_RED;
   }
   else if( phase == PHASE_INIT )
   {
@@ -287,7 +286,7 @@ void draw_level6_frame( LEVEL *level, LEVEL_PHASE phase )
     level->level_data = l6d;
 
     l6d->x = 2;
-    _2x2( l6d->x, 11, PAPER_RED );
+    *(zx_cxy2aaddr(l6d->x,11)) = PAPER_RED;
   }
   else if( phase == PHASE_FINALISE )
   {

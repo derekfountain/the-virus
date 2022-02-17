@@ -25,6 +25,7 @@
 #include "main.h"
 #include "int.h"
 #include "swarm.h"
+#include "print_str.h"
 
 uint8_t  current_frame;
 uint16_t frames_before_change;
@@ -44,6 +45,11 @@ void init_level( LEVEL *level )
   frames_before_change = 0;
  
   (level->level_handler)( level, PHASE_INIT );
+
+  if( level->caption )
+  {
+    roll_str(12,level->caption);
+  }
 
   return;
 }

@@ -23,8 +23,8 @@
 #include "main.h"
 #include "player.h"
 
-uint8_t  player_x;
-uint8_t  player_y;
+uint8_t  player_x=255;
+uint8_t  player_y=255;
 uint8_t  previous_player_x;
 uint8_t  previous_player_y;
 
@@ -35,6 +35,13 @@ DIRECTION direction;
 extern uint8_t *screen_line_starts[192];
 extern uint8_t  screen_line_offsets[256];
 extern uint8_t  screen_byte_values[256];
+
+void hide_player( void )
+{
+  player_x = 255;
+  player_y = 255;
+  clear_player();
+}
 
 void init_player( CONTROL c )
 {
@@ -303,6 +310,10 @@ uint8_t redraw_required = 0;
 
 void draw_player( void )
 {
+  /* Use y-pos as a sentinel to indicate the caption is on screen */
+  if( player_y == 255 )
+    return;
+
   uint8_t *scr_byte = screen_line_starts[player_y];
 
   *(scr_byte + screen_line_offsets[player_x])   |= screen_byte_values[player_x];

@@ -17,21 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef __PLAYER_H
-#define __PLAYER_H
+#ifndef __PRINT_STR_H
+#define __PRINT_STR_H
 
 #include <stdint.h>
-#include "controls.h"
 
-void hide_player( void );
-void init_player( CONTROL );
-uint8_t move_player( void );
-void clear_player( void );
-void draw_player( void );
-
-extern uint8_t player_x;
-extern uint8_t player_y;
-#define QUERY_PLAYER_X ((uint8_t)(player_x))
-#define QUERY_PLAYER_Y ((uint8_t)(player_y))
+void roll_str( uint8_t, uint8_t* );
 
 #endif

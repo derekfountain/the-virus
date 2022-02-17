@@ -20,7 +20,7 @@ AS=zcc
 APPMAKE=z88dk-appmake
 TARGET=+zx
 VERBOSITY=-vn
-CRT=4
+CRT=31
 
 PRAGMA_FILE=zpragma.inc
 
@@ -64,7 +64,9 @@ OBJECTS = main.o \
 	  levels.o \
 	  swarm.o \
     virion.o \
-	  game_over.o
+	  game_over.o \
+	  print_str.o \
+	  font.o
 
 # Objects built from C files (as opposed to ASMs)
 C_OBJECTS = main.o \
@@ -75,6 +77,7 @@ C_OBJECTS = main.o \
             levels.o \
 	          swarm.o \
             virion.o \
+            print_str.o \
 	          game_over.o
 
 LEVEL_INCS = $(wildcard level*.inc)
@@ -91,6 +94,7 @@ HEADERS = main.h \
 	  int.h \
 	  swarm.h \
 	  virion.h \
+	  print_str.h \
 	  game_over.h
 
 # Run the preprocessor on *.c files to get *.cpre files
