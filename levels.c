@@ -124,11 +124,23 @@ LEVEL levels[] =
     NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
+
+  {
+    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
+    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting velocity",    100),
+    NAMED_ARG("Border colour",        INK_GREEN),
+    NAMED_ARG("Immune frames",        0),
+    NAMED_ARG("Level handler",        draw_level9_frame),
+    NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Level data",           NULL),
+  },
+
 };
 
 uint8_t select_level(void)
 {
-  return 0;
+  return 9;
 }
 
 
@@ -388,6 +400,64 @@ void draw_level8_frame( LEVEL *level, LEVEL_PHASE phase )
     _5x1( l8d->x, 10, PAPER_RED );
 
 #include "level8.inc"
+  }
+  else if( phase == PHASE_FINALISE )
+  {
+    free( level->level_data );
+  }
+}
+
+typedef struct _level9_data
+{
+  uint8_t   x;
+  uint8_t   y;
+  DIRECTION d;
+} LEVEL9_DATA;
+void draw_level9_frame( LEVEL *level, LEVEL_PHASE phase )
+{
+  if( phase == PHASE_UPDATE )
+  {
+    LEVEL9_DATA *l9_data = level->level_data;
+
+//    _2x2( l9_data->x, l9_data->y, PAPER_WHITE );
+
+    if( l9_data->d == DIRECTION_E )
+    {
+      if( l9_data->x++ == 27 )
+        l9_data->d = DIRECTION_S;
+    }
+    else if( l9_data->d == DIRECTION_S )
+    {
+      if( l9_data->y++ == 19 )
+        l9_data->d = DIRECTION_W;
+    }
+    else if( l9_data->d == DIRECTION_W )
+    {
+      if( l9_data->x-- == 3 )
+        l9_data->d = DIRECTION_N;
+    }
+    else if( l9_data->d == DIRECTION_N )
+    {
+      if( l9_data->y-- == 3 )
+        l9_data->d = DIRECTION_E;
+    }
+
+//    _2x2( l9_data->x, l9_data->y, PAPER_RED );
+
+  }
+  else if( phase == PHASE_INIT )
+  {
+    LEVEL9_DATA *l9d = (LEVEL9_DATA*)malloc( sizeof(LEVEL9_DATA) );
+    level->level_data = l9d;
+
+    l9d->x = 2;
+    l9d->y = 2;
+    l9d->d = DIRECTION_E;
+
+//    not sure what to do with this. it's ok as it is. flash a blue box around the red one, maybe?
+//    _2x2( l9d->x, l9d->y, PAPER_RED );
+
+#include "level9.inc"
   }
   else if( phase == PHASE_FINALISE )
   {
