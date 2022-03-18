@@ -64,6 +64,7 @@ OBJECTS = main.o \
 	  levels.o \
 	  swarm.o \
     virion.o \
+    rtunes.o \
 	  game_over.o \
 	  print_str.o \
 	  font.o
@@ -95,7 +96,8 @@ HEADERS = main.h \
 	  swarm.h \
 	  virion.h \
 	  print_str.h \
-	  game_over.h
+	  game_over.h \
+	  rtunes.h
 
 # Run the preprocessor on *.c files to get *.cpre files
 %.cpre: %.c $(PRAGMA_FILE) $(HEADERS)

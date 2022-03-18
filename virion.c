@@ -23,6 +23,7 @@
 #include "virion.h"
 #include "int.h"
 #include "swarm.h"
+#include "rtunes.h"
 
 /*
  * Line starts is the display file address. column 0.
@@ -106,6 +107,11 @@ void draw_virion( VIRION *v )
       v->y_i < 0 || v->y_i > 191 )
     return;
 
+#if 1
+  uint8_t x = v->x_i;
+  uint8_t y = v->y_i;
+  rtunes_pixel( x, y, 1 );
+#else
   uint8_t x = v->x_i;
   uint8_t y = v->y_i;
 
@@ -113,6 +119,7 @@ void draw_virion( VIRION *v )
   scr_byte += screen_line_offsets[x];
 
   *scr_byte |= screen_byte_values[x];
+#endif
 }
 
 
