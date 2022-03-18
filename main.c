@@ -73,7 +73,7 @@ void main(void)
     init_swarm( level->starting_num_virions,
                 level->starting_velocity );
 
-#define TIME_TEST 0
+#define TIME_TEST 1
 /* Keep this time test at less than 20 seconds with MAX_SWARM=25 */
 #if TIME_TEST
     uint16_t countdown = 500;

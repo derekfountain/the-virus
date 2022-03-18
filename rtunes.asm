@@ -23,7 +23,7 @@ _rtunes_pixel:
     pop af		; Callee convention, this is the return address
     pop de		; Args are passed as 2 unsigned chars, x,y. Y is in D, X is in E
     pop bc    ; C=1 for draw, 0 for clear, caller puts single byte on stack so B not used
-    dec sp    ; adjust for single byte
+;    dec sp    ; adjust for single byte
     push af		; Push the return address back. Stack is now ready for the return.
 
     LD A,D
@@ -55,15 +55,30 @@ _rtunes_pixel:
 
     LD DE, rtunes_bits
     ADD A,E
-    LD E,A
-    LD A,(DE)
+    LD E,A        ; Plot pattern address in DE
 
-    ;output to screen
+    EX DE,HL      ; HL now points to plot pattern
+    LD B,(HL)     ; plot pattern is in B
+    EX DE,HL      ; HL back pointing at screen address
 
+    ;output to screen, are we plotting or unplotting?
+    ld a,c
+    cp 1
+    ld a,b        ; Plot pattern in A
+    jr z, plot_b
 
-    or (hl)
+unplot_b:
+    cpl           ; invert bit pattern and AND into screen byte
+    and (hl)
+    ld (hl),a
+    ret
+
+plot_b:
+    or (hl)       ; OR bit pattern into screen byte
     ld (hl),a
 
     ret
+
+
 
 rtunes_bits: defb 128,64,32,16,8,4,2,1

@@ -54,6 +54,18 @@ void init_draw_virion_tables(void)
 
 void clear_virion( VIRION *v )
 {
+uint8_t xx,yy;
+
+/*
+ * Fill in entire screen
+ */
+//uint8_t *scr=(void*)16384;
+//while(scr++<22528) *scr=255;
+
+//for(xx=0;xx<255;xx++)
+//  for(yy=0;yy<192;yy++)
+//    rtunes_pixel( xx, yy, 0 );
+
   if( ! v->active )
     return;
 
@@ -62,6 +74,11 @@ void clear_virion( VIRION *v )
       v->previous_y_i < 0 || v->previous_y_i > 191 )
     return;
 
+#if 1
+  uint8_t x = v->previous_x_i;
+  uint8_t y = v->previous_y_i;
+  rtunes_pixel( x, y , 0 );
+#else
   uint8_t x = v->previous_x_i;
   uint8_t y = v->previous_y_i;
 
@@ -74,6 +91,7 @@ void clear_virion( VIRION *v )
    * they go off and back on again and I end up with trails of dots.
    */
   *scr_byte &= ~screen_byte_values[x];
+#endif
 }
 
 

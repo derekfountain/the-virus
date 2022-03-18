@@ -22,6 +22,6 @@
 
 #include <stdint.h>
 
-void rtunes_pixel( uint8_t, uint8_t, uint8_t ) __preserves_regs(iyl,iyh) __z88dk_callee;
+void rtunes_pixel( uint8_t, uint8_t, uint16_t ) __preserves_regs(iyl,iyh) __z88dk_callee;
 
 #endif
