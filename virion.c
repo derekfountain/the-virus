@@ -54,18 +54,6 @@ void init_draw_virion_tables(void)
 
 void clear_virion( VIRION *v )
 {
-uint8_t xx,yy;
-
-/*
- * Fill in entire screen
- */
-//uint8_t *scr=(void*)16384;
-//while(scr++<22528) *scr=255;
-
-//for(xx=0;xx<255;xx++)
-//  for(yy=0;yy<192;yy++)
-//    rtunes_pixel( xx, yy, 0 );
-
   if( ! v->active )
     return;
 
@@ -74,14 +62,12 @@ uint8_t xx,yy;
       v->previous_y_i < 0 || v->previous_y_i > 191 )
     return;
 
-#if 1
-  uint8_t x = v->previous_x_i;
-  uint8_t y = v->previous_y_i;
+  register uint8_t x = v->previous_x_i;
+  register uint8_t y = v->previous_y_i;
+
+#if 0
   rtunes_pixel( x, y , 0 );
 #else
-  uint8_t x = v->previous_x_i;
-  uint8_t y = v->previous_y_i;
-
   /* I could cache this screen address... */
   uint8_t *scr_byte = screen_line_starts[y];
   scr_byte += screen_line_offsets[x];
@@ -125,14 +111,12 @@ void draw_virion( VIRION *v )
       v->y_i < 0 || v->y_i > 191 )
     return;
 
-#if 1
-  uint8_t x = v->x_i;
-  uint8_t y = v->y_i;
+  register uint8_t x = v->x_i;
+  register uint8_t y = v->y_i;
+
+#if 0
   rtunes_pixel( x, y, 1 );
 #else
-  uint8_t x = v->x_i;
-  uint8_t y = v->y_i;
-
   uint8_t *scr_byte = screen_line_starts[y];
   scr_byte += screen_line_offsets[x];
 

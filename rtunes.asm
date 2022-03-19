@@ -15,15 +15,18 @@
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+;; This is the fastest plot-a-single-pixel routine from a thread Andy Dansby started:
+;; https://spectrumcomputing.co.uk/forums/viewtopic.php?t=6727
+;; It's slightly slower than my look-up-table approach.
+
 SECTION code_user
 
 PUBLIC _rtunes_pixel
 _rtunes_pixel:
-
     pop af		; Callee convention, this is the return address
     pop de		; Args are passed as 2 unsigned chars, x,y. Y is in D, X is in E
-    pop bc    ; C=1 for draw, 0 for clear, caller puts single byte on stack so B not used
-;    dec sp    ; adjust for single byte
+    dec sp    ; adjust for single byte
+    pop bc    ; B=1 for draw, 0 for clear, caller puts single byte on stack so C not used
     push af		; Push the return address back. Stack is now ready for the return.
 
     LD A,D
@@ -58,24 +61,25 @@ _rtunes_pixel:
     LD E,A        ; Plot pattern address in DE
 
     EX DE,HL      ; HL now points to plot pattern
-    LD B,(HL)     ; plot pattern is in B
+    LD C,(HL)     ; plot pattern is in B
     EX DE,HL      ; HL back pointing at screen address
 
     ;output to screen, are we plotting or unplotting?
-    ld a,c
+    ld a,b        ; pick up the flag from the 'C'
     cp 1
-    ld a,b        ; Plot pattern in A
+    ld a,c        ; Plot pattern in A
     jr z, plot_b
 
-unplot_b:
-    cpl           ; invert bit pattern and AND into screen byte
+unplot_b:         ; for clearing the pixel invert the
+    cpl           ; bit pattern and AND into screen byte
     and (hl)
-    ld (hl),a
-    ret
+    jr set_and_ret
 
-plot_b:
+plot_b:           ; for setting the pixel simply
     or (hl)       ; OR bit pattern into screen byte
-    ld (hl),a
+
+set_and_ret:
+    ld (hl),a     ; load result into screen byte
 
     ret
 
