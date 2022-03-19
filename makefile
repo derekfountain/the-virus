@@ -24,8 +24,8 @@ CRT=31
 
 PRAGMA_FILE=zpragma.inc
 
-C_OPT_FLAGS=-SO2 --max-allocs-per-node200000 -DNDEBUG --std-c99 --list
-#C_OPT_FLAGS=--c-code-in-asm --std-c99 --list
+#C_OPT_FLAGS=-SO2 --max-allocs-per-node200000 -DNDEBUG --std-c99 --list
+C_OPT_FLAGS=--c-code-in-asm --std-c99 --list
 
 CFLAGS=$(TARGET) $(VERBOSITY) -c $(C_OPT_FLAGS) -preserve -compiler sdcc -clib=sdcc_iy -pragma-include:$(PRAGMA_FILE)
 LDFLAGS=$(TARGET) $(VERBOSITY) -m -clib=sdcc_iy -pragma-include:$(PRAGMA_FILE)
@@ -64,10 +64,12 @@ OBJECTS = main.o \
 	  levels.o \
 	  swarm.o \
     virion.o \
-    rtunes.o \
 	  game_over.o \
 	  print_str.o \
 	  font.o
+	  
+# Not used:
+#   rtunes.o \
 
 # Objects built from C files (as opposed to ASMs)
 C_OBJECTS = main.o \
@@ -96,8 +98,10 @@ HEADERS = main.h \
 	  swarm.h \
 	  virion.h \
 	  print_str.h \
-	  game_over.h \
-	  rtunes.h
+	  game_over.h
+
+# Not used:	  
+#	  rtunes.h
 
 # Run the preprocessor on *.c files to get *.cpre files
 %.cpre: %.c $(PRAGMA_FILE) $(HEADERS)
