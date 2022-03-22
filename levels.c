@@ -102,8 +102,6 @@ LEVEL levels[] =
     NAMED_ARG("Level data",           NULL),
   },
 
-// Need another static pattern, top left
-// Duplicate this one for now
     {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
@@ -149,7 +147,7 @@ LEVEL levels[] =
     NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
-
+  /* Play testing suggests about 15mins to this point */
 };
 
 uint8_t select_level(void)
@@ -194,135 +192,99 @@ void _5x1( uint8_t x, uint8_t y, uint8_t colour )
     *(zx_cxy2aaddr(level_red[i][0]+x,level_red[i][1]+y)) = colour;
 }
 
-
+/* 4 starter levels */
 void draw_level0_frame( LEVEL *level, LEVEL_PHASE phase )
 {
   (void)level;
+  (void)phase;
 
-  if( phase == PHASE_UPDATE )
-  {
-  }
-  else if( phase == PHASE_INIT )
+  if( phase == PHASE_INIT )
   {
 #include "level0.inc"
-  }
-  else if( phase == PHASE_FINALISE )
-  {
   }
 }
 
 void draw_level1_frame( LEVEL *level, LEVEL_PHASE phase )
 {
   (void)level;
+  (void)phase;
 
-  if( phase == PHASE_UPDATE )
-  {
-  }
-  else if( phase == PHASE_INIT )
+  if( phase == PHASE_INIT )
   {
 #include "level1.inc"
-  }
-  else if( phase == PHASE_FINALISE )
-  {
   }
 }
 
 void draw_level2_frame( LEVEL *level, LEVEL_PHASE phase )
 {
   (void)level;
+  (void)phase;
 
-  if( phase == PHASE_UPDATE )
-  {
-  }
-  else if( phase == PHASE_INIT )
+  if( phase == PHASE_INIT )
   {
 #include "level2.inc"
-  }
-  else if( phase == PHASE_FINALISE )
-  {
   }
 }
 
 void draw_level3_frame( LEVEL *level, LEVEL_PHASE phase )
 {
   (void)level;
+  (void)phase;
 
-  if( phase == PHASE_UPDATE )
-  {
-  }
-  else if( phase == PHASE_INIT )
+  if( phase == PHASE_INIT )
   {
 #include "level3.inc"
   }
-  else if( phase == PHASE_FINALISE )
-  {
-  }
 }
 
+
+/* 4 intermediate levels */
 void draw_level4_frame( LEVEL *level, LEVEL_PHASE phase )
 {
   (void)level;
+  (void)phase;
 
-  if( phase == PHASE_UPDATE )
-  {
-  }
-  else if( phase == PHASE_INIT )
+  if( phase == PHASE_INIT )
   {
 #include "level4.inc"
-  }
-  else if( phase == PHASE_FINALISE )
-  {
   }
 }
 
 void draw_level5_frame( LEVEL *level, LEVEL_PHASE phase )
 {
   (void)level;
+  (void)phase;
 
-  if( phase == PHASE_UPDATE )
-  {
-  }
-  else if( phase == PHASE_INIT )
+  if( phase == PHASE_INIT )
   {
 #include "level5.inc"
-  }
-  else if( phase == PHASE_FINALISE )
-  {
   }
 }
 
 void draw_level6_frame( LEVEL *level, LEVEL_PHASE phase )
 {
   (void)level;
+  (void)phase;
 
-  if( phase == PHASE_UPDATE )
-  {
-  }
-  else if( phase == PHASE_INIT )
+  if( phase == PHASE_INIT )
   {
 #include "level6.inc"
-  }
-  else if( phase == PHASE_FINALISE )
-  {
   }
 }
 
 void draw_level7_frame( LEVEL *level, LEVEL_PHASE phase )
 {
   (void)level;
+  (void)phase;
 
-  if( phase == PHASE_UPDATE )
-  {
-  }
-  else if( phase == PHASE_INIT )
+  if( phase == PHASE_INIT )
   {
 #include "level7.inc"
   }
-  else if( phase == PHASE_FINALISE )
-  {
-  }
 }
 
+
+/* 4 levels with things moving */
 typedef struct _level8_data
 {
   uint8_t x;
