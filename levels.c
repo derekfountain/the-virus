@@ -61,7 +61,7 @@ LEVEL levels[] =
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
-    NAMED_ARG("Border colour",        INK_MAGENTA),
+    NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level3_frame),
     NAMED_ARG("Caption",              "  Blue cells confuse things!    "),
@@ -91,6 +91,31 @@ LEVEL levels[] =
     NAMED_ARG("Level data",           NULL),
   },
 
+  {
+    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
+    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting velocity",    100),
+    NAMED_ARG("Border colour",        INK_MAGENTA),
+    NAMED_ARG("Immune frames",        0),
+    NAMED_ARG("Level handler",        draw_level6_frame),
+    NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Level data",           NULL),
+  },
+
+// Need another static pattern, top left
+// Duplicate this one for now
+    {
+    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
+    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting velocity",    100),
+    NAMED_ARG("Border colour",        INK_MAGENTA),
+    NAMED_ARG("Immune frames",        0),
+    NAMED_ARG("Level handler",        draw_level7_frame),
+    NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Level data",           NULL),
+  },
+
+
   /* Introduce moving blocks */
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
@@ -98,7 +123,7 @@ LEVEL levels[] =
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_RED),
     NAMED_ARG("Immune frames",        0),
-    NAMED_ARG("Level handler",        draw_level6_frame),
+    NAMED_ARG("Level handler",        draw_level8_frame),
     NAMED_ARG("Caption",              "Oh, and sometimes things move!  "),
     NAMED_ARG("Level data",           NULL),
   },
@@ -109,7 +134,7 @@ LEVEL levels[] =
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_RED),
     NAMED_ARG("Immune frames",        0),
-    NAMED_ARG("Level handler",        draw_level7_frame),
+    NAMED_ARG("Level handler",        draw_level9_frame),
     NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
@@ -120,18 +145,7 @@ LEVEL levels[] =
     NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_RED),
     NAMED_ARG("Immune frames",        0),
-    NAMED_ARG("Level handler",        draw_level8_frame),
-    NAMED_ARG("Caption",              NULL),
-    NAMED_ARG("Level data",           NULL),
-  },
-
-  {
-    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
-    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
-    NAMED_ARG("Border colour",        INK_GREEN),
-    NAMED_ARG("Immune frames",        0),
-    NAMED_ARG("Level handler",        draw_level9_frame),
+    NAMED_ARG("Level handler",        draw_level10_frame),
     NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
@@ -140,7 +154,7 @@ LEVEL levels[] =
 
 uint8_t select_level(void)
 {
-  return 9;
+  return 0;
 }
 
 
@@ -277,129 +291,60 @@ void draw_level5_frame( LEVEL *level, LEVEL_PHASE phase )
   }
 }
 
-typedef struct _level6_data
-{
-  uint8_t x;
-} LEVEL6_DATA;
 void draw_level6_frame( LEVEL *level, LEVEL_PHASE phase )
 {
+  (void)level;
+
   if( phase == PHASE_UPDATE )
   {
-    LEVEL6_DATA *l6_data = level->level_data;
-
-    *(zx_cxy2aaddr(l6_data->x,11)) = PAPER_WHITE;
-    if( l6_data->x++ == 28 )
-      l6_data->x = 2;
-    *(zx_cxy2aaddr(l6_data->x,11)) = PAPER_RED;
   }
   else if( phase == PHASE_INIT )
   {
-    LEVEL6_DATA *l6d = (LEVEL6_DATA*)malloc( sizeof(LEVEL6_DATA) );
-    level->level_data = l6d;
-
-    l6d->x = 2;
-    *(zx_cxy2aaddr(l6d->x,11)) = PAPER_RED;
+#include "level6.inc"
   }
   else if( phase == PHASE_FINALISE )
   {
-    free( level->level_data );
   }
 }
 
-typedef struct _level7_data
-{
-  uint8_t   x;
-  uint8_t   y;
-  DIRECTION d;
-} LEVEL7_DATA;
 void draw_level7_frame( LEVEL *level, LEVEL_PHASE phase )
 {
+  (void)level;
+
   if( phase == PHASE_UPDATE )
   {
-    LEVEL7_DATA *l7_data = level->level_data;
-
-    _2x2( l7_data->x, l7_data->y, PAPER_WHITE );
-
-    if( l7_data->d == DIRECTION_E )
-    {
-      if( l7_data->x++ == 27 )
-        l7_data->d = DIRECTION_S;
-    }
-    else if( l7_data->d == DIRECTION_S )
-    {
-      if( l7_data->y++ == 19 )
-        l7_data->d = DIRECTION_W;
-    }
-    else if( l7_data->d == DIRECTION_W )
-    {
-      if( l7_data->x-- == 3 )
-        l7_data->d = DIRECTION_N;
-    }
-    else if( l7_data->d == DIRECTION_N )
-    {
-      if( l7_data->y-- == 3 )
-        l7_data->d = DIRECTION_E;
-    }
-
-    _2x2( l7_data->x, l7_data->y, PAPER_RED );
-
   }
   else if( phase == PHASE_INIT )
   {
-    LEVEL7_DATA *l7d = (LEVEL7_DATA*)malloc( sizeof(LEVEL7_DATA) );
-    level->level_data = l7d;
-
-    l7d->x = 2;
-    l7d->y = 2;
-    l7d->d = DIRECTION_E;
-    _2x2( l7d->x, l7d->y, PAPER_RED );
+#include "level7.inc"
   }
   else if( phase == PHASE_FINALISE )
   {
-    free( level->level_data );
   }
 }
-
 
 typedef struct _level8_data
 {
-  uint8_t   x;
-  DIRECTION d;
+  uint8_t x;
 } LEVEL8_DATA;
 void draw_level8_frame( LEVEL *level, LEVEL_PHASE phase )
 {
   if( phase == PHASE_UPDATE )
   {
-    LEVEL8_DATA *l8_data = level->level_data;
+    LEVEL8_DATA *l_data = level->level_data;
 
-    _5x1( l8_data->x, 10, PAPER_WHITE );
-
-    if( l8_data->d == DIRECTION_E )
-      l8_data->x++;
-    else
-      l8_data->x--;
-
-    if( l8_data->x == 27 )
-    {
-      l8_data->d = DIRECTION_W;
-    }
-    else if( l8_data->x == 0 )
-    {
-      l8_data->d = DIRECTION_E;
-    }
-
-    _5x1( l8_data->x, 10, PAPER_RED );
+    *(zx_cxy2aaddr(l_data->x,11)) = PAPER_WHITE;
+    if( l_data->x++ == 28 )
+      l_data->x = 2;
+    *(zx_cxy2aaddr(l_data->x,11)) = PAPER_RED;
   }
   else if( phase == PHASE_INIT )
   {
-    LEVEL8_DATA *l8d = (LEVEL8_DATA*)malloc( sizeof(LEVEL8_DATA) );
-    level->level_data = l8d;
+    LEVEL8_DATA *ld = (LEVEL8_DATA*)malloc( sizeof(LEVEL8_DATA) );
+    level->level_data = ld;
 
-    l8d->x = 0;
-    l8d->d = DIRECTION_E;
-    _5x1( l8d->x, 10, PAPER_RED );
-
-#include "level8.inc"
+    ld->x = 2;
+    *(zx_cxy2aaddr(ld->x,11)) = PAPER_RED;
   }
   else if( phase == PHASE_FINALISE )
   {
@@ -417,45 +362,88 @@ void draw_level9_frame( LEVEL *level, LEVEL_PHASE phase )
 {
   if( phase == PHASE_UPDATE )
   {
-    LEVEL9_DATA *l9_data = level->level_data;
+    LEVEL9_DATA *l_data = level->level_data;
 
-//    _2x2( l9_data->x, l9_data->y, PAPER_WHITE );
+    _2x2( l_data->x, l_data->y, PAPER_WHITE );
 
-    if( l9_data->d == DIRECTION_E )
+    if( l_data->d == DIRECTION_E )
     {
-      if( l9_data->x++ == 27 )
-        l9_data->d = DIRECTION_S;
+      if( l_data->x++ == 27 )
+        l_data->d = DIRECTION_S;
     }
-    else if( l9_data->d == DIRECTION_S )
+    else if( l_data->d == DIRECTION_S )
     {
-      if( l9_data->y++ == 19 )
-        l9_data->d = DIRECTION_W;
+      if( l_data->y++ == 19 )
+        l_data->d = DIRECTION_W;
     }
-    else if( l9_data->d == DIRECTION_W )
+    else if( l_data->d == DIRECTION_W )
     {
-      if( l9_data->x-- == 3 )
-        l9_data->d = DIRECTION_N;
+      if( l_data->x-- == 3 )
+        l_data->d = DIRECTION_N;
     }
-    else if( l9_data->d == DIRECTION_N )
+    else if( l_data->d == DIRECTION_N )
     {
-      if( l9_data->y-- == 3 )
-        l9_data->d = DIRECTION_E;
+      if( l_data->y-- == 3 )
+        l_data->d = DIRECTION_E;
     }
 
-//    _2x2( l9_data->x, l9_data->y, PAPER_RED );
+    _2x2( l_data->x, l_data->y, PAPER_RED );
 
   }
   else if( phase == PHASE_INIT )
   {
-    LEVEL9_DATA *l9d = (LEVEL9_DATA*)malloc( sizeof(LEVEL9_DATA) );
-    level->level_data = l9d;
+    LEVEL9_DATA *ld = (LEVEL9_DATA*)malloc( sizeof(LEVEL9_DATA) );
+    level->level_data = ld;
 
-    l9d->x = 2;
-    l9d->y = 2;
-    l9d->d = DIRECTION_E;
+    ld->x = 2;
+    ld->y = 2;
+    ld->d = DIRECTION_E;
+    _2x2( ld->x, ld->y, PAPER_RED );
+  }
+  else if( phase == PHASE_FINALISE )
+  {
+    free( level->level_data );
+  }
+}
 
-//    not sure what to do with this. it's ok as it is. flash a blue box around the red one, maybe?
-//    _2x2( l9d->x, l9d->y, PAPER_RED );
+
+typedef struct _level10_data
+{
+  uint8_t   x;
+  DIRECTION d;
+} LEVEL10_DATA;
+void draw_level10_frame( LEVEL *level, LEVEL_PHASE phase )
+{
+  if( phase == PHASE_UPDATE )
+  {
+    LEVEL10_DATA *l_data = level->level_data;
+
+    _5x1( l_data->x, 10, PAPER_WHITE );
+
+    if( l_data->d == DIRECTION_E )
+      l_data->x++;
+    else
+      l_data->x--;
+
+    if( l_data->x == 27 )
+    {
+      l_data->d = DIRECTION_W;
+    }
+    else if( l_data->x == 0 )
+    {
+      l_data->d = DIRECTION_E;
+    }
+
+    _5x1( l_data->x, 10, PAPER_RED );
+  }
+  else if( phase == PHASE_INIT )
+  {
+    LEVEL10_DATA *ld = (LEVEL10_DATA*)malloc( sizeof(LEVEL10_DATA) );
+    level->level_data = ld;
+
+    ld->x = 0;
+    ld->d = DIRECTION_E;
+    _5x1( ld->x, 10, PAPER_RED );
 
 #include "level9.inc"
   }
@@ -464,3 +452,4 @@ void draw_level9_frame( LEVEL *level, LEVEL_PHASE phase )
     free( level->level_data );
   }
 }
+
