@@ -72,10 +72,9 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
       v->y_i < 0 || v->y_i > 183 )
     return;
 
-  uint8_t x = v->x_i;
-  uint8_t y = v->y_i;
-
-  uint8_t attribute = *(zx_pxy2aaddr(x,y));
+  uint8_t attribute = *(zx_pxy2aaddr(v->x_i, v->y_i));
+  if( (attribute & BRIGHT) == 0 )
+    return;
 
   if( attribute == (PAPER_RED|BRIGHT) )
   {

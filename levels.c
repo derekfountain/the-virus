@@ -150,12 +150,6 @@ LEVEL levels[] =
   /* Play testing suggests about 15mins to this point */
 };
 
-uint8_t select_level(void)
-{
-  return 0;
-}
-
-
 LEVEL *get_level( uint8_t lev )
 {
   return &levels[lev];

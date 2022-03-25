@@ -48,13 +48,13 @@ void main(void)
   /* Initialise the tables which optimise screen drawing */
   init_draw_virion_tables();
 
-  /* Ask user for controls - keyboard or joystick */
-  CONTROL selected_control = select_controls();
-
   /* Infinite outer loop, new game */
   while(1)
   {
-    uint8_t current_level = select_level();
+    /* Ask user for controls - keyboard or joystick */
+    CONTROL selected_control = select_controls();
+
+    uint8_t current_level = 0;
     SET_COUNTDOWN(32);
 
     /* Outer loop, level selection */
@@ -132,15 +132,17 @@ void main(void)
         break;
       }
 
-      /* Did we escape the inner loop because the player completed the game? */
-      if( ++current_level == NUM_LEVELS )
+      /* We escaped the inner loop because the player completed the level */
+      current_level++;
+
+      /* Completed game? */
+      if( current_level == NUM_LEVELS )
       {
         zx_border( INK_MAGENTA );
         game_over();
         break;
       }
 
-      /* We escaped the inner loop because the player completed the level */
     }
 
     /* Back to top for a new game */

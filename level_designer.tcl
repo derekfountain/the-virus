@@ -97,7 +97,7 @@ proc generateOutput {} {
             continue
         }        
         puts $h "$output($colour)"
-        puts $h "draw_cells( level_$colour, PAPER_[string toupper $colour] );\n"
+        puts $h "draw_cells( level_$colour, (PAPER_[string toupper $colour]|BRIGHT) );\n"
     }
         
     close $h
