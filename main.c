@@ -33,6 +33,7 @@
 #include "int.h"
 #include "swarm.h"
 #include "game_over.h"
+#include "timer.h"
 
 unsigned char version[8] = "ver0.01";
 
@@ -50,74 +51,99 @@ void main(void)
   /* Ask user for controls - keyboard or joystick */
   CONTROL selected_control = select_controls();
 
-  uint8_t current_level = select_level();
-
-  /* Outer infinite loop, level selection */
-  while( 1 )
+  /* Infinite outer loop, new game */
+  while(1)
   {
-    zx_cls( PAPER_WHITE );
+    uint8_t current_level = select_level();
+    SET_COUNTDOWN(32);
 
-    /* Pick up level data */
-    level = get_level(current_level);
+    /* Outer loop, level selection */
+    while( 1 )
+    {
+      /* Not fair to run the timer while messages are scrolling, etc */
+      PAUSE_TIMER;
 
-    /* Refresh the pool of random values so patterns don't appear */
-    refresh_random_values();
+      zx_cls( PAPER_WHITE );
 
-    /* Hide dot while caption is on screen */
-    hide_player();
+      /* Pick up level data */
+      level = get_level(current_level);
 
-    init_level( level );
+      /* Refresh the pool of random values so patterns don't appear */
+      refresh_random_values();
 
-    init_player( selected_control );
+      /* Hide dot while caption is on screen */
+      hide_player();
 
-    init_swarm( level->starting_num_virions,
-                level->starting_velocity );
+      init_level( level );
+
+      init_player( selected_control );
+
+      init_swarm( level->starting_num_virions,
+                  level->starting_velocity );
+
+      UNPAUSE_TIMER;
 
 #define TIME_TEST 0
 /* Keep this time test at less than 20 seconds with MAX_SWARM=25 */
 #if TIME_TEST
-    uint16_t countdown = 500;
+      uint16_t countdown = 500;
 #endif
 
-    while(1
+      while(1
 #if TIME_TEST
-	  && --countdown
+          && --countdown
 #endif
       )
-    {
-      /* Small hack here to allow bumping through the levels */
-      uint8_t mp_result = move_player();
-      if( mp_result == 1 )
-	break;
+      {
+        /* Small hack here to allow bumping through the levels */
+        uint8_t mp_result = move_player();
+        if( mp_result == 1 )
+          break;
 #if STDIO_DEBUG
-      if( mp_result == 2 )
-        printf_swarm_details();
+        if( mp_result == 2 )
+          printf_swarm_details();
 #endif
-      /* Update level displayed on screen. Swarm logic is applied to updated level.  */
-      update_level( level );
+        /* Update level displayed on screen. Swarm logic is applied to updated level.  */
+        update_level( level );
+        if( draw_timer(0) )
+          break;
 
-      update_swarm( level );
+        update_swarm( level );
 
-      /*
-       * Player was cleared and redrawn here, but it suffered a bit of
-       * flicker. I moved it to the ISR, so it happens in top border
-       * time. See int.c.
-       */
+        /*
+         * Player was cleared and redrawn here, but it suffered a bit of
+         * flicker. I moved it to the ISR, so it happens in top border
+         * time. See int.c.
+         */
 
-      /* If number in swarm == 0, level is now cleared so break */
-      if( GET_ACTIVE_SWARM_SIZE == 0 )
-	break;
+        /* If number in swarm == 0, level is now cleared so break */
+        if( GET_ACTIVE_SWARM_SIZE == 0 )
+          break;
+      }
+
+      /* Reclaim memory, etc */
+      finalise_level( level );
+
+      /* Did we escape the inner loop because time was up? */
+      if( GET_COUNTDOWN == 0 )
+      {
+        zx_border( INK_BLACK );
+        time_up();
+        break;
+      }
+
+      /* Did we escape the inner loop because the player completed the game? */
+      if( ++current_level == NUM_LEVELS )
+      {
+        zx_border( INK_MAGENTA );
+        game_over();
+        break;
+      }
+
+      /* We escaped the inner loop because the player completed the level */
     }
 
-    /* Reclaim memory, etc */
-    finalise_level( level );
-
-    if( ++current_level == NUM_LEVELS )
-    {
-      zx_border( INK_MAGENTA );
-      game_over();
-    }
+    /* Back to top for a new game */
   }
-
 }
 

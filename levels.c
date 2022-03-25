@@ -298,7 +298,7 @@ void draw_level8_frame( LEVEL *level, LEVEL_PHASE phase )
     *(zx_cxy2aaddr(l_data->x,11)) = PAPER_WHITE;
     if( l_data->x++ == 28 )
       l_data->x = 2;
-    *(zx_cxy2aaddr(l_data->x,11)) = PAPER_RED;
+    *(zx_cxy2aaddr(l_data->x,11)) = (PAPER_RED|BRIGHT);
   }
   else if( phase == PHASE_INIT )
   {
@@ -306,7 +306,7 @@ void draw_level8_frame( LEVEL *level, LEVEL_PHASE phase )
     level->level_data = ld;
 
     ld->x = 2;
-    *(zx_cxy2aaddr(ld->x,11)) = PAPER_RED;
+    *(zx_cxy2aaddr(ld->x,11)) = (PAPER_RED|BRIGHT);
   }
   else if( phase == PHASE_FINALISE )
   {
@@ -349,7 +349,7 @@ void draw_level9_frame( LEVEL *level, LEVEL_PHASE phase )
         l_data->d = DIRECTION_E;
     }
 
-    _2x2( l_data->x, l_data->y, PAPER_RED );
+    _2x2( l_data->x, l_data->y, (PAPER_RED|BRIGHT) );
 
   }
   else if( phase == PHASE_INIT )
@@ -360,7 +360,7 @@ void draw_level9_frame( LEVEL *level, LEVEL_PHASE phase )
     ld->x = 2;
     ld->y = 2;
     ld->d = DIRECTION_E;
-    _2x2( ld->x, ld->y, PAPER_RED );
+    _2x2( ld->x, ld->y, (PAPER_RED|BRIGHT) );
   }
   else if( phase == PHASE_FINALISE )
   {
@@ -396,7 +396,7 @@ void draw_level10_frame( LEVEL *level, LEVEL_PHASE phase )
       l_data->d = DIRECTION_E;
     }
 
-    _5x1( l_data->x, 10, PAPER_RED );
+    _5x1( l_data->x, 10, (PAPER_RED|BRIGHT) );
   }
   else if( phase == PHASE_INIT )
   {
@@ -405,7 +405,7 @@ void draw_level10_frame( LEVEL *level, LEVEL_PHASE phase )
 
     ld->x = 0;
     ld->d = DIRECTION_E;
-    _5x1( ld->x, 10, PAPER_RED );
+    _5x1( ld->x, 10, (PAPER_RED|BRIGHT) );
 
 #include "level9.inc"
   }

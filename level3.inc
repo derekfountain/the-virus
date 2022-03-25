@@ -3,11 +3,11 @@
 // LEVEL DESIGNER PASSTHROUGH START
 // LEVEL DESIGNER PASSTHROUGH END
 uint8_t level_blue[][2] = { {31,8},{31,9},{31,10},{31,11},{31,12},{31,13},{31,14},{30,8},{29,8},{28,8},{27,8},{26,8},{25,8},{24,8},{24,14},{25,14},{26,14},{27,14},{28,14},{29,14},{30,14},{255,255} };
-draw_cells( level_blue, PAPER_BLUE );
+draw_cells( level_blue, PAPER_BLUE|BRIGHT );
 
 uint8_t level_green[][2] = { {30,13},{30,9},{255,255} };
-draw_cells( level_green, PAPER_GREEN );
+draw_cells( level_green, PAPER_GREEN|BRIGHT );
 
 uint8_t level_red[][2] = { {29,11},{28,11},{28,10},{28,12},{27,11},{255,255} };
-draw_cells( level_red, PAPER_RED );
+draw_cells( level_red, PAPER_RED|BRIGHT );
 

@@ -59,7 +59,7 @@ void clear_virion( VIRION *v )
 
   if( v->previous_x_i < 0 || v->previous_x_i > 255
       ||
-      v->previous_y_i < 0 || v->previous_y_i > 191 )
+      v->previous_y_i < 0 || v->previous_y_i > 183 )
     return;
 
   register uint8_t x = v->previous_x_i;
@@ -108,7 +108,7 @@ void draw_virion( VIRION *v )
 
   if( v->x_i < 0 || v->x_i > 255
       ||
-      v->y_i < 0 || v->y_i > 191 )
+      v->y_i < 0 || v->y_i > 183 )
     return;
 
   register uint8_t x = v->x_i;
@@ -141,9 +141,9 @@ void random_reappear_virion( VIRION *v )
   do
   {
     v->x_i = rand()&255;
-    v->y_i = rand()&191;
+    v->y_i = rand()&183;
   }
-  while( *(zx_pxy2aaddr(v->x_i,v->y_i)) == PAPER_BLACK );
+  while( *(zx_pxy2aaddr(v->x_i,v->y_i)) == (PAPER_BLACK|BRIGHT) );
 
   change_immunity( v, MAKE_IMMUNE );
 

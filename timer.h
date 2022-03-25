@@ -17,35 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef __MAIN_H
-#define __MAIN_H
+#ifndef __TIMER_H
+#define __TIMER_H
 
-#define STDIO_DEBUG 0
+#include <stdint.h>
+typedef uint8_t boolean_t;
 
-#if STDIO_DEBUG
-#pragma printf %f %d %ld
-#endif
+/* Countdown goes from 31 to 0 */
+extern uint8_t countdown;
+extern uint8_t paused;
 
-#define NAMED_ARG(N,V) (V)
+boolean_t draw_timer( boolean_t );
+void time_up( void );
 
-#define MAX_IN_SWARM ((const uint8_t)25)
+#define GET_COUNTDOWN       ((uint8_t)(countdown))
+#define SET_COUNTDOWN(t)    countdown = (uint8_t)(t)
+#define GET_COUNTDOWNPAUSED ((uint8_t)(paused))
 
-#define MAX_GAME_TIME_SECS   ((const uint8_t)1200)
-#define MAX_GAME_TIME_FRAMES ((const uint8_t)60000)
-#define GAME_TIME_FRAMES_PER_BLOCK ((const uint16_t)1875)
-
-
-typedef enum _direction
-{
-  DIRECTION_STATIONARY = 0,
-  DIRECTION_N          = 0x01,
-  DIRECTION_NE         = 0x03,
-  DIRECTION_NW         = 0x05,
-  DIRECTION_S          = 0x04,
-  DIRECTION_SE         = 0x14,
-  DIRECTION_SW         = 0x24,
-  DIRECTION_E          = 0x40,
-  DIRECTION_W          = 0x80,
-} DIRECTION;
+#define PAUSE_TIMER   paused=1
+#define UNPAUSE_TIMER paused=0
 
 #endif

@@ -66,6 +66,7 @@ OBJECTS = main.o \
     virion.o \
 	  game_over.o \
 	  print_str.o \
+	  timer.o \
 	  font.o
 	  
 # Not used:
@@ -81,6 +82,7 @@ C_OBJECTS = main.o \
 	          swarm.o \
             virion.o \
             print_str.o \
+            timer.o \
 	          game_over.o
 
 LEVEL_INCS = $(wildcard level*.inc)
@@ -98,6 +100,7 @@ HEADERS = main.h \
 	  swarm.h \
 	  virion.h \
 	  print_str.h \
+	  timer.h \
 	  game_over.h
 
 # Not used:	  

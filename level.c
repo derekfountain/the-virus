@@ -26,6 +26,7 @@
 #include "int.h"
 #include "swarm.h"
 #include "print_str.h"
+#include "timer.h"
 
 uint8_t  current_frame;
 uint16_t frames_before_change;
@@ -46,9 +47,11 @@ void init_level( LEVEL *level )
  
   (level->level_handler)( level, PHASE_INIT );
 
+  draw_timer( 1 );
+
   if( level->caption )
   {
-    roll_str(12,level->caption);
+    roll_str(11,level->caption);
   }
 
   return;
@@ -66,7 +69,7 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
 
   if( v->x_i < 0 || v->x_i > 255
       ||
-      v->y_i < 0 || v->y_i > 191 )
+      v->y_i < 0 || v->y_i > 183 )
     return;
 
   uint8_t x = v->x_i;
@@ -74,7 +77,7 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
 
   uint8_t attribute = *(zx_pxy2aaddr(x,y));
 
-  if( attribute == PAPER_RED )
+  if( attribute == (PAPER_RED|BRIGHT) )
   {
     /* If virion isn't immune deactivate it */
     if( !v->immunity_start )
@@ -86,7 +89,7 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
       change_immunity( v, MAKE_NON_IMMUNE );
     }
   }
-  else if( attribute == PAPER_GREEN )
+  else if( attribute == (PAPER_GREEN|BRIGHT) )
   {
     /* If virion isn't immune, trigger an inactive one back to life */
     if( !v->immunity_start )
@@ -100,11 +103,11 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
       }
     }
   }
-  else if( attribute == PAPER_BLUE )
+  else if( attribute == (PAPER_BLUE|BRIGHT) )
   {
     random_reappear_virion( v );
   }
-  else if( attribute == PAPER_BLACK )
+  else if( attribute == (PAPER_BLACK|BRIGHT) )
   {
     /*
      * I'd prefer a better "bounce" dynamic, but it's expensive to work out

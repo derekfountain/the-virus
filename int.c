@@ -24,6 +24,8 @@
 #include <im2.h>
 #include <string.h>
 #include "player.h"
+#include "main.h"
+#include "timer.h"
 
 /*
  * Timer ticker for the 50Hz interrupt signal which fires
@@ -33,6 +35,7 @@
  * this static.
  */
 volatile uint16_t ticker = 0;
+volatile uint16_t timer_ticker = 0;
 
 /*
  * 1000ms ticker. This one increments every 50 interrupts, so it
@@ -66,6 +69,15 @@ IM2_DEFINE_ISR(isr)
    */
   ticker++;
 
+  if( !GET_COUNTDOWNPAUSED )
+  {
+    if( ++timer_ticker == GAME_TIME_FRAMES_PER_BLOCK )
+    {
+      SET_COUNTDOWN( (GET_COUNTDOWN-1) );
+      timer_ticker=0;
+    }
+  }
+
   if( ++ticker_1000ms_int_counter == 50 )
   {
       ticker_1000ms_int_counter = 0;
@@ -91,7 +103,7 @@ IM2_DEFINE_ISR(isr)
 }
 
 /*
- * Standard SP1 interrupt set up for now.
+ * Standard interrupt set up for now.
  */
 #define TABLE_HIGH_BYTE        ((unsigned int)0xD0)
 #define JUMP_POINT_HIGH_BYTE   ((unsigned int)0xD1)

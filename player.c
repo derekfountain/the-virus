@@ -123,7 +123,7 @@ uint8_t move_player( void )
   else if( ((input == DIRECTION_S) || (input == DIRECTION_STATIONARY && direction == DIRECTION_S)) )
   {
     direction = DIRECTION_S;
-    if( player_y < 190 )
+    if( player_y < 182 )
     {
       player_y+=2;
     }
@@ -226,20 +226,20 @@ uint8_t move_player( void )
   else if( ((input == DIRECTION_SW) || (input == DIRECTION_STATIONARY && direction == DIRECTION_SW)) )
   {
     direction = DIRECTION_SW;
-    if( player_y < 190 && player_x )
+    if( player_y < 182 && player_x )
     {
       /* Room to move as required */
       player_y+=2;
       player_x-=2;
     }
-    else if( player_y == 190 && player_x == 0 )
+    else if( player_y == 182 && player_x == 0 )
     {
       /* Hit the very corner */
       direction = DIRECTION_NE;
     }
     else
     {
-      if( player_y == 190 )
+      if( player_y == 182 )
       {
 	/* Hit the floor */
         player_y-=2;
@@ -258,20 +258,20 @@ uint8_t move_player( void )
   else if( ((input == DIRECTION_SE) || (input == DIRECTION_STATIONARY && direction == DIRECTION_SE)) )
   {
     direction = DIRECTION_SE;
-    if( player_y < 190 && player_x < 254 )
+    if( player_y < 182 && player_x < 254 )
     {
       /* Room to move as required */
       player_y+=2;
       player_x+=2;
     }
-    else if( player_y == 190 && player_x == 254 )
+    else if( player_y == 182 && player_x == 254 )
     {
       /* Hit the very corner */
       direction = DIRECTION_NW;
     }
     else
     {
-      if( player_y == 190 )
+      if( player_y == 182 )
       {
 	/* Hit the floor */
         player_y-=2;
