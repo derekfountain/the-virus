@@ -39,13 +39,19 @@ boolean_t draw_timer( boolean_t force )
   memset( (void*)0x50E0, 255, 32 );
 
   /* First attribute of bottom line */
-  uint8_t *att_addr = (uint8_t*)0x5AE0; //zx_cxy2aaddr(0, 23);
+  register uint8_t *att_addr = (uint8_t*)0x5AE0; //zx_cxy2aaddr(0, 23);
 
   /* Draw the timer with the new countdown value */
-  uint8_t i=0;
+  register uint8_t i=0;
   for( i=0; i<countdown; i++ )
   {
-    *att_addr++ = (PAPER_CYAN|BRIGHT);
+    uint8_t colour = PAPER_GREEN;
+    if( i < 10 )
+      colour = PAPER_RED;
+    else if( i < 22 )
+      colour = PAPER_YELLOW;
+
+    *att_addr++ = colour;
   }
   for( ; i<32; i++ )
   {
