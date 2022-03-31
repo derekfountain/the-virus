@@ -110,7 +110,7 @@ void update_swarm( LEVEL *level )
      * iterate all of the swarm each iteration of this loop. I get the milling around behaviour
      * by introducing some random jitter. However, this only happens to dots which are moving
      * slowly. This means they crowd the player, but when moving at speed they tend to clump
-     * together, which makes guding the swarm easier.
+     * together, which makes guiding the swarm easier.
      */
     const int16_t JITTER_LIMIT = 35;
     if( (swarm[i].velocity_x < JITTER_LIMIT && swarm[i].velocity_x > -JITTER_LIMIT)

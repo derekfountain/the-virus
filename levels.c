@@ -119,7 +119,7 @@ LEVEL levels[] =
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
-    NAMED_ARG("Border colour",        INK_RED),
+    NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level8_frame),
     NAMED_ARG("Caption",              "Oh, and sometimes things move!  "),
@@ -130,7 +130,7 @@ LEVEL levels[] =
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
-    NAMED_ARG("Border colour",        INK_RED),
+    NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level9_frame),
     NAMED_ARG("Caption",              NULL),
@@ -141,13 +141,26 @@ LEVEL levels[] =
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
     NAMED_ARG("Starting velocity",    100),
-    NAMED_ARG("Border colour",        INK_RED),
+    NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Immune frames",        0),
     NAMED_ARG("Level handler",        draw_level10_frame),
     NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
   /* Play testing suggests about 15mins to this point */
+
+  {
+    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
+    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting velocity",    100),
+    NAMED_ARG("Border colour",        INK_BLUE),
+    NAMED_ARG("Immune frames",        0),
+    NAMED_ARG("Level handler",        draw_level11_frame),
+    NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Level data",           NULL),
+  },
+
+
 };
 
 LEVEL *get_level( uint8_t lev )
@@ -329,7 +342,7 @@ void draw_level9_frame( LEVEL *level, LEVEL_PHASE phase )
     }
     else if( l_data->d == DIRECTION_S )
     {
-      if( l_data->y++ == 19 )
+      if( l_data->y++ == 18 )
         l_data->d = DIRECTION_W;
     }
     else if( l_data->d == DIRECTION_W )
@@ -401,7 +414,7 @@ void draw_level10_frame( LEVEL *level, LEVEL_PHASE phase )
     ld->d = DIRECTION_E;
     _5x1( ld->x, 10, (PAPER_RED|BRIGHT) );
 
-#include "level9.inc"
+#include "level10.inc"
   }
   else if( phase == PHASE_FINALISE )
   {
@@ -409,3 +422,40 @@ void draw_level10_frame( LEVEL *level, LEVEL_PHASE phase )
   }
 }
 
+
+typedef struct _level11_data
+{
+  uint8_t   state;
+  uint8_t   phase_counter;
+} LEVEL11_DATA;
+void draw_level11_frame( LEVEL *level, LEVEL_PHASE phase )
+{
+  if( phase == PHASE_UPDATE )
+  {
+    LEVEL11_DATA *l_data = level->level_data;
+
+    if( ++l_data->phase_counter < 50 )
+      return;
+
+    l_data->phase_counter = 0;
+    l_data->state = ~l_data->state;
+
+    if( l_data->state )
+      _2x2( 6, 10, (PAPER_RED|BRIGHT) );
+    else
+    _2x2( 6, 10, (PAPER_GREEN|BRIGHT) );
+  }
+  else if( phase == PHASE_INIT )
+  {
+    LEVEL11_DATA *ld = (LEVEL11_DATA*)malloc( sizeof(LEVEL11_DATA) );
+    level->level_data = ld;
+
+    ld->state = 0;
+    ld->phase_counter = 0;
+    _2x2( 6, 10, (PAPER_RED|BRIGHT) );
+  }
+  else if( phase == PHASE_FINALISE )
+  {
+    free( level->level_data );
+  }
+}
