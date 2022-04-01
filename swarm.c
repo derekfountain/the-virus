@@ -60,6 +60,17 @@ void init_swarm( uint8_t size, int16_t vel )
   }
 }
 
+/*
+ * The velocity values are used throughout this algorithm, try to get the
+ * compiler to keep them in registers. Having these as locals in the loop
+ * they're used in sees the generated code end up with them on the top of
+ * the stack (i.e. not in registers) so they're accessed via index registers
+ * anyway. :( Keeping them here as globals has them accessed directly
+ * via their memory address, which is faster than via the index registers.
+ */
+register int16_t vx;
+register int16_t vy;
+
 void update_swarm( LEVEL *level )
 {
   register uint8_t i;
@@ -77,14 +88,11 @@ void update_swarm( LEVEL *level )
   for( i=every_other_dot; i < MAX_IN_SWARM; i+=2 )
   {
     /*
-     * The velocity values are used throughout this algorithm, try to get the
-     * compiler to keep them in registers. As far as I can tell this makes
-     * no difference to execution speed. The generated code ends up with
-     * these vx and vy values on the top of the stack (i.e. not in registers)
-     * so they're accessed via index registers anyway. :(
+     * The velocity values are used throughout this algorithm, make them
+     * easier to access.
      */
-    register int16_t vx = swarm[i].velocity_x;
-    register int16_t vy = swarm[i].velocity_y;
+    vx = swarm[i].velocity_x;
+    vy = swarm[i].velocity_y;
 
     /*
      * Move towards player. Calculate distance to player, take 1/256th of it. Add that to velocity.
@@ -133,8 +141,8 @@ void update_swarm( LEVEL *level )
        * the swarm's on screen behaviour.
        */
       static uint8_t r=0;
-      vx += *(random_values+r++);
-      vy += *(random_values+r);
+      vx += random_values[r++];
+      vy += random_values[r++];
     }
 
 
@@ -148,7 +156,7 @@ void update_swarm( LEVEL *level )
     swarm[i].x_i += vx/64;
     swarm[i].y_i += vy/64;
     
-    /* Restore calculated values into the structure */
+    /* Restore calculated values back into the structure */
     swarm[i].velocity_x = vx;
     swarm[i].velocity_y = vy;
 
