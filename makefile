@@ -24,8 +24,8 @@ CRT=31
 
 PRAGMA_FILE=zpragma.inc
 
-C_OPT_FLAGS=-SO2 --max-allocs-per-node200000 -DNDEBUG --c-code-in-asm --std-c99 --list
-#C_OPT_FLAGS=--c-code-in-asm --std-c99 --list
+#C_OPT_FLAGS=-SO2 --max-allocs-per-node200000 -DNDEBUG --c-code-in-asm --std-c99 --list
+C_OPT_FLAGS=--c-code-in-asm --std-c99 --list
 
 CFLAGS=$(TARGET) $(VERBOSITY) -c $(C_OPT_FLAGS) -preserve -compiler sdcc -clib=sdcc_iy -pragma-include:$(PRAGMA_FILE)
 LDFLAGS=$(TARGET) $(VERBOSITY) -m -clib=sdcc_iy -pragma-include:$(PRAGMA_FILE)
@@ -67,6 +67,8 @@ OBJECTS = main.o \
 	  game_over.o \
 	  print_str.o \
 	  timer.o \
+	  snow_table.o \
+	  snow_demo_plot.o \
 	  font.o
 	  
 # Not used:
@@ -101,6 +103,7 @@ HEADERS = main.h \
 	  virion.h \
 	  print_str.h \
 	  timer.h \
+	  snow.h \
 	  game_over.h
 
 # Not used:	  

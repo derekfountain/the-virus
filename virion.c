@@ -24,6 +24,7 @@
 #include "int.h"
 #include "swarm.h"
 #include "rtunes.h"
+#include "snow.h"
 
 /*
  * Line starts is the display file address. column 0.
@@ -65,7 +66,10 @@ void clear_virion( VIRION *v )
   register uint8_t x = v->previous_x_i;
   register uint8_t y = v->previous_y_i;
 
-#if 0
+  /* See the plot code for description of the plot options */
+#if 1
+  snow_unplot( x, y );
+#elif 0
   rtunes_pixel( x, y , 0 );
 #else
   /* I could cache this screen address... */
@@ -114,9 +118,14 @@ void draw_virion( VIRION *v )
   register uint8_t x = v->x_i;
   register uint8_t y = v->y_i;
 
-#if 0
+#if 1
+  /* Fastest plotter, uses 1K look up tables */
+  snow_plot( x, y );
+#elif 0
+  /* This doesn't use LUTs so is much smaller, but slower */
   rtunes_pixel( x, y, 1 );
 #else
+  /* My original C, uses LUTs and is slightly faster than rtunes */
   uint8_t *scr_byte = screen_line_starts[y];
   scr_byte += screen_line_offsets[x];
 
