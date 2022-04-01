@@ -62,7 +62,7 @@ void init_swarm( uint8_t size, int16_t vel )
 
 void update_swarm( LEVEL *level )
 {
-  uint8_t i;
+  register uint8_t i;
 
   /*
    * Update each dot's velocity and then location based on empirically derived rules. This actually
@@ -77,13 +77,23 @@ void update_swarm( LEVEL *level )
   for( i=every_other_dot; i < MAX_IN_SWARM; i+=2 )
   {
     /*
+     * The velocity values are used throughout this algorithm, try to get the
+     * compiler to keep them in registers. As far as I can tell this makes
+     * no difference to execution speed. The generated code ends up with
+     * these vx and vy values on the top of the stack (i.e. not in registers)
+     * so they're accessed via index registers anyway. :(
+     */
+    register int16_t vx = swarm[i].velocity_x;
+    register int16_t vy = swarm[i].velocity_y;
+
+    /*
      * Move towards player. Calculate distance to player, take 1/256th of it. Add that to velocity.
      * This has to be a signed 32bit calculation. If the player is a x=255 then 255*256=65280. If
      * the player is at x=0 then 0*0=0, and if the swarm dot is at x=255 then 0-65280=-65280. The
      * result will be in the range 255 to -255.
      */
-    swarm[i].velocity_x += (((int32_t)QUERY_PLAYER_X*(int32_t)256) - (int32_t)swarm[i].x_i*(int32_t)256) / (int16_t)256;
-    swarm[i].velocity_y += (((int32_t)QUERY_PLAYER_Y*(int32_t)256) - (int32_t)swarm[i].y_i*(int32_t)256) / (int16_t)256;
+    vx += (((int32_t)QUERY_PLAYER_X*(int32_t)256) - (int32_t)swarm[i].x_i*(int32_t)256) / (int16_t)256;
+    vy += (((int32_t)QUERY_PLAYER_Y*(int32_t)256) - (int32_t)swarm[i].y_i*(int32_t)256) / (int16_t)256;
 
 
     /*
@@ -91,17 +101,17 @@ void update_swarm( LEVEL *level )
      * I could get without a square root.
      */
     const int16_t SPEED_LIMIT = 350;
-    if( swarm[i].velocity_x > SPEED_LIMIT || swarm[i].velocity_x < -SPEED_LIMIT )
+    if( vx > SPEED_LIMIT || vx < -SPEED_LIMIT )
     {
-      int16_t div2 = swarm[i].velocity_x / 2;
+      int16_t div2 = vx / 2;
       if( div2 != 0 )
-	swarm[i].velocity_x = div2;
+	vx = div2;
     }
-    if( swarm[i].velocity_y > SPEED_LIMIT || swarm[i].velocity_y < -SPEED_LIMIT )
+    if( vy > SPEED_LIMIT || vy < -SPEED_LIMIT )
     {
-      int16_t div2 = swarm[i].velocity_y / 2;
+      int16_t div2 = vy / 2;
       if( div2 != 0 )
-	swarm[i].velocity_y = div2;
+	vy = div2;
     }
 
     /*
@@ -113,9 +123,9 @@ void update_swarm( LEVEL *level )
      * together, which makes guiding the swarm easier.
      */
     const int16_t JITTER_LIMIT = 35;
-    if( (swarm[i].velocity_x < JITTER_LIMIT && swarm[i].velocity_x > -JITTER_LIMIT)
+    if( (vx < JITTER_LIMIT && vx > -JITTER_LIMIT)
 	||
-	(swarm[i].velocity_y < JITTER_LIMIT && swarm[i].velocity_y > -JITTER_LIMIT) )
+	(vy < JITTER_LIMIT && vy > -JITTER_LIMIT) )
     {
       /*
        * This used to pick from the random pool at random, but that was a bit expensive CPUwise.
@@ -123,8 +133,8 @@ void update_swarm( LEVEL *level )
        * the swarm's on screen behaviour.
        */
       static uint8_t r=0;
-      swarm[i].velocity_x += *(random_values+r++);
-      swarm[i].velocity_y += *(random_values+r);
+      vx += *(random_values+r++);
+      vy += *(random_values+r);
     }
 
 
@@ -133,9 +143,13 @@ void update_swarm( LEVEL *level )
      * scale to maintain accuracy in the integers. (Doing maths with numbers in the range 0-255
      * leads to rounding to zeroes way too much.) So this takes 1% of the velocity as calculated.
      */
-    swarm[i].x_i += swarm[i].velocity_x/100;
-    swarm[i].y_i += swarm[i].velocity_y/100;
+    swarm[i].x_i += vx/100;
+    swarm[i].y_i += vy/100;
     
+    /* Restore calculated values into the structure */
+    swarm[i].velocity_x = vx;
+    swarm[i].velocity_y = vy;
+
     /* Remove it from its old screen position */
     clear_virion( &swarm[i] );
 
