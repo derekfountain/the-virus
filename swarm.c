@@ -142,7 +142,7 @@ void update_swarm( LEVEL *level )
        * This is buggy. Because the ++ is missing off the second use of 'r', the same random value
        * will be used for vy on this iteration of the loop and for vx on the next iteration. But
        * fixing it makes a pattern appear in the swarm's behaviour. I don't know why, so I left
-       * it like this. The first instance of "that's not a bug it's a feature" I've even come across!
+       * it like this. The first instance of "that's not a bug it's a feature" I've ever come across!
        */
       static uint8_t r=0;
       vx += random_values[r++];

@@ -160,6 +160,16 @@ LEVEL levels[] =
     NAMED_ARG("Level data",           NULL),
   },
 
+  {
+    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
+    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting velocity",    100),
+    NAMED_ARG("Border colour",        INK_BLUE),
+    NAMED_ARG("Immune frames",        0),
+    NAMED_ARG("Level handler",        draw_level12_frame),
+    NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Level data",           NULL),
+  },
 
 };
 
@@ -434,16 +444,19 @@ void draw_level11_frame( LEVEL *level, LEVEL_PHASE phase )
   {
     LEVEL11_DATA *l_data = level->level_data;
 
-    if( ++l_data->phase_counter < 50 )
+    if( ++l_data->phase_counter < 25 )
       return;
 
     l_data->phase_counter = 0;
-    l_data->state = ~l_data->state;
+    if( ++l_data->state == 3 )
+      l_data->state = 0;
 
-    if( l_data->state )
-      _2x2( 6, 10, (PAPER_RED|BRIGHT) );
+    if( l_data->state == 0 )
+      _2x2( 15, 10, (PAPER_RED|BRIGHT) );
+    else if( l_data->state == 1 )
+      _2x2( 15, 10, (PAPER_GREEN|BRIGHT) );
     else
-    _2x2( 6, 10, (PAPER_GREEN|BRIGHT) );
+      _2x2( 15, 10, (PAPER_BLUE|BRIGHT) );
   }
   else if( phase == PHASE_INIT )
   {
@@ -452,7 +465,48 @@ void draw_level11_frame( LEVEL *level, LEVEL_PHASE phase )
 
     ld->state = 0;
     ld->phase_counter = 0;
-    _2x2( 6, 10, (PAPER_RED|BRIGHT) );
+    _2x2( 15, 10, (PAPER_RED|BRIGHT) );
+  }
+  else if( phase == PHASE_FINALISE )
+  {
+    free( level->level_data );
+  }
+}
+
+typedef struct _level12_data
+{
+  uint8_t   state;
+  uint8_t   phase_counter;
+} LEVEL12_DATA;
+void draw_level12_frame( LEVEL *level, LEVEL_PHASE phase )
+{
+  (void)level;
+  (void)phase;
+
+  if( phase == PHASE_UPDATE )
+  {
+    LEVEL12_DATA *l_data = level->level_data;
+    uint8_t block[][2] = { {4,7},{4,14},{4,11},{4,10},{255,255} };
+
+    if( ++l_data->phase_counter < 25 )
+      return;
+
+    l_data->phase_counter = 0;
+    l_data->state = ~l_data->state;
+
+    if( l_data->state == 0 )
+      draw_cells( block, (PAPER_GREEN|BRIGHT) );
+    else
+      draw_cells( block, PAPER_WHITE );
+  }
+  else if( phase == PHASE_INIT )
+  {
+    LEVEL12_DATA *ld = (LEVEL12_DATA*)malloc( sizeof(LEVEL12_DATA) );
+    level->level_data = ld;
+
+    ld->state = 0;
+    ld->phase_counter = 0;
+#include "level12.inc"
   }
   else if( phase == PHASE_FINALISE )
   {
