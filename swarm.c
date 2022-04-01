@@ -100,7 +100,7 @@ void update_swarm( LEVEL *level )
      * Limit velocity. This is ugly and causes stuttering sort of behaviour, but it's the best
      * I could get without a square root.
      */
-    const int16_t SPEED_LIMIT = 350;
+    const int16_t SPEED_LIMIT = 255;
     if( vx > SPEED_LIMIT || vx < -SPEED_LIMIT )
     {
       int16_t div2 = vx / 2;
@@ -116,7 +116,7 @@ void update_swarm( LEVEL *level )
 
     /*
      * Original algorithm attempts to move dots so they don't get too close to each other.
-     * That's not posssible on the Spectrum, there's nowhere near enough CPU power to
+     * That's not possible on the Spectrum, there's nowhere near enough CPU power to
      * iterate all of the swarm each iteration of this loop. I get the milling around behaviour
      * by introducing some random jitter. However, this only happens to dots which are moving
      * slowly. This means they crowd the player, but when moving at speed they tend to clump
@@ -141,10 +141,12 @@ void update_swarm( LEVEL *level )
     /*
      * Finally, add calculated velocity to dot position. The velocity calculation is done at high
      * scale to maintain accuracy in the integers. (Doing maths with numbers in the range 0-255
-     * leads to rounding to zeroes way too much.) So this takes 1% of the velocity as calculated.
+     * leads to rounding to zeroes way too much.) This was designed to take 1% of the velocity as
+     * calculated but the div 100 was very expensive. div 64 has a similar enough effect and is much
+     * faster.
      */
-    swarm[i].x_i += vx/100;
-    swarm[i].y_i += vy/100;
+    swarm[i].x_i += vx/64;
+    swarm[i].y_i += vy/64;
     
     /* Restore calculated values into the structure */
     swarm[i].velocity_x = vx;
