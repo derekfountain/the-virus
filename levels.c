@@ -147,7 +147,6 @@ LEVEL levels[] =
     NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
-  /* Play testing suggests about 15mins to this point */
 
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
@@ -170,6 +169,7 @@ LEVEL levels[] =
     NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
+  /* Play testing suggests I'm just hitting the red at this point, so 5 more levels as the timer stands */
 
 };
 

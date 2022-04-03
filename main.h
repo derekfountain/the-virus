@@ -28,6 +28,7 @@
 
 #define NAMED_ARG(N,V) (V)
 
+/* Use 25 for the timing test, 40 for final game (as the algorithm stands) */
 #define MAX_IN_SWARM ((const uint8_t)25)
 
 #define MAX_GAME_TIME_SECS   ((const uint8_t)1200)
