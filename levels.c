@@ -171,6 +171,17 @@ LEVEL levels[] =
   },
   /* Play testing suggests I'm just hitting the red at this point, so 5 more levels as the timer stands */
 
+  {
+    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
+    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting velocity",    100),
+    NAMED_ARG("Border colour",        INK_MAGENTA),
+    NAMED_ARG("Immune frames",        0),
+    NAMED_ARG("Level handler",        draw_level13_frame),
+    NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Level data",           NULL),
+  },
+
 };
 
 LEVEL *get_level( uint8_t lev )
@@ -207,6 +218,20 @@ void _5x1( uint8_t x, uint8_t y, uint8_t colour )
   uint8_t level_red[][2] = { {0,1},{1,1},{2,1},{3,1},{4,1} };
   for(i=0;i<5;i++)
     *(zx_cxy2aaddr(level_red[i][0]+x,level_red[i][1]+y)) = colour;
+}
+
+void swap_cells_colours( uint8_t src, uint8_t dest )
+{
+  uint8_t *addr = (uint8_t*)0x5ADF;
+  while( addr >= (uint8_t*)0x5800 )
+  {
+    if( *addr == src )
+      *addr = dest;
+    else if( *addr == dest )
+      *addr = src;
+
+    addr--;
+  }
 }
 
 /* 4 starter levels */
@@ -507,6 +532,52 @@ void draw_level12_frame( LEVEL *level, LEVEL_PHASE phase )
     ld->state = 0;
     ld->phase_counter = 0;
 #include "level12.inc"
+  }
+  else if( phase == PHASE_FINALISE )
+  {
+    free( level->level_data );
+  }
+}
+
+typedef struct _level13_data
+{
+  uint8_t   state;
+  uint8_t   phase_counter;
+} LEVEL13_DATA;
+void draw_level13_frame( LEVEL *level, LEVEL_PHASE phase )
+{
+  (void)level;
+  (void)phase;
+
+  if( phase == PHASE_UPDATE )
+  {
+    LEVEL13_DATA *l_data = level->level_data;
+    /* Colour change funcs - change all red atts to green or something? */
+    /* Thi sone can be all green to black and vv */
+    if( ++l_data->phase_counter < 30 )
+      return;
+
+    l_data->phase_counter = 0;
+    l_data->state = ~l_data->state;
+
+//    if( l_data->state )
+ //   {
+      swap_cells_colours( (PAPER_GREEN|INK_BLACK|BRIGHT), (PAPER_BLACK|INK_BLACK|BRIGHT) );
+   // }
+   // else
+   // {
+//      change_cells_colours( (PAPER_BLACK|INK_BLACK|BRIGHT), (PAPER_GREEN|INK_BLACK|BRIGHT) );
+    //}
+
+  }
+  else if( phase == PHASE_INIT )
+  {
+    LEVEL13_DATA *ld = (LEVEL13_DATA*)malloc( sizeof(LEVEL13_DATA) );
+    level->level_data = ld;
+
+    ld->state = 0;
+    ld->phase_counter = 0;
+#include "level13.inc"
   }
   else if( phase == PHASE_FINALISE )
   {
