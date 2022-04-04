@@ -517,7 +517,7 @@ void draw_level12_frame( LEVEL *level, LEVEL_PHASE phase )
       return;
 
     l_data->phase_counter = 0;
-    l_data->state = ~l_data->state;
+    l_data->state = !l_data->state;
 
     if( l_data->state == 0 )
       draw_cells( block, (PAPER_GREEN|BRIGHT) );
@@ -541,7 +541,6 @@ void draw_level12_frame( LEVEL *level, LEVEL_PHASE phase )
 
 typedef struct _level13_data
 {
-  uint8_t   state;
   uint8_t   phase_counter;
 } LEVEL13_DATA;
 void draw_level13_frame( LEVEL *level, LEVEL_PHASE phase )
@@ -552,30 +551,19 @@ void draw_level13_frame( LEVEL *level, LEVEL_PHASE phase )
   if( phase == PHASE_UPDATE )
   {
     LEVEL13_DATA *l_data = level->level_data;
-    /* Colour change funcs - change all red atts to green or something? */
-    /* Thi sone can be all green to black and vv */
+
     if( ++l_data->phase_counter < 30 )
       return;
 
     l_data->phase_counter = 0;
-    l_data->state = ~l_data->state;
 
-//    if( l_data->state )
- //   {
-      swap_cells_colours( (PAPER_GREEN|INK_BLACK|BRIGHT), (PAPER_BLACK|INK_BLACK|BRIGHT) );
-   // }
-   // else
-   // {
-//      change_cells_colours( (PAPER_BLACK|INK_BLACK|BRIGHT), (PAPER_GREEN|INK_BLACK|BRIGHT) );
-    //}
-
+    swap_cells_colours( (PAPER_GREEN|INK_BLACK|BRIGHT), (PAPER_BLACK|INK_BLACK|BRIGHT) );
   }
   else if( phase == PHASE_INIT )
   {
     LEVEL13_DATA *ld = (LEVEL13_DATA*)malloc( sizeof(LEVEL13_DATA) );
     level->level_data = ld;
 
-    ld->state = 0;
     ld->phase_counter = 0;
 #include "level13.inc"
   }
