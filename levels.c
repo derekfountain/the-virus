@@ -222,7 +222,7 @@ void _5x1( uint8_t x, uint8_t y, uint8_t colour )
 
 void swap_cells_colours( uint8_t src, uint8_t dest )
 {
-  uint8_t *addr = (uint8_t*)0x5ADF;
+  register uint8_t *addr = (uint8_t*)0x5ADF;
   while( addr >= (uint8_t*)0x5800 )
   {
     if( *addr == src )

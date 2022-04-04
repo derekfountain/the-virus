@@ -34,6 +34,11 @@
 #include "swarm.h"
 #include "game_over.h"
 #include "timer.h"
+#include "sound.h"
+
+#if STDIO_DEBUG
+#include <stdio.h>
+#endif
 
 unsigned char version[8] = "ver0.01";
 
@@ -54,7 +59,7 @@ void main(void)
     /* Ask user for controls - keyboard or joystick */
     CONTROL selected_control = select_controls();
 
-    uint8_t current_level = 0;
+    uint8_t current_level = 13;
     SET_COUNTDOWN(32);
 
     /* Outer loop, level selection */
@@ -103,6 +108,14 @@ void main(void)
         if( mp_result == 2 )
           printf_swarm_details();
 #endif
+        if( mp_result == 3 )
+        {
+          TOGGLE_SOUND;
+#if STDIO_DEBUG
+          printf("sound_on is %d\n",sound_on);
+#endif
+        }
+
         /* Update level displayed on screen. Swarm logic is applied to updated level.  */
         update_level( level );
         if( draw_timer(0) )

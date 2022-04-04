@@ -67,6 +67,7 @@ OBJECTS = main.o \
 	  game_over.o \
 	  print_str.o \
 	  timer.o \
+	  sound.o \
 	  snow_table.o \
 	  snow_demo_plot.o \
 	  font.o
@@ -85,6 +86,7 @@ C_OBJECTS = main.o \
             virion.o \
             print_str.o \
             timer.o \
+            sound.o \
 	          game_over.o
 
 LEVEL_INCS = $(wildcard level*.inc)
@@ -104,6 +106,7 @@ HEADERS = main.h \
 	  print_str.h \
 	  timer.h \
 	  snow.h \
+	  sound.h \
 	  game_over.h
 
 # Not used:	  

@@ -17,37 +17,43 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef __MAIN_H
-#define __MAIN_H
+#include <stdint.h>
+#include <sound.h>
+#include "int.h"
+#include "sound.h"
 
-/* Also change the CRT in the makefile, 31 or 4 */
-#define STDIO_DEBUG 0
+uint8_t  sound_on   = 1;
+uint16_t last_sound = 0;
 
-#if STDIO_DEBUG
-#pragma printf %f %d %ld
-#endif
-
-#define NAMED_ARG(N,V) (V)
-
-/* Use 25 for the timing test, 40 for final game (as the algorithm stands) */
-#define MAX_IN_SWARM ((const uint8_t)25)
-
-#define MAX_GAME_TIME_SECS   ((const uint8_t)1200)
-#define MAX_GAME_TIME_FRAMES ((const uint8_t)60000)
-#define GAME_TIME_FRAMES_PER_BLOCK ((const uint16_t)1875)
-
-
-typedef enum _direction
+void kill_virion_sound( void )
 {
-  DIRECTION_STATIONARY = 0,
-  DIRECTION_N          = 0x01,
-  DIRECTION_NE         = 0x03,
-  DIRECTION_NW         = 0x05,
-  DIRECTION_S          = 0x04,
-  DIRECTION_SE         = 0x14,
-  DIRECTION_SW         = 0x24,
-  DIRECTION_E          = 0x40,
-  DIRECTION_W          = 0x80,
-} DIRECTION;
+  if( sound_on )
+    bit_beepfx(BEEPFX_PICK);
+}
 
-#endif
+
+void reactivate_virion_sound( void )
+{
+  if( !sound_on )
+    return;
+
+  if( (GET_TICKER - last_sound) > SOUND_FRAMES )
+  {
+    bit_beepfx(BEEPFX_HIT_4);
+    last_sound = GET_TICKER;
+  }
+}
+
+void relocate_virion_sound( void )
+{
+  if( !sound_on )
+    return;
+
+  if( (GET_TICKER - last_sound) > SOUND_FRAMES )
+  {
+    if( sound_on )
+      bit_beepfx(BEEPFX_SHOT_1);
+    last_sound = GET_TICKER;
+  }
+}
+

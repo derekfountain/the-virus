@@ -20,7 +20,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <arch/zx.h>
-#include <sound.h>
 #include "level.h"
 #include "levels.h"
 #include "main.h"
@@ -28,6 +27,7 @@
 #include "swarm.h"
 #include "print_str.h"
 #include "timer.h"
+#include "sound.h"
 
 uint8_t  current_frame;
 uint16_t frames_before_change;
@@ -63,10 +63,6 @@ void finalise_level( LEVEL *level )
   (level->level_handler)( level, PHASE_FINALISE );
 }
 
-/* Don't play a sound every bounce or reactiviation, it slows things down */
-#define SOUND_FRAMES 4
-
-uint16_t last_sound = 0;
 void apply_virion_logic( LEVEL *level, VIRION *v )
 {
   if( ! v->active )
@@ -88,7 +84,7 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
     {
       /* Deactivate this one */
       deactivate_virion( v );
-      bit_beepfx(BEEPFX_PICK);
+      kill_virion_sound();
 
       /* For when/if it's reactivated */
       change_immunity( v, MAKE_NON_IMMUNE );
@@ -105,12 +101,8 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
 	VIRION *reactivated_virion = activate_virion_in_swarm( START_IMMUNE );
 	if( reactivated_virion != INVALID_VIRION_PTR )
 	{
-	  if( (GET_TICKER - last_sound) > SOUND_FRAMES )
-          {
-	    bit_beepfx(BEEPFX_HIT_4);
-	    last_sound = GET_TICKER;
-          }
 	  random_reappear_virion( reactivated_virion );
+	  reactivate_virion_sound();
 	}
       }
     }
@@ -118,11 +110,7 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
   else if( attribute == (PAPER_BLUE|BRIGHT) )
   {
     random_reappear_virion( v );
-    if( (GET_TICKER - last_sound) > SOUND_FRAMES )
-    {
-      bit_beepfx(BEEPFX_SHOT_1);
-      last_sound = GET_TICKER;
-    }
+    relocate_virion_sound();
   }
   else if( attribute == (PAPER_BLACK|BRIGHT) )
   {

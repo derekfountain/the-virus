@@ -17,37 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef __MAIN_H
-#define __MAIN_H
+#ifndef __SOUND_H
+#define __SOUND_H
 
-/* Also change the CRT in the makefile, 31 or 4 */
-#define STDIO_DEBUG 0
+/* Don't play a sound every bounce or reactiviation, it slows things down */
+#define SOUND_FRAMES 4
 
-#if STDIO_DEBUG
-#pragma printf %f %d %ld
-#endif
+extern uint8_t sound_on;
+#define TOGGLE_SOUND  sound_on=!sound_on
 
-#define NAMED_ARG(N,V) (V)
-
-/* Use 25 for the timing test, 40 for final game (as the algorithm stands) */
-#define MAX_IN_SWARM ((const uint8_t)25)
-
-#define MAX_GAME_TIME_SECS   ((const uint8_t)1200)
-#define MAX_GAME_TIME_FRAMES ((const uint8_t)60000)
-#define GAME_TIME_FRAMES_PER_BLOCK ((const uint16_t)1875)
-
-
-typedef enum _direction
-{
-  DIRECTION_STATIONARY = 0,
-  DIRECTION_N          = 0x01,
-  DIRECTION_NE         = 0x03,
-  DIRECTION_NW         = 0x05,
-  DIRECTION_S          = 0x04,
-  DIRECTION_SE         = 0x14,
-  DIRECTION_SW         = 0x24,
-  DIRECTION_E          = 0x40,
-  DIRECTION_W          = 0x80,
-} DIRECTION;
+void kill_virion_sound(void);
+void reactivate_virion_sound(void);
+void relocate_virion_sound(void);
 
 #endif

@@ -20,6 +20,7 @@
 #include <stdint.h>
 #include <arch/zx.h>
 #include <input.h>
+#include <z80.h>
 #include "main.h"
 #include "player.h"
 
@@ -294,6 +295,12 @@ uint8_t move_player( void )
     return 1;
   else if( in_key_pressed( IN_KEY_SCANCODE_2 ) )
     return 2;
+  else if( in_key_pressed( IN_KEY_SCANCODE_s ) )
+  {
+    /* Need to wait for the key to be released. Can do better. */
+    z80_delay_ms(200);
+    return 3;
+  }
   else
     return 0;
 }
