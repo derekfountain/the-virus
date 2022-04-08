@@ -182,6 +182,17 @@ LEVEL levels[] =
     NAMED_ARG("Level data",           NULL),
   },
 
+    {
+    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
+    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting velocity",    100),
+    NAMED_ARG("Border colour",        INK_MAGENTA),
+    NAMED_ARG("Immune frames",        0),
+    NAMED_ARG("Level handler",        draw_level14_frame),
+    NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Level data",           NULL),
+  },
+
 };
 
 LEVEL *get_level( uint8_t lev )
@@ -566,6 +577,73 @@ void draw_level13_frame( LEVEL *level, LEVEL_PHASE phase )
 
     ld->phase_counter = 0;
 #include "level13.inc"
+  }
+  else if( phase == PHASE_FINALISE )
+  {
+    free( level->level_data );
+  }
+}
+
+#define L14_TRAIL_LEN 6
+typedef struct _level14_data
+{
+  uint8_t phase_counter;
+  uint8_t block_is_green;
+  uint8_t i;
+} LEVEL14_DATA;
+uint8_t l14_trail[][2] = { {12,9},{13,9},{14,9},{15,9},{16,9},{17,9},{18,9},{19,9},
+                           {19,10},{19,11},{19,12},
+                           {19,13},{18,13},{17,13},{16,13},{15,13},{14,13},{13,13},{12,13},
+                           {12,12},{12,11},{12,10},
+                         };
+void get_trail_entry( int8_t i, uint8_t **result )
+{
+  if( i < 0 )
+    i = 22+i;
+  *result = &(l14_trail[i][0]);
+}
+void draw_level14_frame( LEVEL *level, LEVEL_PHASE phase )
+{
+  (void)level;
+  (void)phase;
+
+  if( phase == PHASE_UPDATE )
+  {
+    LEVEL14_DATA *l_data = level->level_data;
+
+    if( ++l_data->phase_counter == 50 )
+    {
+      l_data->phase_counter = 0;
+      l_data->block_is_green = !l_data->block_is_green;
+      swap_cells_colours( (PAPER_GREEN|INK_BLACK|BRIGHT), (PAPER_RED|INK_BLACK|BRIGHT) );
+    }
+
+    uint8_t i;
+    uint8_t *entry;
+    int8_t plot = (int8_t)l_data->i;
+    for(i=0;i<L14_TRAIL_LEN;i++)
+    {
+      get_trail_entry( plot, &entry );
+      plot--;
+      *(zx_cxy2aaddr(*entry,*(entry+1))) = ( (( l_data->block_is_green ) ? PAPER_RED : PAPER_GREEN)|BRIGHT);
+    }
+
+    /* Add a white one to remove the end of the previous trail */
+    get_trail_entry( plot, &entry );
+    *(zx_cxy2aaddr(*entry,*(entry+1))) = PAPER_WHITE;
+
+    if( ++l_data->i == 22 )
+      l_data->i = 0;
+  }
+  else if( phase == PHASE_INIT )
+  {
+    LEVEL14_DATA *ld = (LEVEL14_DATA*)malloc( sizeof(LEVEL14_DATA) );
+    level->level_data = ld;
+
+    ld->phase_counter =  0;
+    ld->block_is_green = 1;
+    ld->i              = 0;
+#include "level14.inc"
   }
   else if( phase == PHASE_FINALISE )
   {

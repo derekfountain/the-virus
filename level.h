@@ -54,6 +54,4 @@ void update_level( LEVEL* );
 void finalise_level( LEVEL * );
 void apply_virion_logic( LEVEL*, VIRION* );
 
-/* This has no business being here. :} */
-void toggle_sound(void);
 #endif

@@ -21,6 +21,7 @@
 #define __MAIN_H
 
 /* Also change the CRT in the makefile, 31 or 4 */
+/* This no longer works as is, there's not enough memory */
 #define STDIO_DEBUG 0
 
 #if STDIO_DEBUG
