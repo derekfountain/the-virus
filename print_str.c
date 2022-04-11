@@ -19,6 +19,7 @@
 
 #include <arch/zx.h>
 #include <intrinsic.h>
+#include <string.h>
 #include "print_str.h"
 
 extern uint8_t font[];
@@ -30,6 +31,17 @@ void print_char( uint8_t *screen_addr, uint8_t c )
   {
     *screen_addr = font[((c-' ')*8)+i];
     screen_addr += 256;
+  }
+}
+
+void print_str( uint8_t x, uint8_t y, uint8_t *str )
+{
+  uint8_t i;
+
+  for( i=0; i<strlen(str); i++ )
+  {
+    uint8_t *addr = zx_cxy2saddr(x+i, y);
+    print_char( addr, *(str+i) );
   }
 }
 

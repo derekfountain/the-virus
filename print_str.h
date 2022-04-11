@@ -22,6 +22,7 @@
 
 #include <stdint.h>
 
+void print_str( uint8_t, uint8_t, uint8_t* );
 void roll_str( uint8_t, uint8_t* );
 
 #endif

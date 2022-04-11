@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <arch/zx.h>
+#include <z80.h>
 #include "timer.h"
 #include "print_str.h"
 
@@ -66,10 +67,59 @@ boolean_t draw_timer( boolean_t force )
     return 0;
 }
 
+uint8_t tombstone[] = { 0b00011111, 0b11111000,
+                        0b00100100, 0b00000100,
+                        0b01001000, 0b00000010,
+                        0b10010000, 0b00000001,
+                        0b10010000, 0b00000001,
+                        0b10010110, 0b01011001,
+                        0b10010101, 0b01010101,
+                        0b10010110, 0b01011001,
+                        0b10010101, 0b01010001,
+                        0b10010000, 0b00000001,
+                        0b10010000, 0b00000001,
+                        0b10010000, 0b00000001,
+                        0b10010000, 0b00000001,
+                        0b11111111, 0b11111111,
+                        0b10010000, 0b00000001,
+                        0b11111111, 0b11111111,
+};
+
+void print_graphic( uint8_t x, uint8_t y, uint16_t *graphic )
+{
+  uint8_t i;
+  uint8_t *addr = zx_cxy2saddr(x, y);
+  for(i=0; i<16; i++)
+  {
+    z80_wpoke( addr, *graphic );
+    addr = zx_saddrpdown(addr);
+    graphic++;
+  }
+}
+
 void time_up( void )
 {
   zx_cls( PAPER_WHITE );
 
-  roll_str(11,"   Time up! The virus wins!     ");
+  roll_str(6,"           Time up!             ");
+
+  print_str(1, 7, "The virus takes over the world");
+  z80_delay_ms(3000);
+  print_str(5, 10, "Humanity is destroyed");
+  z80_delay_ms(2000);
+  print_str(9, 12, "and it's all");
+  z80_delay_ms(1500);
+  print_str(10, 14, "your");
+  z80_delay_ms(1500);
+  print_str(15, 14, "fault");
+  z80_delay_ms(1500);
+
+  uint16_t i;
+  for(i=0; i<3000; i++)
+  {
+    print_graphic( (rand()%31), rand()%23, tombstone);
+  }
+
+  z80_delay_ms(3000);
 }
 

@@ -23,9 +23,7 @@
 void game_over( void )
 {
   zx_cls( PAPER_WHITE );
-  
-// Put the cloud on one side of a barrier
-// and an animated something on the other side?
+  zx_border( INK_BLACK );
 
   while(1);
 }
