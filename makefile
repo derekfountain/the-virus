@@ -56,7 +56,6 @@ OBJECTS = main.o \
 	  levels.o \
 	  swarm.o \
     virion.o \
-	  game_over.o \
 	  print_str.o \
 	  timer.o \
 	  sound.o \
@@ -78,8 +77,7 @@ C_OBJECTS = main.o \
             virion.o \
             print_str.o \
             timer.o \
-            sound.o \
-	          game_over.o
+            sound.o
 
 LEVEL_INCS = $(wildcard level*.inc)
 
@@ -98,8 +96,7 @@ HEADERS = main.h \
 	  print_str.h \
 	  timer.h \
 	  snow.h \
-	  sound.h \
-	  game_over.h
+	  sound.h
 
 # Not used:	  
 #	  rtunes.h

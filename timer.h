@@ -29,6 +29,7 @@ extern uint8_t paused;
 
 boolean_t draw_timer( boolean_t );
 void time_up( void );
+void winner( void );
 
 #define GET_COUNTDOWN       ((uint8_t)(countdown))
 #define SET_COUNTDOWN(t)    countdown = (uint8_t)(t)

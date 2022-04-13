@@ -85,6 +85,24 @@ uint8_t tombstone[] = { 0b00011111, 0b11111000,
                         0b11111111, 0b11111111,
 };
 
+uint8_t heart[]     = { 0b00000000, 0b00000000,
+                        0b00000000, 0b00000000,
+                        0b00011100, 0b00111000,
+                        0b00100010, 0b01000100,
+                        0b01000001, 0b10000010,
+                        0b01000000, 0b00000010,
+                        0b01000000, 0b00000010,
+                        0b01000000, 0b00000010,
+                        0b00100000, 0b00000100,
+                        0b00010000, 0b00001000,
+                        0b00001000, 0b00010000,
+                        0b00000100, 0b00100000,
+                        0b00000010, 0b01000000,
+                        0b00000001, 0b10000000,
+                        0b00000000, 0b00000000,
+                        0b00000000, 0b00000000,
+};
+
 void print_graphic( uint8_t x, uint8_t y, uint16_t *graphic )
 {
   uint8_t i;
@@ -94,6 +112,15 @@ void print_graphic( uint8_t x, uint8_t y, uint16_t *graphic )
     z80_wpoke( addr, *graphic );
     addr = zx_saddrpdown(addr);
     graphic++;
+  }
+}
+
+void splatter_graphic(uint8_t *gfx )
+{
+  uint16_t i;
+  for(i=0; i<3000; i++)
+  {
+    print_graphic( (rand()%31), rand()%23, gfx);
   }
 }
 
@@ -114,11 +141,26 @@ void time_up( void )
   print_str(15, 14, "fault");
   z80_delay_ms(1500);
 
-  uint16_t i;
-  for(i=0; i<3000; i++)
-  {
-    print_graphic( (rand()%31), rand()%23, tombstone);
-  }
+  splatter_graphic(tombstone);
+
+  z80_delay_ms(3000);
+}
+
+/* This has no business being here, but the graphic routine was already here. :o} */
+void winner( void )
+{
+  zx_cls( PAPER_WHITE );
+
+  roll_str(6,"            Winner!             ");
+
+  print_str(5, 7, "The virus is defeated!");
+  z80_delay_ms(3000);
+  print_str(7, 10, "Humanity is saved!");
+  z80_delay_ms(2000);
+  print_str(6, 13, "The world loves you!");
+  z80_delay_ms(2500);
+
+  splatter_graphic(heart);
 
   z80_delay_ms(3000);
 }
