@@ -193,6 +193,17 @@ LEVEL levels[] =
     NAMED_ARG("Level data",           NULL),
   },
 
+  {
+    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
+    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting velocity",    100),
+    NAMED_ARG("Border colour",        INK_BLUE),
+    NAMED_ARG("Immune frames",        0),
+    NAMED_ARG("Level handler",        draw_level15_frame),
+    NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Level data",           NULL),
+  },
+
 };
 
 LEVEL *get_level( uint8_t lev )
@@ -644,6 +655,49 @@ void draw_level14_frame( LEVEL *level, LEVEL_PHASE phase )
     ld->block_is_green = 1;
     ld->i              = 0;
 #include "level14.inc"
+  }
+  else if( phase == PHASE_FINALISE )
+  {
+    free( level->level_data );
+  }
+}
+
+typedef struct _level15_data
+{
+  uint8_t   state;
+  uint8_t   phase_counter;
+} LEVEL15_DATA;
+void draw_level15_frame( LEVEL *level, LEVEL_PHASE phase )
+{
+  (void)level;
+  (void)phase;
+
+// Large green box, shrinks each phase?
+
+  if( phase == PHASE_UPDATE )
+  {
+    LEVEL15_DATA *l_data = level->level_data;
+    uint8_t block[][2] = { {4,7},{4,14},{4,11},{4,10},{255,255} };
+
+    if( ++l_data->phase_counter < 25 )
+      return;
+
+    l_data->phase_counter = 0;
+    l_data->state = !l_data->state;
+
+    if( l_data->state == 0 )
+      draw_cells( block, (PAPER_GREEN|BRIGHT) );
+    else
+      draw_cells( block, PAPER_WHITE );
+  }
+  else if( phase == PHASE_INIT )
+  {
+    LEVEL15_DATA *ld = (LEVEL15_DATA*)malloc( sizeof(LEVEL15_DATA) );
+    level->level_data = ld;
+
+    ld->state = 0;
+    ld->phase_counter = 0;
+#include "level15.inc"
   }
   else if( phase == PHASE_FINALISE )
   {

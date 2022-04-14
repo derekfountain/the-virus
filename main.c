@@ -32,7 +32,6 @@
 #include "controls.h"
 #include "int.h"
 #include "swarm.h"
-#include "game_over.h"
 #include "timer.h"
 #include "sound.h"
 
@@ -141,6 +140,7 @@ void main(void)
       if( GET_COUNTDOWN == 0 )
       {
         zx_border( INK_BLACK );
+        hide_player();
         time_up();
         break;
       }
@@ -151,8 +151,8 @@ void main(void)
       /* Completed game? */
       if( current_level == NUM_LEVELS )
       {
-        zx_border( INK_MAGENTA );
-        game_over();
+        hide_player();
+        winner();
         break;
       }
 
