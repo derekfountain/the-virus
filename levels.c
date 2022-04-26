@@ -527,9 +527,6 @@ typedef struct _level12_data
 } LEVEL12_DATA;
 void draw_level12_frame( LEVEL *level, LEVEL_PHASE phase )
 {
-  (void)level;
-  (void)phase;
-
   if( phase == PHASE_UPDATE )
   {
     LEVEL12_DATA *l_data = level->level_data;
@@ -567,9 +564,6 @@ typedef struct _level13_data
 } LEVEL13_DATA;
 void draw_level13_frame( LEVEL *level, LEVEL_PHASE phase )
 {
-  (void)level;
-  (void)phase;
-
   if( phase == PHASE_UPDATE )
   {
     LEVEL13_DATA *l_data = level->level_data;
@@ -615,9 +609,6 @@ void get_trail_entry( int8_t i, uint8_t **result )
 }
 void draw_level14_frame( LEVEL *level, LEVEL_PHASE phase )
 {
-  (void)level;
-  (void)phase;
-
   if( phase == PHASE_UPDATE )
   {
     LEVEL14_DATA *l_data = level->level_data;
@@ -669,26 +660,26 @@ typedef struct _level15_data
 } LEVEL15_DATA;
 void draw_level15_frame( LEVEL *level, LEVEL_PHASE phase )
 {
-  (void)level;
-  (void)phase;
-
-// Large green box, shrinks each phase?
-
   if( phase == PHASE_UPDATE )
   {
     LEVEL15_DATA *l_data = level->level_data;
-    uint8_t block[][2] = { {4,7},{4,14},{4,11},{4,10},{255,255} };
 
-    if( ++l_data->phase_counter < 25 )
+    if( ++l_data->phase_counter < 30 )
       return;
 
     l_data->phase_counter = 0;
-    l_data->state = !l_data->state;
+    if( ++l_data->state == 2 )
+      l_data->state = 0;
 
     if( l_data->state == 0 )
-      draw_cells( block, (PAPER_GREEN|BRIGHT) );
+    {
+#include "level15_0.inc"
+    }
     else
-      draw_cells( block, PAPER_WHITE );
+    {
+#include "level15_1.inc"
+    }
+
   }
   else if( phase == PHASE_INIT )
   {
@@ -697,10 +688,13 @@ void draw_level15_frame( LEVEL *level, LEVEL_PHASE phase )
 
     ld->state = 0;
     ld->phase_counter = 0;
-#include "level15.inc"
+#include "level15_1.inc"
   }
   else if( phase == PHASE_FINALISE )
   {
     free( level->level_data );
   }
 }
+
+
+// 16 how about hopping pairs of red/green and red/blue?
