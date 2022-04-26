@@ -203,7 +203,18 @@ LEVEL levels[] =
     NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
-
+#if 0
+  {
+    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
+    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting velocity",    100),
+    NAMED_ARG("Border colour",        INK_BLUE),
+    NAMED_ARG("Immune frames",        0),
+    NAMED_ARG("Level handler",        draw_level16_frame),
+    NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Level data",           NULL),
+  },
+#endif
 };
 
 LEVEL *get_level( uint8_t lev )
@@ -372,10 +383,6 @@ void draw_level8_frame( LEVEL *level, LEVEL_PHASE phase )
     ld->x = 2;
     *(zx_cxy2aaddr(ld->x,11)) = (PAPER_RED|BRIGHT);
   }
-  else if( phase == PHASE_FINALISE )
-  {
-    free( level->level_data );
-  }
 }
 
 typedef struct _level9_data
@@ -426,10 +433,6 @@ void draw_level9_frame( LEVEL *level, LEVEL_PHASE phase )
     ld->d = DIRECTION_E;
     _2x2( ld->x, ld->y, (PAPER_RED|BRIGHT) );
   }
-  else if( phase == PHASE_FINALISE )
-  {
-    free( level->level_data );
-  }
 }
 
 
@@ -473,10 +476,6 @@ void draw_level10_frame( LEVEL *level, LEVEL_PHASE phase )
 
 #include "level10.inc"
   }
-  else if( phase == PHASE_FINALISE )
-  {
-    free( level->level_data );
-  }
 }
 
 
@@ -514,10 +513,6 @@ void draw_level11_frame( LEVEL *level, LEVEL_PHASE phase )
     ld->phase_counter = 0;
     _2x2( 15, 10, (PAPER_RED|BRIGHT) );
   }
-  else if( phase == PHASE_FINALISE )
-  {
-    free( level->level_data );
-  }
 }
 
 typedef struct _level12_data
@@ -552,10 +547,6 @@ void draw_level12_frame( LEVEL *level, LEVEL_PHASE phase )
     ld->phase_counter = 0;
 #include "level12.inc"
   }
-  else if( phase == PHASE_FINALISE )
-  {
-    free( level->level_data );
-  }
 }
 
 typedef struct _level13_data
@@ -582,10 +573,6 @@ void draw_level13_frame( LEVEL *level, LEVEL_PHASE phase )
 
     ld->phase_counter = 0;
 #include "level13.inc"
-  }
-  else if( phase == PHASE_FINALISE )
-  {
-    free( level->level_data );
   }
 }
 
@@ -647,10 +634,6 @@ void draw_level14_frame( LEVEL *level, LEVEL_PHASE phase )
     ld->i              = 0;
 #include "level14.inc"
   }
-  else if( phase == PHASE_FINALISE )
-  {
-    free( level->level_data );
-  }
 }
 
 typedef struct _level15_data
@@ -668,8 +651,7 @@ void draw_level15_frame( LEVEL *level, LEVEL_PHASE phase )
       return;
 
     l_data->phase_counter = 0;
-    if( ++l_data->state == 2 )
-      l_data->state = 0;
+    l_data->state = !l_data->state;
 
     if( l_data->state == 0 )
     {
@@ -688,13 +670,46 @@ void draw_level15_frame( LEVEL *level, LEVEL_PHASE phase )
 
     ld->state = 0;
     ld->phase_counter = 0;
-#include "level15_1.inc"
-  }
-  else if( phase == PHASE_FINALISE )
-  {
-    free( level->level_data );
+#include "level15_0.inc"
   }
 }
 
+#if 0
+typedef struct _level16_data
+{
+  uint8_t   state;
+  uint8_t   phase_counter;
+} LEVEL16_DATA;
+void draw_level16_frame( LEVEL *level, LEVEL_PHASE phase )
+{
+  if( phase == PHASE_UPDATE )
+  {
+    LEVEL16_DATA *l_data = level->level_data;
 
-// 16 how about hopping pairs of red/green and red/blue?
+    if( ++l_data->phase_counter < 100 )
+      return;
+
+    l_data->phase_counter = 0;
+    l_data->state = !l_data->state;
+
+    if( l_data->state == 0 )
+    {
+#include "level16_0.inc"
+    }
+    else
+    {
+#include "level16_1.inc"
+    }
+
+  }
+  else if( phase == PHASE_INIT )
+  {
+    LEVEL16_DATA *ld = (LEVEL16_DATA*)malloc( sizeof(LEVEL16_DATA) );
+    level->level_data = ld;
+
+    ld->state = 0;
+    ld->phase_counter = 0;
+#include "level16_0.inc"
+  }
+}
+#endif

@@ -60,7 +60,9 @@ void init_level( LEVEL *level )
 
 void finalise_level( LEVEL *level )
 {
-  (level->level_handler)( level, PHASE_FINALISE );
+  // (level->level_handler)( level, PHASE_FINALISE );
+  free( level->level_data );
+
 }
 
 void apply_virion_logic( LEVEL *level, VIRION *v )
