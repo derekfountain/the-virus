@@ -86,7 +86,7 @@ void main(void)
       UNPAUSE_TIMER;
 
 #define TIME_TEST 0
-/* Keep this time test at less than 20 seconds with MAX_SWARM=25 */
+/* Keep this time test at about 12.5 seconds with MAX_SWARM=25 */
 #if TIME_TEST
       uint16_t countdown = 500;
 #endif

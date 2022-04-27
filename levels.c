@@ -171,7 +171,7 @@ LEVEL levels[] =
     NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
-#if 0
+
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
@@ -180,7 +180,6 @@ LEVEL levels[] =
     NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
-#endif
 };
 
 LEVEL *get_level( uint8_t lev )
@@ -640,9 +639,6 @@ void draw_level15_frame( LEVEL *level, LEVEL_PHASE phase )
   }
 }
 
-//basic compression of the level data is probably easiest way to save some space
-//or move what i can into contended memory?
-#if 0
 typedef struct _level16_data
 {
   uint8_t   state;
@@ -680,4 +676,3 @@ void draw_level16_frame( LEVEL *level, LEVEL_PHASE phase )
 #include "level16_0.inc"
   }
 }
-#endif

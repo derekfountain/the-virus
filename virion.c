@@ -36,10 +36,7 @@ void clear_virion( VIRION *v )
       v->previous_y < 0 || v->previous_y > 183 )
     return;
 
-  register uint8_t x = v->previous_x;
-  register uint8_t y = v->previous_y;
-
-  snow_unplot( x, y );
+  snow_unplot( v->previous_x, v->previous_y );
 }
 
 
@@ -72,10 +69,7 @@ void draw_virion( VIRION *v )
       v->y < 0 || v->y > 183 )
     return;
 
-  register uint8_t x = v->x;
-  register uint8_t y = v->y;
-
-  snow_plot( x, y );
+  snow_plot( v->x, v->y );
 }
 
 
