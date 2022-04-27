@@ -51,9 +51,6 @@ void main(void)
   /* Set up interrupts */
   setup_int();
 
-  /* Initialise the tables which optimise screen drawing */
-  init_draw_virion_tables();
-
   /* Infinite outer loop, new game */
   while(1)
   {

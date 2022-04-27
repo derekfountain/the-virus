@@ -40,7 +40,6 @@ typedef struct _virion
 
 } VIRION;
 
-void init_draw_virion_tables(void);
 void draw_virion( VIRION* );
 void clear_virion( VIRION* );
 void activate_virion( VIRION* );

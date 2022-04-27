@@ -38,27 +38,10 @@ volatile uint16_t ticker = 0;
 volatile uint16_t timer_ticker = 0;
 
 /*
- * 1000ms ticker. This one increments every 50 interrupts, so it
- * ticks up every second.
- */
-uint8_t           ticker_1000ms_int_counter;  /* This goes 0-49 */
-volatile uint16_t ticker_1000ms = 0;
-volatile uint8_t  interrupt_service_required_1000ms = 0;
-
-/*
- * 500ms ticker. This one increments every 25 interrupts, so it
- * ticks up every 500ms.
- */
-uint8_t           ticker_500ms_int_counter;  /* This goes 0-25 */
-volatile uint16_t ticker_500ms = 0;
-volatile uint8_t  interrupt_service_required_500ms = 0;
-
-/*
  * 100ms ticker. This one increments every 5 interrupts, so it
  * ticks up every 100ms.
  */
 uint8_t           ticker_100ms_int_counter;  /* This goes 0-5 */
-volatile uint16_t ticker_100ms = 0;
 volatile uint8_t  interrupt_service_required_100ms = 0;
 
 IM2_DEFINE_ISR(isr)
@@ -78,23 +61,10 @@ IM2_DEFINE_ISR(isr)
     }
   }
 
-  if( ++ticker_1000ms_int_counter == 50 )
-  {
-      ticker_1000ms_int_counter = 0;
-      ticker_1000ms++;
-      interrupt_service_required_1000ms = 1;
-  }
-  if( ++ticker_500ms_int_counter == 25 )
-  {
-      ticker_500ms_int_counter = 0;
-      ticker_500ms++;
-      interrupt_service_required_500ms = 1;
-  }
   if( ++ticker_100ms_int_counter == 5 )
   {
-      ticker_100ms_int_counter = 0;
-      ticker_100ms++;
-      interrupt_service_required_100ms = 1;
+    ticker_100ms_int_counter = 0;
+    interrupt_service_required_100ms = 1;
   }
 
   /* This is better done here, it's smoother on screen */

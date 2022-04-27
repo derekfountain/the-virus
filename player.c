@@ -23,6 +23,7 @@
 #include <z80.h>
 #include "main.h"
 #include "player.h"
+#include "snow.h"
 
 uint8_t  player_x=255;
 uint8_t  player_y=255;
@@ -31,11 +32,6 @@ uint8_t  previous_player_y;
 
 CONTROL   control;
 DIRECTION direction;
-
-/* These are in virion.c, bit of a cheat but I can use them here */
-extern uint8_t *screen_line_starts[192];
-extern uint8_t  screen_line_offsets[256];
-extern uint8_t  screen_byte_values[256];
 
 void hide_player( void )
 {
@@ -307,7 +303,7 @@ uint8_t move_player( void )
 
 
 /*
- * This clear-and-redraw code is called form interrupt, so 50 times a
+ * This clear-and-redraw code is called from interrupt, so 50 times a
  * second. Depending on how long it takes to reposition and redraw the
  * swarm the player's key scanning and repositioning might not have
  * happened. (This isn't a 50fps game.) So only clear and redraw when
@@ -321,15 +317,10 @@ void draw_player( void )
   if( player_y == 255 )
     return;
 
-  uint8_t *scr_byte = screen_line_starts[player_y];
-
-  *(scr_byte + screen_line_offsets[player_x])   |= screen_byte_values[player_x];
-  *(scr_byte + screen_line_offsets[player_x+1]) |= screen_byte_values[player_x+1];
-
-  scr_byte = screen_line_starts[player_y+1];
-
-  *(scr_byte + screen_line_offsets[player_x])   |= screen_byte_values[player_x];
-  *(scr_byte + screen_line_offsets[player_x+1]) |= screen_byte_values[player_x+1];
+  snow_plot( player_x,   player_y );
+  snow_plot( player_x+1, player_y );
+  snow_plot( player_x,   player_y+1 );
+  snow_plot( player_x+1, player_y+1 );
 
   previous_player_x = player_x;
   previous_player_y = player_y;
@@ -343,15 +334,10 @@ void clear_player( void )
   if( (player_x == previous_player_x) && (player_y == previous_player_y) )
     return;
 
-  uint8_t *scr_byte = screen_line_starts[previous_player_y];
-
-  *(scr_byte + screen_line_offsets[previous_player_x])   = 0;
-  *(scr_byte + screen_line_offsets[previous_player_x+1]) = 0;
-
-  scr_byte = screen_line_starts[previous_player_y+1];
-
-  *(scr_byte + screen_line_offsets[previous_player_x])   = 0;
-  *(scr_byte + screen_line_offsets[previous_player_x+1]) = 0;
+  snow_unplot( previous_player_x,   previous_player_y );
+  snow_unplot( previous_player_x+1, previous_player_y );
+  snow_unplot( previous_player_x,   previous_player_y+1 );
+  snow_unplot( previous_player_x+1, previous_player_y+1 );
 
   redraw_required = 1;
 }
