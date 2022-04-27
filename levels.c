@@ -30,7 +30,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level0_frame),
     NAMED_ARG("Caption",              "  Red cells kill the virus!     "),
@@ -39,7 +38,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", 8),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level1_frame),
     NAMED_ARG("Caption",              "Green cells make things worse!  "),
@@ -48,7 +46,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level2_frame),
     NAMED_ARG("Caption",              " Black cells get in the way!    "),
@@ -57,7 +54,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level3_frame),
     NAMED_ARG("Caption",              "  Blue cells confuse things!    "),
@@ -68,7 +64,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Level handler",        draw_level4_frame),
     NAMED_ARG("Caption",              "         Got it? OK!            "),
@@ -78,7 +73,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Level handler",        draw_level5_frame),
     NAMED_ARG("Caption",              NULL),
@@ -88,7 +82,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Level handler",        draw_level6_frame),
     NAMED_ARG("Caption",              NULL),
@@ -98,7 +91,6 @@ LEVEL levels[] =
     {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Level handler",        draw_level7_frame),
     NAMED_ARG("Caption",              NULL),
@@ -110,7 +102,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level8_frame),
     NAMED_ARG("Caption",              "Oh, and sometimes things move!  "),
@@ -120,7 +111,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level9_frame),
     NAMED_ARG("Caption",              NULL),
@@ -130,7 +120,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level10_frame),
     NAMED_ARG("Caption",              NULL),
@@ -140,7 +129,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level11_frame),
     NAMED_ARG("Caption",              NULL),
@@ -150,7 +138,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level12_frame),
     NAMED_ARG("Caption",              NULL),
@@ -161,7 +148,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Level handler",        draw_level13_frame),
     NAMED_ARG("Caption",              NULL),
@@ -171,7 +157,6 @@ LEVEL levels[] =
     {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Level handler",        draw_level14_frame),
     NAMED_ARG("Caption",              NULL),
@@ -181,7 +166,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level15_frame),
     NAMED_ARG("Caption",              NULL),
@@ -191,7 +175,6 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
     NAMED_ARG("Max num virions",      MAX_IN_SWARM),
-    NAMED_ARG("Starting velocity",    100),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level16_frame),
     NAMED_ARG("Caption",              NULL),

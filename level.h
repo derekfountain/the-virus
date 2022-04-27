@@ -35,8 +35,6 @@ typedef struct __level
   uint8_t  starting_num_virions;
   uint8_t  max_virions;
 
-  int16_t  starting_velocity;
-
   uint8_t  border_colour;
 
   void   (*level_handler)( struct __level*, LEVEL_PHASE );

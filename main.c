@@ -44,6 +44,8 @@ unsigned char version[8] = "ver0.01";
 /* Statics for speed */
 LEVEL   *level;
 
+#define STARTING_VELOCITY (uint8_t)100
+
 void main(void)
 {
   /* Set up interrupts */
@@ -58,7 +60,7 @@ void main(void)
     /* Ask user for controls - keyboard or joystick */
     CONTROL selected_control = select_controls();
 
-    uint8_t current_level = 15;
+    uint8_t current_level = 0;
     SET_COUNTDOWN(32);
 
     /* Outer loop, level selection */
@@ -82,8 +84,7 @@ void main(void)
 
       init_player( selected_control );
 
-      init_swarm( level->starting_num_virions,
-                  level->starting_velocity );
+      init_swarm( level->starting_num_virions, STARTING_VELOCITY );
 
       UNPAUSE_TIMER;
 
