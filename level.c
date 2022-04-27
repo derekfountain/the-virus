@@ -70,12 +70,12 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
   if( ! v->active )
     return;
 
-  if( v->x_i < 0 || v->x_i > 255
+  if( v->x < 0 || v->x > 255
       ||
-      v->y_i < 0 || v->y_i > 183 )
+      v->y < 0 || v->y > 183 )
     return;
 
-  uint8_t attribute = *(zx_pxy2aaddr(v->x_i, v->y_i));
+  uint8_t attribute = *(zx_pxy2aaddr(v->x, v->y));
   if( (attribute & BRIGHT) == 0 )
     return;
 
@@ -114,8 +114,8 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
      */
     v->velocity_x = -(v->velocity_x);	
     v->velocity_y = -(v->velocity_y);	
-    v->x_i        = v->previous_x_i;
-    v->y_i        = v->previous_y_i;
+    v->x          = v->previous_x;
+    v->y          = v->previous_y;
   }
 }
 

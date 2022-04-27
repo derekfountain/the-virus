@@ -31,13 +31,13 @@ void clear_virion( VIRION *v )
   if( ! v->active )
     return;
 
-  if( v->previous_x_i < 0 || v->previous_x_i > 255
+  if( v->previous_x < 0 || v->previous_x > 255
       ||
-      v->previous_y_i < 0 || v->previous_y_i > 183 )
+      v->previous_y < 0 || v->previous_y > 183 )
     return;
 
-  register uint8_t x = v->previous_x_i;
-  register uint8_t y = v->previous_y_i;
+  register uint8_t x = v->previous_x;
+  register uint8_t y = v->previous_y;
 
   snow_unplot( x, y );
 }
@@ -67,13 +67,13 @@ void draw_virion( VIRION *v )
   if( ! v->active )
     return;
 
-  if( v->x_i < 0 || v->x_i > 255
+  if( v->x < 0 || v->x > 255
       ||
-      v->y_i < 0 || v->y_i > 183 )
+      v->y < 0 || v->y > 183 )
     return;
 
-  register uint8_t x = v->x_i;
-  register uint8_t y = v->y_i;
+  register uint8_t x = v->x;
+  register uint8_t y = v->y;
 
   snow_plot( x, y );
 }
@@ -88,16 +88,16 @@ void random_reappear_virion( VIRION *v )
   v->velocity_x = 0;
   v->velocity_y = 0;
 
-  v->previous_x_i = -1;
-  v->previous_y_i = -1;
+  v->previous_x = -1;
+  v->previous_y = -1;
 
   /* If the virion transports onto a black block it gets stuck in it, so don't allow that */
   do
   {
-    v->x_i = rand()&255;
-    v->y_i = rand()&183;
+    v->x = rand()&255;
+    v->y = rand()&183;
   }
-  while( *(zx_pxy2aaddr(v->x_i,v->y_i)) == (PAPER_BLACK|BRIGHT) );
+  while( *(zx_pxy2aaddr(v->x,v->y)) == (PAPER_BLACK|BRIGHT) );
 
   return;
 }

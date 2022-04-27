@@ -40,16 +40,16 @@ void init_swarm( uint8_t size, int16_t vel )
   /* Starting points */
   for( p=0; p<MAX_IN_SWARM; p++ )
   {
-    swarm[p].x_i = rand()&255;
-    swarm[p].y_i = rand()&183;
+    swarm[p].x = rand()&255;
+    swarm[p].y = rand()&183;
 
     swarm[p].velocity_x = vel;
     swarm[p].velocity_y = vel;
 
     swarm[p].active = 0;
     
-    swarm[p].previous_x_i = -1;
-    swarm[p].previous_y_i = -1;
+    swarm[p].previous_x = -1;
+    swarm[p].previous_y = -1;
   }
 
   /* Activate those used in this level */
@@ -99,8 +99,8 @@ void update_swarm( LEVEL *level )
      * the player is at x=0 then 0*0=0, and if the swarm dot is at x=255 then 0-65280=-65280. The
      * result will be in the range 255 to -255.
      */
-    vx += (((int32_t)QUERY_PLAYER_X*(int32_t)256) - (int32_t)swarm[i].x_i*(int32_t)256) / (int16_t)256;
-    vy += (((int32_t)QUERY_PLAYER_Y*(int32_t)256) - (int32_t)swarm[i].y_i*(int32_t)256) / (int16_t)256;
+    vx += (((int32_t)QUERY_PLAYER_X*(int32_t)256) - (int32_t)swarm[i].x*(int32_t)256) / (int16_t)256;
+    vy += (((int32_t)QUERY_PLAYER_Y*(int32_t)256) - (int32_t)swarm[i].y*(int32_t)256) / (int16_t)256;
 
 
     /*
@@ -156,8 +156,8 @@ void update_swarm( LEVEL *level )
      * calculated but the div 100 was very expensive. div 64 has a similar enough effect and is much
      * faster.
      */
-    swarm[i].x_i += vx/64;
-    swarm[i].y_i += vy/64;
+    swarm[i].x += vx/64;
+    swarm[i].y += vy/64;
     
     /* Restore calculated values back into the structure */
     swarm[i].velocity_x = vx;
@@ -172,8 +172,8 @@ void update_swarm( LEVEL *level )
     draw_virion( &swarm[i] );
 
     /* Note the new place ready for removing it next time round */
-    swarm[i].previous_x_i = swarm[i].x_i;
-    swarm[i].previous_y_i = swarm[i].y_i;
+    swarm[i].previous_x = swarm[i].x;
+    swarm[i].previous_y = swarm[i].y;
   }
 
   return;
@@ -224,7 +224,7 @@ void printf_swarm_details(void)
   printf("Virions left: %d\n",GET_ACTIVE_SWARM_SIZE);
   uint8_t i;
   for(i=0;i<MAX_IN_SWARM;i++)
-    printf("Virion %d, active %d, x=%d, y=%d\n",i,swarm[i].active,swarm[i].x_i,swarm[i].y_i);
+    printf("Virion %d, active %d, x=%d, y=%d\n",i,swarm[i].active,swarm[i].x,swarm[i].y);
 }
 
 #endif
