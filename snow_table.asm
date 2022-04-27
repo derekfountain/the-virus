@@ -1,9 +1,9 @@
 SECTION snow_table
 
-; This table needs to be 256 byte aligned. The stack is set in zpragma.inc
+; This 1K table needs to be 256 byte aligned. The stack is set in zpragma.inc
 ; to be just below the interrupt table at D000, so there's plenty of
 ; space above that table. I can put this at the top of memory.
-ORG $FC00
+; Check in sections.asm that these rules are applied.
 
 PUBLIC _snow_tab
 _snow_tab:

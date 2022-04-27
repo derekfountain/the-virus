@@ -105,8 +105,8 @@ HEADERS = main.h \
 %.cpre: %.c $(PRAGMA_FILE) $(HEADERS)
 	$(CC) $(CPP_FLAGS) -o $@ $<
 
-%.o: %.c $(PRAGMA_FILE) $(HEADERS)
-	$(CC) $(CFLAGS) -o $@ $<
+%.o: %.c $(PRAGMA_FILE) $(HEADERS) sections.asm
+	$(CC) $(CFLAGS) sections.asm -o $@ $<
 
 %.o: %.asm
 	$(AS) $(ASFLAGS) -o $@ $<

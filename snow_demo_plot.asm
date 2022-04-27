@@ -4,7 +4,9 @@
 ;; should be shown as under. Hopefully GPL compliant.
 ;; Thanks, Andy!
 
-SECTION code_user
+; If this ever changes size (esp if it gets bigger) the snow_code section
+; in sections.asm will need moving.
+SECTION snow_code
 EXTERN _snow_tab
 
 PUBLIC _snow_plot
