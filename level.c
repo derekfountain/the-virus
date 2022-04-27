@@ -81,31 +81,20 @@ void apply_virion_logic( LEVEL *level, VIRION *v )
 
   if( attribute == (PAPER_RED|BRIGHT) )
   {
-    /* If virion isn't immune deactivate it */
-    if( !v->immunity_start )
-    {
-      /* Deactivate this one */
-      deactivate_virion( v );
-      kill_virion_sound();
-
-      /* For when/if it's reactivated */
-      change_immunity( v, MAKE_NON_IMMUNE );
-    }
+    /* Deactivate this one */
+    deactivate_virion( v );
+    kill_virion_sound();
   }
   else if( attribute == (PAPER_GREEN|BRIGHT) )
   {
-    /* If virion isn't immune, trigger an inactive one back to life */
-    if( !v->immunity_start )
+    if( GET_ACTIVE_SWARM_SIZE < level->max_virions )
     {
-      if( GET_ACTIVE_SWARM_SIZE < level->max_virions )
+      /* Active any currently inactive virion in the swarm */
+      VIRION *reactivated_virion = activate_virion_in_swarm();
+      if( reactivated_virion != INVALID_VIRION_PTR )
       {
-	/* Active any currently inactive virion in the swarm, it starts off immune */
-	VIRION *reactivated_virion = activate_virion_in_swarm( START_IMMUNE );
-	if( reactivated_virion != INVALID_VIRION_PTR )
-	{
-	  random_reappear_virion( reactivated_virion );
-	  reactivate_virion_sound();
-	}
+        random_reappear_virion( reactivated_virion );
+        reactivate_virion_sound();
       }
     }
   }

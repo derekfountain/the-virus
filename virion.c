@@ -91,7 +91,6 @@ void activate_virion( VIRION *v )
   {
     v->active = 1;
     SET_SWARM_SIZE( GET_ACTIVE_SWARM_SIZE + 1 );
-    change_immunity( v, MAKE_IMMUNE );
   }
 }
 
@@ -154,17 +153,5 @@ void random_reappear_virion( VIRION *v )
   }
   while( *(zx_pxy2aaddr(v->x_i,v->y_i)) == (PAPER_BLACK|BRIGHT) );
 
-  change_immunity( v, MAKE_IMMUNE );
-
   return;
 }
-
-
-void change_immunity( VIRION *v, uint8_t new_state )
-{
-  if( new_state == MAKE_IMMUNE )
-    v->immunity_start = GET_TICKER;
-  else
-    v->immunity_start = 0;
-}
-

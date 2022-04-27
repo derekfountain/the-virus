@@ -39,8 +39,6 @@ typedef struct __level
 
   uint8_t  border_colour;
 
-  uint16_t immune_frames;
-
   void   (*level_handler)( struct __level*, LEVEL_PHASE );
 
   uint8_t *caption;
