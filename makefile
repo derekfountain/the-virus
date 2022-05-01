@@ -58,6 +58,7 @@ OBJECTS = main.o \
 	  level.o \
 	  levels.o \
 	  levels_01234567.o \
+	  levels_89.o \
 	  levels_primitives.o \
 	  swarm.o \
     virion.o \
@@ -68,9 +69,6 @@ OBJECTS = main.o \
 	  snow_demo_plot.o \
 	  font.o
 	  
-# Not used:
-#   rtunes.o \
-
 # Objects built from C files (as opposed to ASMs)
 C_OBJECTS = main.o \
             player.o \
@@ -79,7 +77,8 @@ C_OBJECTS = main.o \
 	          level.o \
             levels.o \
             levels_01234567.o \
-					  levels_primitives.o \
+					  levels_89.o \
+	  				levels_primitives.o \
 	          swarm.o \
             virion.o \
             print_str.o \
@@ -98,6 +97,7 @@ HEADERS = main.h \
 	  level.h \
 	  levels.h \
 	  levels_01234567.h \
+	  levels_89.h \
 	  levels_primitives.h \
 	  controls.h \
 	  int.h \

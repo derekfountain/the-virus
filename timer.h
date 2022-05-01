@@ -23,7 +23,7 @@
 #include <stdint.h>
 typedef uint8_t boolean_t;
 
-/* Countdown goes from 31 to 0 */
+/* These can be accessed directly by client code using the macros defined in here. See timer.c for definitions */
 extern uint8_t countdown;
 extern uint8_t paused;
 

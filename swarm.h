@@ -41,7 +41,7 @@ VIRION *activate_virion_in_swarm( void );
 extern uint8_t current_num_virions;
 
 /*
- * Set the number of virions in the swarm. Probably a bad idea, this.
+ * Set the number of virions in the swarm.
  */
 #define SET_SWARM_SIZE(N) current_num_virions = ((uint8_t)(N))
 

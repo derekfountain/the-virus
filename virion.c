@@ -23,7 +23,6 @@
 #include "virion.h"
 #include "int.h"
 #include "swarm.h"
-#include "rtunes.h"
 #include "snow.h"
 
 void clear_virion( VIRION *v )

@@ -29,6 +29,7 @@ uint8_t move_player( void );
 void clear_player( void );
 void draw_player( void );
 
+/* Player x,y, see player.c for definitions. Client code can use these macros */
 extern uint8_t player_x;
 extern uint8_t player_y;
 #define QUERY_PLAYER_X ((uint8_t)(player_x))
