@@ -26,6 +26,8 @@
 #include "levels.h"
 #include "levels_01234567.h"
 #include "levels_89.h"
+#include "levels_1011.h"
+#include "levels_1213.h"
 #include "levels_primitives.h"
 
 LEVEL levels[] = 
@@ -191,146 +193,6 @@ LEVEL *get_level( uint8_t lev )
   return &levels[lev];
 }
 
-
-typedef struct _level10_data
-{
-  uint8_t   x;
-  DIRECTION d;
-} LEVEL10_DATA;
-void draw_level10_frame( LEVEL *level, LEVEL_PHASE phase )
-{
-  if( phase == PHASE_UPDATE )
-  {
-    LEVEL10_DATA *l_data = level->level_data;
-
-    _5x1( l_data->x, 10, PAPER_WHITE );
-
-    if( l_data->d == DIRECTION_E )
-      l_data->x++;
-    else
-      l_data->x--;
-
-    if( l_data->x == 27 )
-    {
-      l_data->d = DIRECTION_W;
-    }
-    else if( l_data->x == 0 )
-    {
-      l_data->d = DIRECTION_E;
-    }
-
-    _5x1( l_data->x, 10, (PAPER_RED|BRIGHT) );
-  }
-  else if( phase == PHASE_INIT )
-  {
-    LEVEL10_DATA *ld = (LEVEL10_DATA*)malloc( sizeof(LEVEL10_DATA) );
-    level->level_data = ld;
-
-    ld->x = 0;
-    ld->d = DIRECTION_E;
-    _5x1( ld->x, 10, (PAPER_RED|BRIGHT) );
-
-#include "level10.inc"
-  }
-}
-
-
-typedef struct _level11_data
-{
-  uint8_t   state;
-  uint8_t   phase_counter;
-} LEVEL11_DATA;
-void draw_level11_frame( LEVEL *level, LEVEL_PHASE phase )
-{
-  if( phase == PHASE_UPDATE )
-  {
-    LEVEL11_DATA *l_data = level->level_data;
-
-    if( ++l_data->phase_counter < 25 )
-      return;
-
-    l_data->phase_counter = 0;
-    if( ++l_data->state == 3 )
-      l_data->state = 0;
-
-    if( l_data->state == 0 )
-      _2x2( 15, 10, (PAPER_RED|BRIGHT) );
-    else if( l_data->state == 1 )
-      _2x2( 15, 10, (PAPER_GREEN|BRIGHT) );
-    else
-      _2x2( 15, 10, (PAPER_BLUE|BRIGHT) );
-  }
-  else if( phase == PHASE_INIT )
-  {
-    LEVEL11_DATA *ld = (LEVEL11_DATA*)malloc( sizeof(LEVEL11_DATA) );
-    level->level_data = ld;
-
-    ld->state = 0;
-    ld->phase_counter = 0;
-    _2x2( 15, 10, (PAPER_RED|BRIGHT) );
-  }
-}
-
-typedef struct _level12_data
-{
-  uint8_t   state;
-  uint8_t   phase_counter;
-} LEVEL12_DATA;
-void draw_level12_frame( LEVEL *level, LEVEL_PHASE phase )
-{
-  if( phase == PHASE_UPDATE )
-  {
-    LEVEL12_DATA *l_data = level->level_data;
-    uint8_t block[][2] = { {4,7},{4,14},{4,11},{4,10},{255,255} };
-
-    if( ++l_data->phase_counter < 25 )
-      return;
-
-    l_data->phase_counter = 0;
-    l_data->state = !l_data->state;
-
-    if( l_data->state == 0 )
-      draw_cells( block, (PAPER_GREEN|BRIGHT) );
-    else
-      draw_cells( block, PAPER_WHITE );
-  }
-  else if( phase == PHASE_INIT )
-  {
-    LEVEL12_DATA *ld = (LEVEL12_DATA*)malloc( sizeof(LEVEL12_DATA) );
-    level->level_data = ld;
-
-    ld->state = 0;
-    ld->phase_counter = 0;
-#include "level12.inc"
-  }
-}
-
-typedef struct _level13_data
-{
-  uint8_t   phase_counter;
-} LEVEL13_DATA;
-void draw_level13_frame( LEVEL *level, LEVEL_PHASE phase )
-{
-  if( phase == PHASE_UPDATE )
-  {
-    LEVEL13_DATA *l_data = level->level_data;
-
-    if( ++l_data->phase_counter < 30 )
-      return;
-
-    l_data->phase_counter = 0;
-
-    swap_cells_colours( (PAPER_GREEN|INK_BLACK|BRIGHT), (PAPER_BLACK|INK_BLACK|BRIGHT) );
-  }
-  else if( phase == PHASE_INIT )
-  {
-    LEVEL13_DATA *ld = (LEVEL13_DATA*)malloc( sizeof(LEVEL13_DATA) );
-    level->level_data = ld;
-
-    ld->phase_counter = 0;
-#include "level13.inc"
-  }
-}
 
 #define L14_TRAIL_LEN 6
 typedef struct _level14_data

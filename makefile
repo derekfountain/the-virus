@@ -59,6 +59,8 @@ OBJECTS = main.o \
 	  levels.o \
 	  levels_01234567.o \
 	  levels_89.o \
+	  levels_1011.o \
+	  levels_1213.o \
 	  levels_primitives.o \
 	  swarm.o \
     virion.o \
@@ -78,6 +80,8 @@ C_OBJECTS = main.o \
             levels.o \
             levels_01234567.o \
 					  levels_89.o \
+					  levels_1011.o \
+					  levels_1213.o \
 	  				levels_primitives.o \
 	          swarm.o \
             virion.o \
@@ -98,6 +102,8 @@ HEADERS = main.h \
 	  levels.h \
 	  levels_01234567.h \
 	  levels_89.h \
+	  levels_1011.h \
+	  levels_1213.h \
 	  levels_primitives.h \
 	  controls.h \
 	  int.h \
@@ -130,6 +136,9 @@ all : clean_tmp $(EXEC) $(SYM_OUTPUT) $(TAGGABLE_SRC) $(TAGS) report
 levels_01234567.o : levels_01234567.c $(PRAGMA_FILE) $(HEADERS) $(LEVEL01234567_INCS)
 	$(CC) $(CFLAGS) -o $@ $<
 	
+# Might need to do better here. There are several level*.c files with dependences on
+# level*.inc files.	
+
 levels.o : levels.c $(PRAGMA_FILE) $(HEADERS) $(LEVEL_INCS)
 	$(CC) $(CFLAGS) -o $@ $<
 
