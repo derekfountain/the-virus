@@ -61,6 +61,7 @@ OBJECTS = main.o \
 	  levels_89.o \
 	  levels_1011.o \
 	  levels_1213.o \
+	  levels_1415.o \
 	  levels_primitives.o \
 	  swarm.o \
     virion.o \
@@ -82,6 +83,7 @@ C_OBJECTS = main.o \
 					  levels_89.o \
 					  levels_1011.o \
 					  levels_1213.o \
+					  levels_1415.o \
 	  				levels_primitives.o \
 	          swarm.o \
             virion.o \
@@ -104,6 +106,7 @@ HEADERS = main.h \
 	  levels_89.h \
 	  levels_1011.h \
 	  levels_1213.h \
+	  levels_1415.h \
 	  levels_primitives.h \
 	  controls.h \
 	  int.h \
