@@ -19,10 +19,13 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 #include <arch/zx.h>
 #include "main.h"
 #include "level.h"
 #include "levels.h"
+#include "levels_01234567.h"
+#include "levels_primitives.h"
 
 LEVEL levels[] = 
 {
@@ -185,142 +188,6 @@ LEVEL levels[] =
 LEVEL *get_level( uint8_t lev )
 {
   return &levels[lev];
-}
-
-
-void draw_cells( uint8_t cells[][2], uint8_t colour )
-{
-  uint8_t i=0;
-
-  while( cells[i][0] != 0xFF )
-  {
-    *(zx_cxy2aaddr(cells[i][0],cells[i][1])) = colour;
-
-    i++;
-  }
-}
-
-void _2x2( uint8_t x, uint8_t y, uint8_t colour )
-{
-  uint8_t cells[4][2] = { {0,0},{1,0},{1,1},{0,1} };
-
-  uint8_t i;
-  for(i=0;i<4;i++)
-    *(zx_cxy2aaddr(cells[i][0]+x,cells[i][1]+y)) = colour;
-}
-
-void _5x1( uint8_t x, uint8_t y, uint8_t colour )
-{
-  uint8_t i;
-
-  uint8_t level_red[][2] = { {0,1},{1,1},{2,1},{3,1},{4,1} };
-  for(i=0;i<5;i++)
-    *(zx_cxy2aaddr(level_red[i][0]+x,level_red[i][1]+y)) = colour;
-}
-
-void swap_cells_colours( uint8_t src, uint8_t dest )
-{
-  register uint8_t *addr = (uint8_t*)0x5ADF;
-  while( addr >= (uint8_t*)0x5800 )
-  {
-    if( *addr == src )
-      *addr = dest;
-    else if( *addr == dest )
-      *addr = src;
-
-    addr--;
-  }
-}
-
-/* 4 starter levels */
-void draw_level0_frame( LEVEL *level, LEVEL_PHASE phase )
-{
-  (void)level;
-  (void)phase;
-
-  if( phase == PHASE_INIT )
-  {
-#include "level0.inc"
-  }
-}
-
-void draw_level1_frame( LEVEL *level, LEVEL_PHASE phase )
-{
-  (void)level;
-  (void)phase;
-
-  if( phase == PHASE_INIT )
-  {
-#include "level1.inc"
-  }
-}
-
-void draw_level2_frame( LEVEL *level, LEVEL_PHASE phase )
-{
-  (void)level;
-  (void)phase;
-
-  if( phase == PHASE_INIT )
-  {
-#include "level2.inc"
-  }
-}
-
-void draw_level3_frame( LEVEL *level, LEVEL_PHASE phase )
-{
-  (void)level;
-  (void)phase;
-
-  if( phase == PHASE_INIT )
-  {
-#include "level3.inc"
-  }
-}
-
-
-/* 4 intermediate levels */
-void draw_level4_frame( LEVEL *level, LEVEL_PHASE phase )
-{
-  (void)level;
-  (void)phase;
-
-  if( phase == PHASE_INIT )
-  {
-#include "level4.inc"
-  }
-}
-
-void draw_level5_frame( LEVEL *level, LEVEL_PHASE phase )
-{
-  (void)level;
-  (void)phase;
-
-  if( phase == PHASE_INIT )
-  {
-#include "level5.inc"
-  }
-}
-
-void draw_level6_frame( LEVEL *level, LEVEL_PHASE phase )
-{
-  (void)level;
-  (void)phase;
-
-  if( phase == PHASE_INIT )
-  {
-#include "level6.inc"
-  }
-}
-
-void draw_level7_frame( LEVEL *level, LEVEL_PHASE phase )
-{
-  (void)level;
-  (void)phase;
-
-  if( phase == PHASE_INIT )
-  {
-#include "level7.inc"
-  }
 }
 
 
@@ -620,11 +487,6 @@ void draw_level15_frame( LEVEL *level, LEVEL_PHASE phase )
 
     if( l_data->state == 0 )
     {
-#include "level15_0.inc"
-    }
-    else
-    {
-#include "level15_1.inc"
     }
 
   }
@@ -635,7 +497,8 @@ void draw_level15_frame( LEVEL *level, LEVEL_PHASE phase )
 
     ld->state = 0;
     ld->phase_counter = 0;
-#include "level15_0.inc"
+
+    draw_box(0,0,31,22,PAPER_RED|BRIGHT);
   }
 }
 
@@ -658,6 +521,7 @@ void draw_level16_frame( LEVEL *level, LEVEL_PHASE phase )
 
     if( l_data->state == 0 )
     {
+      memset( 0x5800, PAPER_WHITE, (32*24) );
 #include "level16_0.inc"
     }
     else
