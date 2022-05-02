@@ -57,7 +57,7 @@ void main(void)
     /* Ask user for controls - keyboard or joystick */
     CONTROL selected_control = select_controls();
 
-    uint8_t current_level = 15;
+    uint8_t current_level = 0;
     SET_COUNTDOWN(32);
 
     /* Outer loop, level selection */
@@ -86,7 +86,7 @@ void main(void)
       UNPAUSE_TIMER;
 
 #define TIME_TEST 0
-/* Keep this time test at about 12.5 seconds with MAX_SWARM=25 */
+/* Keep this time test at about 15.5 seconds with MAX_SWARM=25 */
 #if TIME_TEST
       uint16_t countdown = 500;
 #endif

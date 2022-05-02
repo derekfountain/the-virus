@@ -60,9 +60,15 @@ void init_level( LEVEL *level )
 
 void finalise_level( LEVEL *level )
 {
-  // (level->level_handler)( level, PHASE_FINALISE );
-  free( level->level_data );
-
+  /*
+   * The design is to call this:
+   *   (level->level_handler)( level, PHASE_FINALISE );
+   * which allows the level code to tidy up after itself. But in
+   * practise the levels only ever (maybe) allocate some memory
+   * so I can get away with this:
+   */
+  if( level->level_data )
+    free( level->level_data );
 }
 
 void apply_virion_logic( LEVEL *level, VIRION *v )

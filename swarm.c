@@ -78,90 +78,105 @@ void update_swarm( LEVEL *level )
    * Update each dot's velocity and then location based on empirically derived rules. This actually
    * updates every other dot each pass, every other-other dot being left to do the same as it did
    * in the previous iteration. This allows twice as many dots to be managed, at the expense of
-   * more accurate behaviour.
+   * more accurate behaviour. The virion logic needs to be applied to every dot each time round
+   * though, because on screens with moving blocks the logic needs to be applied for each block
+   * change.
    *
    * The loop is always over the maximum number, regardless of how many are in play. This keeps the
    * speed reasonably consistent.
    */
   every_other_dot ^= 1;
-  for( i=every_other_dot; i < MAX_IN_SWARM; i+=2 )
+  for( i=0; i < MAX_IN_SWARM; i++ )
   {
-    /*
-     * The velocity values are used throughout this algorithm, make them
-     * easier to access.
-     */
-    vx = swarm[i].velocity_x;
-    vy = swarm[i].velocity_y;
-
-    /*
-     * Move towards player. Calculate distance to player, take 1/256th of it. Add that to velocity.
-     * This has to be a signed 32bit calculation. If the player is a x=255 then 255*256=65280. If
-     * the player is at x=0 then 0*0=0, and if the swarm dot is at x=255 then 0-65280=-65280. The
-     * result will be in the range 255 to -255.
-     */
-    vx += (((int32_t)QUERY_PLAYER_X*(int32_t)256) - (int32_t)swarm[i].x*(int32_t)256) / (int16_t)256;
-    vy += (((int32_t)QUERY_PLAYER_Y*(int32_t)256) - (int32_t)swarm[i].y*(int32_t)256) / (int16_t)256;
-
-
-    /*
-     * Limit velocity. This is ugly and causes stuttering sort of behaviour, but it's the best
-     * I could get without a square root.
-     */
-    const int16_t SPEED_LIMIT = 255;
-    if( vx > SPEED_LIMIT || vx < -SPEED_LIMIT )
-    {
-      int16_t div2 = vx / 2;
-      if( div2 != 0 )
-	vx = div2;
-    }
-    if( vy > SPEED_LIMIT || vy < -SPEED_LIMIT )
-    {
-      int16_t div2 = vy / 2;
-      if( div2 != 0 )
-	vy = div2;
-    }
-
-    /*
-     * Original algorithm attempts to move dots so they don't get too close to each other.
-     * That's not possible on the Spectrum, there's nowhere near enough CPU power to
-     * iterate all of the swarm each iteration of this loop. I get the milling around behaviour
-     * by introducing some random jitter. However, this only happens to dots which are moving
-     * slowly. This means they crowd the player, but when moving at speed they tend to clump
-     * together, which makes guiding the swarm easier.
-     */
-    const int16_t JITTER_LIMIT = 35;
-    if( (vx < JITTER_LIMIT && vx > -JITTER_LIMIT)
-	||
-	(vy < JITTER_LIMIT && vy > -JITTER_LIMIT) )
+    if( (i & 0x01) == every_other_dot )
     {
       /*
-       * This used to pick from the random pool at random, but that was a bit expensive CPUwise.
-       * This implementation cycles the pool of random numbers, but you can't really tell from
-       * the swarm's on screen behaviour.
-       * This is buggy. Because the ++ is missing off the second use of 'r', the same random value
-       * will be used for vy on this iteration of the loop and for vx on the next iteration. But
-       * fixing it makes a pattern appear in the swarm's behaviour. I don't know why, so I left
-       * it like this. The first instance of "that's not a bug it's a feature" I've ever come across!
+       * The velocity values are used throughout this algorithm, make them
+       * easier to access.
        */
-      static uint8_t r=0;
-      vx += random_values[r++];
-      vy += random_values[r];
+      vx = swarm[i].velocity_x;
+      vy = swarm[i].velocity_y;
+
+      /*
+       * Move towards player. Calculate distance to player, take 1/256th of it. Add that to velocity.
+       * This has to be a signed 32bit calculation. If the player is a x=255 then 255*256=65280. If
+       * the player is at x=0 then 0*0=0, and if the swarm dot is at x=255 then 0-65280=-65280. The
+       * result will be in the range 255 to -255.
+       */
+      vx += (((int32_t)QUERY_PLAYER_X*(int32_t)256) - (int32_t)swarm[i].x*(int32_t)256) / (int16_t)256;
+      vy += (((int32_t)QUERY_PLAYER_Y*(int32_t)256) - (int32_t)swarm[i].y*(int32_t)256) / (int16_t)256;
+
+
+      /*
+       * Limit velocity. This is ugly and causes stuttering sort of behaviour, but it's the best
+       * I could get without a square root.
+       */
+      const int16_t SPEED_LIMIT = 255;
+      if( vx > SPEED_LIMIT || vx < -SPEED_LIMIT )
+      {
+        int16_t div2 = vx / 2;
+        if( div2 != 0 )
+          vx = div2;
+      }
+      if( vy > SPEED_LIMIT || vy < -SPEED_LIMIT )
+      {
+        int16_t div2 = vy / 2;
+        if( div2 != 0 )
+          vy = div2;
+      }
+
+      /*
+       * Original algorithm attempts to move dots so they don't get too close to each other.
+       * That's not possible on the Spectrum, there's nowhere near enough CPU power to
+       * iterate all of the swarm each iteration of this loop. I get the milling around behaviour
+       * by introducing some random jitter. However, this only happens to dots which are moving
+       * slowly. This means they crowd the player, but when moving at speed they tend to clump
+       * together, which makes guiding the swarm easier.
+       */
+      const int16_t JITTER_LIMIT = 35;
+      if( (vx < JITTER_LIMIT && vx > -JITTER_LIMIT)
+          ||
+          (vy < JITTER_LIMIT && vy > -JITTER_LIMIT) )
+      {
+        /*
+         * This used to pick from the random pool at random, but that was a bit expensive CPUwise.
+         * This implementation cycles the pool of random numbers, but you can't really tell from
+         * the swarm's on screen behaviour.
+         * This is buggy. Because the ++ is missing off the second use of 'r', the same random value
+         * will be used for vy on this iteration of the loop and for vx on the next iteration. But
+         * fixing it makes a pattern appear in the swarm's behaviour. I don't know why, so I left
+         * it like this. The first instance of "that's not a bug it's a feature" I've ever come across!
+         */
+        static uint8_t r=0;
+        vx += random_values[r++];
+        vy += random_values[r];
+      }
+
+
+      /*
+       * Finally, add calculated velocity to dot position. The velocity calculation is done at high
+       * scale to maintain accuracy in the integers. (Doing maths with numbers in the range 0-255
+       * leads to rounding to zeroes way too much.) This was designed to take 1% of the velocity as
+       * calculated but the div 100 was very expensive. div 64 has a similar enough effect and is much
+       * faster.
+       */
+      swarm[i].x += vx/64;
+      swarm[i].y += vy/64;
+
+      /* Restore calculated values back into the structure */
+      swarm[i].velocity_x = vx;
+      swarm[i].velocity_y = vy;
+
+      /*
+       * The virion logic call was in here until I spotted the every-other-one bug.
+       */
     }
 
-
     /*
-     * Finally, add calculated velocity to dot position. The velocity calculation is done at high
-     * scale to maintain accuracy in the integers. (Doing maths with numbers in the range 0-255
-     * leads to rounding to zeroes way too much.) This was designed to take 1% of the velocity as
-     * calculated but the div 100 was very expensive. div 64 has a similar enough effect and is much
-     * faster.
+     * This has to be outside the every-other-one condition because the screens with
+     * moving blocks need all virions processed for each iteration. Otherwise a block
+     * can move onto a virion and there's a 50/50 chance it doesn't get recognised.
      */
-    swarm[i].x += vx/64;
-    swarm[i].y += vy/64;
-    
-    /* Restore calculated values back into the structure */
-    swarm[i].velocity_x = vx;
-    swarm[i].velocity_y = vy;
 
     /* Remove it from its old screen position */
     clear_virion( &swarm[i] );
@@ -174,6 +189,7 @@ void update_swarm( LEVEL *level )
     /* Note the new place ready for removing it next time round */
     swarm[i].previous_x = swarm[i].x;
     swarm[i].previous_y = swarm[i].y;
+
   }
 
   return;
