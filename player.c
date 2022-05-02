@@ -314,7 +314,7 @@ uint8_t redraw_required = 0;
 void draw_player( void )
 {
   /* Use y-pos as a sentinel to indicate the caption is on screen */
-  if( player_y == 255 )
+  if( redraw_required == 0 || player_y == 255  )
     return;
 
   snow_plot( player_x,   player_y );

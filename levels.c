@@ -29,6 +29,7 @@
 #include "levels_1011.h"
 #include "levels_1213.h"
 #include "levels_1415.h"
+#include "levels_1617.h"
 #include "levels_primitives.h"
 
 LEVEL levels[] = 
@@ -150,7 +151,6 @@ LEVEL levels[] =
     NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
-  /* Play testing suggests I'm just hitting the red at this point, so 5 more levels as the timer stands */
 
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
@@ -169,6 +169,7 @@ LEVEL levels[] =
     NAMED_ARG("Caption",              NULL),
     NAMED_ARG("Level data",           NULL),
   },
+  /* Play testing with 40 virions and a joystick, I got here in 17mins */
 
   {
     NAMED_ARG("Starting num virions", MAX_IN_SWARM),
@@ -192,44 +193,4 @@ LEVEL levels[] =
 LEVEL *get_level( uint8_t lev )
 {
   return &levels[lev];
-}
-
-
-typedef struct _level16_data
-{
-  uint8_t   state;
-  uint8_t   phase_counter;
-} LEVEL16_DATA;
-void draw_level16_frame( LEVEL *level, LEVEL_PHASE phase )
-{
-  if( phase == PHASE_UPDATE )
-  {
-    LEVEL16_DATA *l_data = level->level_data;
-
-    if( ++l_data->phase_counter < 100 )
-      return;
-
-    l_data->phase_counter = 0;
-    l_data->state = !l_data->state;
-
-    if( l_data->state == 0 )
-    {
-      memset( 0x5800, PAPER_WHITE, (32*24) );
-#include "level16_0.inc"
-    }
-    else
-    {
-#include "level16_1.inc"
-    }
-
-  }
-  else if( phase == PHASE_INIT )
-  {
-    LEVEL16_DATA *ld = (LEVEL16_DATA*)malloc( sizeof(LEVEL16_DATA) );
-    level->level_data = ld;
-
-    ld->state = 0;
-    ld->phase_counter = 0;
-#include "level16_0.inc"
-  }
 }
