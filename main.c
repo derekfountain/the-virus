@@ -57,7 +57,7 @@ void main(void)
     /* Ask user for controls - keyboard or joystick */
     CONTROL selected_control = select_controls();
 
-    uint8_t current_level = 9;
+    uint8_t current_level = 16;
     SET_COUNTDOWN(32);
 
     /* Outer loop, level selection */
@@ -85,7 +85,7 @@ void main(void)
 
       UNPAUSE_TIMER;
 
-#define TIME_TEST 1
+#define TIME_TEST 0
 /*
  * Time test:
  *

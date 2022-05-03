@@ -35,21 +35,33 @@ void draw_level16_frame( LEVEL *level, LEVEL_PHASE phase )
   {
     LEVEL16_DATA *l_data = level->level_data;
 
-    if( ++l_data->phase_counter < 100 )
+    if( ++l_data->phase_counter < 30 )
       return;
-
     l_data->phase_counter = 0;
-    l_data->state = !l_data->state;
 
-    if( l_data->state == 0 )
+    uint8_t *att_addr = (uint8_t*)0x5800;
+    while( att_addr < (uint8_t*)0x5B00 )
     {
-      memset( 0x5800, PAPER_WHITE, (32*24) );
-#include "level16_0.inc"
+      switch( *att_addr )
+      {
+        case PAPER_RED|BRIGHT:
+          *att_addr = PAPER_GREEN|BRIGHT;
+          break;
+        case PAPER_BLUE|BRIGHT:
+          *att_addr = PAPER_RED|BRIGHT;
+          break;
+        case PAPER_BLACK|BRIGHT:
+          *att_addr = PAPER_BLUE|BRIGHT;
+          break;
+        case PAPER_GREEN|BRIGHT:
+          *att_addr = PAPER_BLACK|BRIGHT;
+          break;
+      }
+      att_addr++;
     }
-    else
-    {
-#include "level16_1.inc"
-    }
+    _2x2(15,4,PAPER_GREEN|BRIGHT);
+    _2x2(15,11,PAPER_GREEN|BRIGHT);
+    _2x2(15,18,PAPER_GREEN|BRIGHT);
 
   }
   else if( phase == PHASE_INIT )
@@ -60,5 +72,6 @@ void draw_level16_frame( LEVEL *level, LEVEL_PHASE phase )
     /* Set up to start in state 0 */
     ld->state = 1;
     ld->phase_counter = 100;
+#include "level16.inc"
   }
 }
