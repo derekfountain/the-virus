@@ -34,34 +34,47 @@ void draw_cells( uint8_t cells[][2], uint8_t colour )
 
 void _2x2( uint8_t x, uint8_t y, uint8_t colour )
 {
-  uint8_t cells[4][2] = { {0,0},{1,0},{1,1},{0,1} };
-
-  uint8_t i;
-  for(i=0;i<4;i++)
-    *(zx_cxy2aaddr(cells[i][0]+x,cells[i][1]+y)) = colour;
+  uint8_t *att_addr = zx_cxy2aaddr(x, y);
+  *(att_addr) = colour;
+  att_addr++;
+  *(att_addr) = colour;
+  att_addr+=31;
+  *(att_addr) = colour;
+  att_addr++;
+  *(att_addr) = colour;
 }
 
 void _5x1( uint8_t x, uint8_t y, uint8_t colour )
 {
-  uint8_t i;
+  uint8_t *att_addr = zx_cxy2aaddr(x, y);
 
-  uint8_t level_red[][2] = { {0,1},{1,1},{2,1},{3,1},{4,1} };
-  for(i=0;i<5;i++)
-    *(zx_cxy2aaddr(level_red[i][0]+x,level_red[i][1]+y)) = colour;
+  *(att_addr++) = colour;
+  *(att_addr++) = colour;
+  *(att_addr++) = colour;
+  *(att_addr++) = colour;
+  *(att_addr++) = colour;
 }
 
 void draw_box( uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t colour )
 {
+  uint8_t *att_addr1 = zx_cxy2aaddr(x1, y1);
+  uint8_t *att_addr2 = zx_cxy2aaddr(x1, y2);
+
   uint8_t i;
   for( i=x1; i<=x2; i++ )
   {
-    *(zx_cxy2aaddr(i, y1)) = colour;
-    *(zx_cxy2aaddr(i, y2)) = colour;
+    *(att_addr1++) = colour;
+    *(att_addr2++) = colour;
   }
+
+  att_addr1 = zx_cxy2aaddr(x1, y1);
+  att_addr2 = zx_cxy2aaddr(x2, y1);
   for( i=y1; i<=y2; i++ )
   {
-    *(zx_cxy2aaddr(x1, i)) = colour;
-    *(zx_cxy2aaddr(x2, i)) = colour;
+    *att_addr1 = colour;
+    att_addr1 += 32;
+    *att_addr2 = colour;
+    att_addr2 += 32;
   }
 }
 

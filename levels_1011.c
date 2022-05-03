@@ -34,7 +34,7 @@ void draw_level10_frame( LEVEL *level, LEVEL_PHASE phase )
   {
     LEVEL10_DATA *l_data = level->level_data;
 
-    _5x1( l_data->x, 10, PAPER_WHITE );
+    _5x1( l_data->x, 11, PAPER_WHITE );
 
     if( l_data->d == DIRECTION_E )
       l_data->x++;
@@ -50,7 +50,7 @@ void draw_level10_frame( LEVEL *level, LEVEL_PHASE phase )
       l_data->d = DIRECTION_E;
     }
 
-    _5x1( l_data->x, 10, (PAPER_RED|BRIGHT) );
+    _5x1( l_data->x, 11, (PAPER_RED|BRIGHT) );
   }
   else if( phase == PHASE_INIT )
   {
@@ -59,7 +59,7 @@ void draw_level10_frame( LEVEL *level, LEVEL_PHASE phase )
 
     ld->x = 0;
     ld->d = DIRECTION_E;
-    _5x1( ld->x, 10, (PAPER_RED|BRIGHT) );
+    _5x1( ld->x, 11, (PAPER_RED|BRIGHT) );
 
 #include "level10.inc"
   }
