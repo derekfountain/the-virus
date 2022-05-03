@@ -86,6 +86,8 @@ void draw_level14_frame( LEVEL *level, LEVEL_PHASE phase )
 typedef struct _level15_data
 {
   uint8_t   state;
+  uint8_t   instep;
+  uint8_t   colour;
   uint8_t   phase_counter;
 } LEVEL15_DATA;
 void draw_level15_frame( LEVEL *level, LEVEL_PHASE phase )
@@ -94,15 +96,25 @@ void draw_level15_frame( LEVEL *level, LEVEL_PHASE phase )
   {
     LEVEL15_DATA *l_data = level->level_data;
 
-    if( ++l_data->phase_counter < 30 )
+    if( ++l_data->phase_counter < 15 )
       return;
-
     l_data->phase_counter = 0;
-    l_data->state = !l_data->state;
 
-    if( l_data->state == 0 )
-    {
-    }
+    draw_box(0+l_data->instep,0+l_data->instep,31-l_data->instep,22-l_data->instep,PAPER_WHITE);
+
+    if( l_data->instep++ == 6 )
+      l_data->instep = 0;
+
+    if( l_data->colour == (PAPER_RED|BRIGHT) )
+      l_data->colour = PAPER_BLACK|BRIGHT;
+    else if( l_data->colour == (PAPER_BLACK|BRIGHT) )
+      l_data->colour = PAPER_BLUE|BRIGHT;
+    else if( l_data->colour == (PAPER_BLUE|BRIGHT) )
+      l_data->colour = PAPER_GREEN|BRIGHT;
+    else if( l_data->colour == (PAPER_GREEN|BRIGHT) )
+      l_data->colour = PAPER_RED|BRIGHT;
+
+    draw_box(0+l_data->instep,0+l_data->instep,31-l_data->instep,22-l_data->instep,l_data->colour);
 
   }
   else if( phase == PHASE_INIT )
@@ -111,6 +123,8 @@ void draw_level15_frame( LEVEL *level, LEVEL_PHASE phase )
     level->level_data = ld;
 
     ld->state = 0;
+    ld->instep = 0;
+    ld->colour = PAPER_RED|BRIGHT;
     ld->phase_counter = 0;
 
     draw_box(0,0,31,22,PAPER_RED|BRIGHT);
