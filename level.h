@@ -41,6 +41,7 @@ typedef struct __level
 
   uint8_t *caption;
 
+  uint8_t  has_moving_cells;
   void    *level_data;
 } LEVEL;
 

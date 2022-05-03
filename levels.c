@@ -41,6 +41,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level0_frame),
     NAMED_ARG("Caption",              "  Red cells kill the virus!     "),
+    NAMED_ARG("Has moving cells",     FALSE),
     NAMED_ARG("Level data",           NULL),
   },
   {
@@ -49,6 +50,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level1_frame),
     NAMED_ARG("Caption",              "Green cells make things worse!  "),
+    NAMED_ARG("Has moving cells",     FALSE),
     NAMED_ARG("Level data",           NULL),
   },
   {
@@ -57,6 +59,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level2_frame),
     NAMED_ARG("Caption",              " Black cells get in the way!    "),
+    NAMED_ARG("Has moving cells",     FALSE),
     NAMED_ARG("Level data",           NULL),
   },
   {
@@ -65,6 +68,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level3_frame),
     NAMED_ARG("Caption",              "  Blue cells confuse things!    "),
+    NAMED_ARG("Has moving cells",     FALSE),
     NAMED_ARG("Level data",           NULL),
   },
 
@@ -75,6 +79,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Level handler",        draw_level4_frame),
     NAMED_ARG("Caption",              "         Got it? OK!            "),
+    NAMED_ARG("Has moving cells",     FALSE),
     NAMED_ARG("Level data",           NULL),
   },
 
@@ -84,6 +89,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Level handler",        draw_level5_frame),
     NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Has moving cells",     FALSE),
     NAMED_ARG("Level data",           NULL),
   },
 
@@ -93,6 +99,7 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Level handler",        draw_level6_frame),
     NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Has moving cells",     FALSE),
     NAMED_ARG("Level data",           NULL),
   },
 
@@ -102,90 +109,100 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Level handler",        draw_level7_frame),
     NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Has moving cells",     FALSE),
     NAMED_ARG("Level data",           NULL),
   },
 
 
   /* Introduce moving blocks */
   {
-    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
-    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Max num virions",      MAX_WITH_MOVING_CELLS),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level8_frame),
     NAMED_ARG("Caption",              "Oh, and sometimes things move!  "),
+    NAMED_ARG("Has moving cells",     TRUE),
     NAMED_ARG("Level data",           NULL),
   },
 
   {
-    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
-    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Max num virions",      MAX_WITH_MOVING_CELLS),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level9_frame),
     NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Has moving cells",     TRUE),
     NAMED_ARG("Level data",           NULL),
   },
 
   {
-    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
-    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Max num virions",      MAX_WITH_MOVING_CELLS),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level10_frame),
     NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Has moving cells",     TRUE),
     NAMED_ARG("Level data",           NULL),
   },
 
   {
-    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
-    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Max num virions",      MAX_WITH_MOVING_CELLS),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level11_frame),
     NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Has moving cells",     TRUE),
     NAMED_ARG("Level data",           NULL),
   },
 
   {
-    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
-    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Max num virions",      MAX_WITH_MOVING_CELLS),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level12_frame),
     NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Has moving cells",     TRUE),
     NAMED_ARG("Level data",           NULL),
   },
 
   {
-    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
-    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Max num virions",      MAX_WITH_MOVING_CELLS),
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Level handler",        draw_level13_frame),
     NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Has moving cells",     TRUE),
     NAMED_ARG("Level data",           NULL),
   },
 
     {
-    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
-    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Max num virions",      MAX_WITH_MOVING_CELLS),
     NAMED_ARG("Border colour",        INK_MAGENTA),
     NAMED_ARG("Level handler",        draw_level14_frame),
     NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Has moving cells",     TRUE),
     NAMED_ARG("Level data",           NULL),
   },
   /* Play testing with 40 virions and a joystick, I got here in 17mins */
 
   {
-    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
-    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Max num virions",      MAX_WITH_MOVING_CELLS),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level15_frame),
     NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Has moving cells",     TRUE),
     NAMED_ARG("Level data",           NULL),
   },
 
   {
-    NAMED_ARG("Starting num virions", MAX_IN_SWARM),
-    NAMED_ARG("Max num virions",      MAX_IN_SWARM),
+    NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Max num virions",      MAX_WITH_MOVING_CELLS),
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level16_frame),
     NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Has moving cells",     TRUE),
     NAMED_ARG("Level data",           NULL),
   },
 };

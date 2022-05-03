@@ -57,7 +57,7 @@ void main(void)
     /* Ask user for controls - keyboard or joystick */
     CONTROL selected_control = select_controls();
 
-    uint8_t current_level = 0;
+    uint8_t current_level = 9;
     SET_COUNTDOWN(32);
 
     /* Outer loop, level selection */
@@ -85,8 +85,15 @@ void main(void)
 
       UNPAUSE_TIMER;
 
-#define TIME_TEST 0
-/* Keep this time test at about 15.5 seconds with MAX_SWARM=25 */
+#define TIME_TEST 1
+/*
+ * Time test:
+ *
+ * Set max to 26/20 and use -SO3. Then:
+ *
+ * level 0 with "no moving cells" set TRUE should run in about 13.5 secs
+ * level 9 with "no moving cells" set FALSE should run in about 13.5 secs
+ */
 #if TIME_TEST
       uint16_t countdown = 500;
 #endif

@@ -27,8 +27,8 @@ PRAGMA_FILE=zpragma.inc
 # Tested at an arbitrary point in development. -SO2 ran test in 11.80 secs and left 4228 bytes free.
 # -SO3 ran test in 11.00 secs and left 4582 bytes free. So -SO3 produces smaller, faster code.
 # 
-C_OPT_FLAGS=-SO3 --max-allocs-per-node200000 -DNDEBUG --c-code-in-asm --std-sdcc2x --list
-#C_OPT_FLAGS=--c-code-in-asm --std-sdcc2x --list
+#C_OPT_FLAGS=-SO3 --max-allocs-per-node200000 -DNDEBUG --c-code-in-asm --std-sdcc2x --list
+C_OPT_FLAGS=--c-code-in-asm --std-sdcc2x --list
 
 CFLAGS=$(TARGET) $(VERBOSITY) -c $(C_OPT_FLAGS) -preserve -compiler sdcc -clib=sdcc_iy -pragma-include:$(PRAGMA_FILE)
 LDFLAGS=$(TARGET) $(VERBOSITY) -m -clib=sdcc_iy -pragma-include:$(PRAGMA_FILE)

@@ -76,7 +76,7 @@ void update_swarm( LEVEL *level )
 
   /*
    * Update each dot's velocity and then location based on empirically derived rules. This actually
-   * updates every other dot each pass, every other-other dot being left to do the same as it did
+   * updates every other dot each pass, every other-other dot being left in the same place as it was
    * in the previous iteration. This allows twice as many dots to be managed, at the expense of
    * more accurate behaviour. The virion logic needs to be applied to every dot each time round
    * though, because on screens with moving blocks the logic needs to be applied for each block
@@ -86,7 +86,7 @@ void update_swarm( LEVEL *level )
    * speed reasonably consistent.
    */
   every_other_dot ^= 1;
-  for( i=0; i < MAX_IN_SWARM; i++ )
+  for( i=0; i < level->max_virions; i++ )
   {
     if( (i & 0x01) == every_other_dot )
     {
@@ -168,28 +168,47 @@ void update_swarm( LEVEL *level )
       swarm[i].velocity_y = vy;
 
       /*
-       * The virion logic call was in here until I spotted the every-other-one bug.
+       * The virion logic call was always in here until I spotted the every-other-one bug.
+       * I can only do these checks here - i.e. for every other virion - if there are
+       * no changing or moving colour cells. When there are moving cells this has to be
+       * done for all virions, so I skip it here and do it below, outside the every-other-one
+       * condition.
        */
+      if( ! level->has_moving_cells )
+      {
+      /* Remove it from its old screen position */
+        clear_virion( &swarm[i] );
+
+        apply_virion_logic( level, &swarm[i] );
+
+        /* Put it in its new place */
+        draw_virion( &swarm[i] );
+      }
     }
 
     /*
      * This has to be outside the every-other-one condition because the screens with
      * moving blocks need all virions processed for each iteration. Otherwise a block
      * can move onto a virion and there's a 50/50 chance it doesn't get recognised.
+     *
+     * This slows things down, which is a shame, but I can't see a way around it. The
+     * has-moving-cells flag allows for fewer virions on levels with moving cells,
+     * which at least keeps the speed consistent.
      */
+    if( level->has_moving_cells )
+    {
+      /* Remove it from its old screen position */
+      clear_virion( &swarm[i] );
 
-    /* Remove it from its old screen position */
-    clear_virion( &swarm[i] );
+      apply_virion_logic( level, &swarm[i] );
 
-    apply_virion_logic( level, &swarm[i] );
-
-    /* Put it in its new place */
-    draw_virion( &swarm[i] );
+      /* Put it in its new place */
+      draw_virion( &swarm[i] );
+    }
 
     /* Note the new place ready for removing it next time round */
     swarm[i].previous_x = swarm[i].x;
     swarm[i].previous_y = swarm[i].y;
-
   }
 
   return;
