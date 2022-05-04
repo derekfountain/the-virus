@@ -30,7 +30,7 @@
 #include "levels_1213.h"
 #include "levels_1415.h"
 #include "levels_1617.h"
-#include "levels_primitives.h"
+#include "levels_1819.h"
 
 LEVEL levels[] = 
 {
@@ -212,6 +212,26 @@ LEVEL levels[] =
     NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level17_frame),
     NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Has moving cells",     TRUE),
+    NAMED_ARG("Level data",           NULL),
+  },
+
+  {
+    NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Max num virions",      MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Border colour",        INK_MAGENTA),
+    NAMED_ARG("Level handler",        draw_level18_frame),
+    NAMED_ARG("Caption",              "  Two to go! How's the time?    "),
+    NAMED_ARG("Has moving cells",     TRUE),
+    NAMED_ARG("Level data",           NULL),
+  },
+
+  {
+    NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Max num virions",      MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Border colour",        INK_YELLOW),
+    NAMED_ARG("Level handler",        draw_level19_frame),
+    NAMED_ARG("Caption",              "      Last one! Hurry up!       "),
     NAMED_ARG("Has moving cells",     TRUE),
     NAMED_ARG("Level data",           NULL),
   },

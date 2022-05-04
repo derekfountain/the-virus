@@ -17,15 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef __LEVELS_H
-#define __LEVELS_H
+#ifndef __LEVELS_18_19_H
+#define __LEVELS_18_19_H
 
 #include <stdint.h>
 #include "level.h"
+#include "levels.h"
 
-#define NUM_LEVELS 20
-
-void init_level( LEVEL* );
-LEVEL *get_level( uint8_t );
+void draw_level18_frame( LEVEL *, LEVEL_PHASE );
+void draw_level19_frame( LEVEL *, LEVEL_PHASE );
 
 #endif
