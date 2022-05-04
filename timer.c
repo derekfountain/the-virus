@@ -146,12 +146,22 @@ void time_up( void )
   z80_delay_ms(3000);
 }
 
+uint8_t *winner_str = "    Winner! In 0000 seconds!    ";
+
 /* This has no business being here, but the graphic routine was already here. :o} */
 void winner( void )
 {
+  uint8_t *time = (uint8_t*)winner_str;
+
   zx_cls( PAPER_WHITE );
 
-  roll_str(6,"            Winner!             ");
+  uint16_t seconds = GET_HALF_SECONDS_PASSED / 2;
+  *(time+15) = '0'+(seconds/1000); seconds = seconds % 1000;
+  *(time+16) = '0'+(seconds/100);  seconds = seconds % 100;
+  *(time+17) = '0'+(seconds/10);   seconds = seconds % 10;
+  *(time+18) = '0'+seconds;
+
+  roll_str(6,time);
 
   print_str(5, 7, "The virus is defeated!");
   z80_delay_ms(3000);

@@ -229,7 +229,7 @@ LEVEL levels[] =
   {
     NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),
     NAMED_ARG("Max num virions",      MAX_WITH_MOVING_CELLS),
-    NAMED_ARG("Border colour",        INK_YELLOW),
+    NAMED_ARG("Border colour",        INK_BLUE),
     NAMED_ARG("Level handler",        draw_level19_frame),
     NAMED_ARG("Caption",              "      Last one! Hurry up!       "),
     NAMED_ARG("Has moving cells",     TRUE),

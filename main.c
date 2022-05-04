@@ -57,7 +57,7 @@ void main(void)
     /* Ask user for controls - keyboard or joystick */
     CONTROL selected_control = select_controls();
 
-    uint8_t current_level = 0;
+    uint8_t current_level = 18;
     SET_COUNTDOWN(32);
 
     /* Outer loop, level selection */
@@ -83,6 +83,7 @@ void main(void)
 
       init_swarm( level->starting_num_virions, STARTING_VELOCITY );
 
+      RESET_HALF_SECONDS_PASSED;
       UNPAUSE_TIMER;
 
 #define TIME_TEST 0
