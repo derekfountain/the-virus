@@ -67,7 +67,7 @@ void finalise_level( LEVEL *level )
    * practise the levels only ever (maybe) allocate some memory
    * so I can get away with this:
    */
-  if( level->level_data )
+  if( level->level_data != NULL )
     free( level->level_data );
 }
 

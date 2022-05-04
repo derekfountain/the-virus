@@ -25,5 +25,6 @@
 #include "levels.h"
 
 void draw_level16_frame( LEVEL *, LEVEL_PHASE );
+void draw_level17_frame( LEVEL *, LEVEL_PHASE );
 
 #endif

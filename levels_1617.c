@@ -59,7 +59,7 @@ void draw_level16_frame( LEVEL *level, LEVEL_PHASE phase )
       }
       att_addr++;
     }
-    _2x2(15,4,PAPER_GREEN|BRIGHT);
+    _2x2(15, 4,PAPER_GREEN|BRIGHT);
     _2x2(15,11,PAPER_GREEN|BRIGHT);
     _2x2(15,18,PAPER_GREEN|BRIGHT);
 
@@ -71,7 +71,38 @@ void draw_level16_frame( LEVEL *level, LEVEL_PHASE phase )
 
     /* Set up to start in state 0 */
     ld->state = 1;
-    ld->phase_counter = 100;
+    ld->phase_counter = 0;
 #include "level16.inc"
+  }
+}
+
+
+typedef struct _level17_data
+{
+  uint8_t   state;
+  uint8_t   phase_counter;
+} LEVEL17_DATA;
+void draw_level17_frame( LEVEL *level, LEVEL_PHASE phase )
+{
+  if( phase == PHASE_UPDATE )
+  {
+    LEVEL17_DATA *l_data = level->level_data;
+
+    if( ++l_data->phase_counter < 50 )
+      return;
+    l_data->phase_counter = 0;
+
+    swap_cells_colours( PAPER_RED|BRIGHT, PAPER_GREEN|BRIGHT );
+  }
+  else if( phase == PHASE_INIT )
+  {
+    LEVEL17_DATA *ld = (LEVEL17_DATA*)malloc( sizeof(LEVEL17_DATA) );
+    level->level_data = ld;
+
+    /* Set up to start in state 0 */
+    ld->state = 1;
+    ld->phase_counter = 0;
+#include "level17.inc"
+    draw_box( 1, 1, 30, 21, PAPER_BLUE|BRIGHT );
   }
 }

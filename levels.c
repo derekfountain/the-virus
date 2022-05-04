@@ -205,6 +205,16 @@ LEVEL levels[] =
     NAMED_ARG("Has moving cells",     TRUE),
     NAMED_ARG("Level data",           NULL),
   },
+
+  {
+    NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Max num virions",      MAX_WITH_MOVING_CELLS),
+    NAMED_ARG("Border colour",        INK_BLUE),
+    NAMED_ARG("Level handler",        draw_level17_frame),
+    NAMED_ARG("Caption",              NULL),
+    NAMED_ARG("Has moving cells",     TRUE),
+    NAMED_ARG("Level data",           NULL),
+  },
 };
 
 LEVEL *get_level( uint8_t lev )
