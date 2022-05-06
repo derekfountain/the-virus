@@ -25,14 +25,8 @@ SECTION font
 ;;     |_|  \___/|_| |_|\__|
 ;;
 
-;; The font is called "Mega 1", and is presented by Einar Saukas‎:
-;;  https://sites.google.com/site/zxgraph/home/einar-saukas/fonts
-;;
-;; It's not clear who owns it. I took it from the ZX-ALFA package:
-;;  https://spectrumcomputing.co.uk/index.php?cat=96&id=0025283
-;; which claims it's sourced from commercial games.
-;;
-;; Well, Einar, or whoever owns it, thanks! :)
+;; The font is Damien Guard's lovely ZX Eurostile:
+;; https://damieng.com/typography/zx-origins/zx-eurostile/
 
 PUBLIC _font
 
