@@ -28,6 +28,7 @@ void draw_cells( uint8_t cells[][2], uint8_t );
 void _2x2( uint8_t, uint8_t, uint8_t );
 void _5x1( uint8_t, uint8_t, uint8_t );
 void draw_box( uint8_t, uint8_t, uint8_t, uint8_t, uint8_t );
+void draw_h_line( uint8_t, uint8_t, uint8_t, uint8_t );
 void swap_cells_colours( uint8_t, uint8_t );
 
 #endif

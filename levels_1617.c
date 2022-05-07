@@ -73,6 +73,9 @@ void draw_level16_frame( LEVEL *level, LEVEL_PHASE phase )
     ld->state = 1;
     ld->phase_counter = 0;
 #include "level16.inc"
+    _2x2(15, 4,PAPER_GREEN|BRIGHT);
+    _2x2(15,11,PAPER_GREEN|BRIGHT);
+    _2x2(15,18,PAPER_GREEN|BRIGHT);
   }
 }
 

@@ -47,12 +47,14 @@ void draw_level14_frame( LEVEL *level, LEVEL_PHASE phase )
   {
     LEVEL14_DATA *l_data = level->level_data;
 
-    if( ++l_data->phase_counter == 50 )
+    if( ++l_data->phase_counter == 100 )
     {
       l_data->phase_counter = 0;
       l_data->block_is_green = !l_data->block_is_green;
       swap_cells_colours( (PAPER_GREEN|INK_BLACK|BRIGHT), (PAPER_RED|INK_BLACK|BRIGHT) );
     }
+    if( l_data->phase_counter & 1 )
+      return;
 
     uint8_t i;
     uint8_t *entry;

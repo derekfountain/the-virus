@@ -78,6 +78,17 @@ void draw_box( uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t colour )
   }
 }
 
+void draw_h_line( uint8_t x1, uint8_t x2, uint8_t y, uint8_t colour )
+{
+  uint8_t *att_addr = zx_cxy2aaddr(x1, y);
+
+  uint8_t i;
+  for( i=x1; i<=x2; i++ )
+  {
+    *(att_addr++) = colour;
+  }
+}
+
 void swap_cells_colours( uint8_t src, uint8_t dest )
 {
   register uint8_t *addr = (uint8_t*)0x5ADF;

@@ -57,7 +57,7 @@ void main(void)
     /* Ask user for controls - keyboard or joystick */
     CONTROL selected_control = select_controls();
 
-    uint8_t current_level = 18;
+    uint8_t current_level = 0;
     SET_COUNTDOWN(32);
 
     /* Outer loop, level selection */

@@ -34,7 +34,7 @@
 
 /* EVEN NUMBERS ONLY! Use 26 for the timing test */
 #define MAX_IN_SWARM           ((const uint8_t)40)   // opt level 0  26 = 13.5secs  40 = 20.3secs
-#define MAX_WITH_MOVING_CELLS  ((const uint8_t)31)   // opt level 9  20 = 13.7secs  31 = 20.9secs
+#define MAX_WITH_MOVING_CELLS  ((const uint8_t)30)   // opt level 9  20 = 13.7secs  31 = 20.9secs
 
 #define MAX_GAME_TIME_SECS   ((const uint8_t)1200)
 #define MAX_GAME_TIME_FRAMES ((const uint8_t)60000)
