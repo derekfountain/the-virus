@@ -22,7 +22,7 @@
 
 CONTROL select_controls( void )
 {
-  return KEYBOARD;
-//  return JOYSTICK;
+  //return KEYBOARD;
+  return JOYSTICK;
 }
 

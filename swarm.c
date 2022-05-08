@@ -111,7 +111,7 @@ void update_swarm( LEVEL *level )
        * Limit velocity. This is ugly and causes stuttering sort of behaviour, but it's the best
        * I could get without a square root.
        */
-      const int16_t SPEED_LIMIT = 280;
+      const int16_t SPEED_LIMIT = 255;
       if( vx > SPEED_LIMIT || vx < -SPEED_LIMIT )
       {
         int16_t div2 = vx / 2;
