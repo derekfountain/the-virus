@@ -18,11 +18,26 @@
  */
 
 #include <stdint.h>
+#include <input.h>
 #include "controls.h"
+
+uint16_t up_scancode    = IN_KEY_SCANCODE_q;
+uint16_t down_scancode  = IN_KEY_SCANCODE_a;
+uint16_t left_scancode  = IN_KEY_SCANCODE_o;
+uint16_t right_scancode = IN_KEY_SCANCODE_p;
 
 CONTROL select_controls( void )
 {
-  //return KEYBOARD;
-  return JOYSTICK;
+  // Print Keyboard or Joystick
+  // Wait for K or J
+  // If J, return JOYSTICK
+  // Show current keys
+  // R to redefine or Enter to accept
+  // If enter, return KEYBOARD
+  // Key for Up? Wait and accept keypress. Then down, left, right
+  // Return to "SHow current keys"
+
+  return KEYBOARD;
+  //return JOYSTICK;
 }
 

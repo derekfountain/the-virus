@@ -24,6 +24,7 @@
 #include "main.h"
 #include "player.h"
 #include "snow.h"
+#include "controls.h"
 
 uint8_t  player_x=255;
 uint8_t  player_y=255;
@@ -67,20 +68,20 @@ uint8_t move_player( void )
   DIRECTION input = DIRECTION_STATIONARY;
 
   /* Read input */
-  if( ((control == KEYBOARD) && in_key_pressed( IN_KEY_SCANCODE_q )) 
+  if( ((control == KEYBOARD) && in_key_pressed( UP_SCANCODE ))
       ||
       ((control == JOYSTICK) && (kempston_input & IN_STICK_UP)) )
   {
     input = DIRECTION_N;
   }
-  else if( ((control == KEYBOARD) && in_key_pressed( IN_KEY_SCANCODE_a )) 
+  else if( ((control == KEYBOARD) && in_key_pressed( DOWN_SCANCODE ))
       ||
       ((control == JOYSTICK) && (kempston_input & IN_STICK_DOWN)) )
   {
     input = DIRECTION_S;
   }
 
-  if( ((control == KEYBOARD) && in_key_pressed( IN_KEY_SCANCODE_o )) 
+  if( ((control == KEYBOARD) && in_key_pressed( LEFT_SCANCODE ))
       ||
       ((control == JOYSTICK) && (kempston_input & IN_STICK_LEFT)) )
   {
@@ -91,7 +92,7 @@ uint8_t move_player( void )
     else if( input == DIRECTION_S )
       input = DIRECTION_SW;
   }
-  else if( ((control == KEYBOARD) && in_key_pressed( IN_KEY_SCANCODE_p )) 
+  else if( ((control == KEYBOARD) && in_key_pressed( RIGHT_SCANCODE ))
 	   ||
 	   ((control == JOYSTICK) && (kempston_input & IN_STICK_RIGHT)) )
   {
