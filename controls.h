@@ -32,11 +32,13 @@ extern uint16_t up_scancode;
 extern uint16_t down_scancode;
 extern uint16_t left_scancode;
 extern uint16_t right_scancode;
+extern uint16_t sound_scancode;
 
 #define UP_SCANCODE    ((uint16_t)up_scancode)
 #define DOWN_SCANCODE  ((uint16_t)down_scancode)
 #define LEFT_SCANCODE  ((uint16_t)left_scancode)
 #define RIGHT_SCANCODE ((uint16_t)right_scancode)
+#define SOUND_SCANCODE ((uint16_t)sound_scancode)
 
 CONTROL select_controls(void);
 

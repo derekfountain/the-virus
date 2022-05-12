@@ -133,6 +133,7 @@ void main(void)
 #endif
         if( mp_result == 3 )
         {
+          toggle_sound_sound();
           TOGGLE_SOUND;
 #if STDIO_DEBUG
           printf("sound_on is %d\n",sound_on);

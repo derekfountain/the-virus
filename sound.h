@@ -29,5 +29,6 @@ extern uint8_t sound_on;
 void kill_virion_sound(void);
 void reactivate_virion_sound(void);
 void relocate_virion_sound(void);
+void toggle_sound_sound(void);
 
 #endif

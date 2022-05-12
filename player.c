@@ -290,12 +290,12 @@ uint8_t move_player( void )
 
   if( in_key_pressed( IN_KEY_SCANCODE_1 ) )
     return 1;
+#if STDIO_DEBUG
   else if( in_key_pressed( IN_KEY_SCANCODE_2 ) )
     return 2;
-  else if( in_key_pressed( IN_KEY_SCANCODE_s ) )
+#endif
+  else if( in_key_pressed( SOUND_SCANCODE ) )
   {
-    /* Need to wait for the key to be released. Can do better. */
-    z80_delay_ms(200);
     return 3;
   }
   else

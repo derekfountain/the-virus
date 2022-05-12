@@ -32,6 +32,12 @@ void kill_virion_sound( void )
 }
 
 
+void toggle_sound_sound(void)
+{
+    bit_beepfx(BEEPFX_ROBOBLIP);
+}
+
+
 void reactivate_virion_sound( void )
 {
   if( !sound_on )
