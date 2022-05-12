@@ -19,6 +19,7 @@
 
 #include <stdint.h>
 #include <sound.h>
+#include <z80.h>
 #include "int.h"
 #include "sound.h"
 
@@ -27,8 +28,19 @@ uint16_t last_sound = 0;
 
 void kill_virion_sound( void )
 {
-  if( sound_on )
-    bit_beepfx(BEEPFX_PICK);
+  if( (GET_TICKER - last_sound) > SOUND_FRAMES )
+  {
+    if( sound_on )
+      bit_beepfx(BEEPFX_PICK);
+    else
+    {
+      /* That sound is 82622 Ts according to FUSE's T-states counter */
+      z80_delay_tstate(65535);
+      z80_delay_tstate(17087);
+    }
+
+    last_sound = GET_TICKER;
+  }
 }
 
 
@@ -40,25 +52,35 @@ void toggle_sound_sound(void)
 
 void reactivate_virion_sound( void )
 {
-  if( !sound_on )
-    return;
-
   if( (GET_TICKER - last_sound) > SOUND_FRAMES )
   {
-    bit_beepfx(BEEPFX_HIT_4);
+    if( sound_on )
+      bit_beepfx(BEEPFX_HIT_4);
+    else
+    {
+      /* That sound is 195960 Ts according to FUSE's T-states counter */
+      z80_delay_tstate(65535);
+      z80_delay_tstate(65535);
+      z80_delay_tstate(64890);
+    }
+
     last_sound = GET_TICKER;
   }
 }
 
 void relocate_virion_sound( void )
 {
-  if( !sound_on )
-    return;
-
   if( (GET_TICKER - last_sound) > SOUND_FRAMES )
   {
     if( sound_on )
       bit_beepfx(BEEPFX_SHOT_1);
+    else
+    {
+      /* That sound is 84976 Ts according to FUSE's T-states counter */
+      z80_delay_tstate(65535);
+      z80_delay_tstate(19441);
+    }
+
     last_sound = GET_TICKER;
   }
 }
