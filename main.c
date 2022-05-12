@@ -54,8 +54,8 @@ void main(void)
   /* Infinite outer loop, new game */
   while(1)
   {
-    zx_border( INK_BLACK );
-    zx_cls( PAPER_BLACK|INK_WHITE );
+    zx_border( INK_WHITE );
+    zx_cls( PAPER_WHITE|INK_BLACK );
 
     /*
      * ZX Paintbrush exports screen data in linear arrangement. Fiddle here
@@ -69,7 +69,7 @@ void main(void)
     }
     for(i=0;i<5;i++)
     {
-      memset( zx_cxy2aaddr(0,i), PAPER_WHITE|INK_BLACK, 32 );
+      memset( zx_cxy2aaddr(0,i), PAPER_BLACK|INK_WHITE, 32 );
     }
 
     /* Ask user for controls - keyboard or joystick */
