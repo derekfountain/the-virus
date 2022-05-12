@@ -45,7 +45,8 @@ CONTROL select_controls( void )
   /* The keyboard responses are a bit sluggish with the ROM int running */
   intrinsic_di();
 
-  print_str(3,10,"(K)eyboard or (J)oystick?");
+  print_str(1,10,"Keyboard or Kempston Joystick?");
+  print_str(9,14,"Press K or J");
   while(1)
   {
     int k_or_j = in_inkey();
@@ -79,7 +80,7 @@ CONTROL select_controls( void )
     print_str(12,14,"Right "); key_char[0] = right_key-0x20; print_str(19,14,key_char);
     print_str(12,16,"Sound "); key_char[0] = sound_key-0x20; print_str(19,16,key_char);
 
-    print_str(2,19,"(R)edefine, or ENTER to play");
+    print_str(1,19,"R to redefine, or ENTER to play");
 
     while( 1 )
     {
