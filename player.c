@@ -28,8 +28,8 @@
 
 uint8_t  player_x=255;
 uint8_t  player_y=255;
-uint8_t  previous_player_x;
-uint8_t  previous_player_y;
+uint8_t  previous_player_x=255;
+uint8_t  previous_player_y=255;
 
 CONTROL   control;
 DIRECTION direction;

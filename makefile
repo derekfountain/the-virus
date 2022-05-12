@@ -72,6 +72,7 @@ OBJECTS = main.o \
 	  sound.o \
 	  snow_table.o \
 	  snow_demo_plot.o \
+	  tv.o \
 	  font.o
 	  
 # Objects built from C files (as opposed to ASMs)
