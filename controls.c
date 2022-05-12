@@ -21,6 +21,8 @@
 #include <arch/zx.h>
 #include <input.h>
 #include <intrinsic.h>
+#include <z80.h>
+#include <string.h>
 #include "controls.h"
 #include "print_str.h"
 
@@ -43,8 +45,6 @@ CONTROL select_controls( void )
   /* The keyboard responses are a bit sluggish with the ROM int running */
   intrinsic_di();
 
-  zx_cls(PAPER_WHITE|INK_BLACK);
-
   print_str(3,10,"(K)eyboard or (J)oystick?");
   while(1)
   {
@@ -52,6 +52,9 @@ CONTROL select_controls( void )
 
     if( k_or_j == 'j' )
     {
+      uint8_t key_char[2];
+      print_str(6,18,"Toggle sound with "); key_char[0] = sound_key-0x20; print_str(24,18,key_char);
+      z80_delay_ms(2500);
       intrinsic_ei();
       return JOYSTICK;
     }
@@ -61,7 +64,8 @@ CONTROL select_controls( void )
     }
   }
 
-  zx_cls(PAPER_WHITE|INK_BLACK);
+  /* Don't wipe the banner, clear bottom 2/3rds */
+  memset( (uint8_t*)0x4800, 0, 0x1000 );
 
   while( 1 )
   {
@@ -69,13 +73,13 @@ CONTROL select_controls( void )
 
     // Show current keys
     key_char[1] = 0;
-    print_str(12, 6,"Up    "); key_char[0] = up_key-0x20;    print_str(19, 6,key_char);
-    print_str(12, 8,"Down  "); key_char[0] = down_key-0x20;  print_str(19, 8,key_char);
-    print_str(12,10,"Left  "); key_char[0] = left_key-0x20;  print_str(19,10,key_char);
-    print_str(12,12,"Right "); key_char[0] = right_key-0x20; print_str(19,12,key_char);
-    print_str(12,14,"Sound "); key_char[0] = sound_key-0x20; print_str(19,14,key_char);
+    print_str(12, 8,"Up    "); key_char[0] = up_key-0x20;    print_str(19, 8,key_char);
+    print_str(12,10,"Down  "); key_char[0] = down_key-0x20;  print_str(19,10,key_char);
+    print_str(12,12,"Left  "); key_char[0] = left_key-0x20;  print_str(19,12,key_char);
+    print_str(12,14,"Right "); key_char[0] = right_key-0x20; print_str(19,14,key_char);
+    print_str(12,16,"Sound "); key_char[0] = sound_key-0x20; print_str(19,16,key_char);
 
-    print_str(2,17,"(R)edefine, or ENTER to play");
+    print_str(2,19,"(R)edefine, or ENTER to play");
 
     while( 1 )
     {
@@ -93,15 +97,15 @@ CONTROL select_controls( void )
       }
     }
 
-    zx_cls(PAPER_WHITE|INK_BLACK);
+    memset( (uint8_t*)0x4800, 0, 0x1000 );
 
-    print_str(12, 6,"Up?   ");
+    print_str(12, 8,"Up?   ");
     up_key = 0;
     in_wait_key(); up_key = in_inkey(); in_wait_nokey();
     key_char[0] = up_key-0x20;
-    print_str(19, 6,key_char);
+    print_str(19, 8,key_char);
 
-    print_str(12, 8,"Down? ");
+    print_str(12,10,"Down? ");
     down_key = 0;
     while(1)
     {
@@ -110,9 +114,9 @@ CONTROL select_controls( void )
         break;
     }
     key_char[0] = down_key-0x20;
-    print_str(19, 8,key_char);
+    print_str(19,10,key_char);
 
-    print_str(12,10,"Left? ");
+    print_str(12,12,"Left? ");
     left_key = 0;
     while(1)
     {
@@ -121,9 +125,9 @@ CONTROL select_controls( void )
         break;
     }
     key_char[0] = left_key-0x20;
-    print_str(19,10,key_char);
+    print_str(19,12,key_char);
 
-    print_str(12,12,"Right? ");
+    print_str(12,14,"Right? ");
     right_key = 0;
     while(1)
     {
@@ -132,9 +136,9 @@ CONTROL select_controls( void )
         break;
     }
     key_char[0] = right_key-0x20;
-    print_str(19,12,key_char);
+    print_str(19,14,key_char);
 
-    print_str(12,14,"Sound? ");
+    print_str(12,16,"Sound? ");
     sound_key = 0;
     while(1)
     {
@@ -143,7 +147,7 @@ CONTROL select_controls( void )
         break;
     }
     key_char[0] = sound_key-0x20;
-    print_str(19,14,key_char);
+    print_str(19,16,key_char);
 
     up_scancode    = in_key_scancode(up_key);
     down_scancode  = in_key_scancode(down_key);
