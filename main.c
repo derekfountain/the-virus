@@ -39,7 +39,7 @@
 #include <stdio.h>
 #endif
 
-unsigned char version[8] = "ver0.01";
+unsigned char version[8] = "ver1.00";
 
 /* Statics for speed */
 LEVEL   *level;
