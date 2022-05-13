@@ -1,4 +1,4 @@
-# Shake-the-virus, a ZX Spectrum game
+# The Virus, a ZX Spectrum game
 # Copyright (C) 2022 Derek Fountain
 # 
 # This program is free software; you can redistribute it and/or
@@ -37,19 +37,19 @@ ASFLAGS=$(TARGET) $(VERBOSITY) -c
 CPP_FLAGS=$(TARGET) $(VERBOSITY) -c -compiler sdcc -clib=sdcc_iy -pragma-include:$(PRAGMA_FILE) -E
 
 SYMBOLS_GENERATOR=./generate_symbols.pl
-MAP=stv.map
+MAP=tv.map
 
 TAGGABLE_SRC_GENERATOR=./generate_taggable_src.pl
-TAGGABLE_SRC=stv.taggable_src
+TAGGABLE_SRC=tv.taggable_src
 
 TAGS_GENERATOR=etags
 TAGS=TAGS
 
 MEM_FREE=./how_much_memory_left.sh
 
-EXEC=stv.tap
-EXEC_OUTPUT=stv
-SYM_OUTPUT=stv.sym
+EXEC=tv.tap
+EXEC_OUTPUT=tv
+SYM_OUTPUT=tv.sym
 
 OBJECTS = main.o \
 	  player.o \
@@ -155,8 +155,8 @@ levels.o : levels.c $(PRAGMA_FILE) $(HEADERS) $(LEVEL_INCS)
 # Rule to build the executable.
 $(EXEC) : $(OBJECTS)
 	$(CC) $(LDFLAGS) -startup=$(CRT) $(OBJECTS) -o $(EXEC_OUTPUT)
-	$(APPMAKE) +glue -b stv --filler 0xDF --clean
-	$(APPMAKE) +zx -b stv__.bin --org 32768 --blockname stv -o $(EXEC)
+	$(APPMAKE) +glue -b tv --filler 0xDF --clean
+	$(APPMAKE) +zx -b tv__.bin --org 32768 --blockname tv -o $(EXEC)
 
 # Build the symbols table after the executable
 $(SYM_OUTPUT): $(EXEC)
@@ -181,4 +181,4 @@ clean_tmp:
 
 .PHONY: clean
 clean :
-	rm -f *.tap *.cpre *.bin *.map *.sym *.o *.lis stv*.inc TAGS *~ $(TAGGABLE_SRC)
+	rm -f *.tap *.cpre *.bin *.map *.sym *.o *.lis tv*.inc TAGS *~ $(TAGGABLE_SRC)

@@ -1,30 +1,30 @@
 #!/bin/sh
 
 # Interesting command is:
-#  grep -P '__\w+size' stv.map | grep -v \$0000
+#  grep -P '__\w+size' tv.map | grep -v \$0000
 
-CODE_SIZE=$(perl -ne '/^__code_compiler_size\s+=\s+\$(\w+)/ && print hex($1)' < stv.map)
+CODE_SIZE=$(perl -ne '/^__code_compiler_size\s+=\s+\$(\w+)/ && print hex($1)' < tv.map)
 
 echo -n "\nCompiled code size is       "
 printf "%5d  " $CODE_SIZE
 printf "(0x%04X) bytes\n" $CODE_SIZE
 
-DATA_SIZE=$(perl -ne '/^__data_compiler_size\s+=\s+\$(\w+)/ && print hex($1)' < stv.map)
+DATA_SIZE=$(perl -ne '/^__data_compiler_size\s+=\s+\$(\w+)/ && print hex($1)' < tv.map)
 
 echo -n "Compiled data size is       "
 printf "%5d  " $DATA_SIZE
 printf "(0x%04X) bytes\n" $DATA_SIZE
 
-RODATA_USER_SIZE=$(perl -ne '/^__rodata_user_size\s+=\s+\$(\w+)/ && print hex($1)' < stv.map)
+RODATA_USER_SIZE=$(perl -ne '/^__rodata_user_size\s+=\s+\$(\w+)/ && print hex($1)' < tv.map)
 
 echo -n "Read only user data size is "
 printf "%5d  " $RODATA_USER_SIZE
 printf "(0x%04X) bytes\n" $RODATA_USER_SIZE
 
 
-REG_SP=$(perl -ne '/^REGISTER_SP\s+=\s+\$(\w+)/ && print hex($1)' < stv.map)
-BSS_END=$(perl -ne '/^__BSS_END_tail\s+=\s+\$(\w+)/ && print hex($1)' < stv.map)
-STACK_SIZE=$(perl -ne '/^TAR__crt_stack_size\s+=\s+\$(\w+)/ && print hex($1)' < stv.map)
+REG_SP=$(perl -ne '/^REGISTER_SP\s+=\s+\$(\w+)/ && print hex($1)' < tv.map)
+BSS_END=$(perl -ne '/^__BSS_END_tail\s+=\s+\$(\w+)/ && print hex($1)' < tv.map)
+STACK_SIZE=$(perl -ne '/^TAR__crt_stack_size\s+=\s+\$(\w+)/ && print hex($1)' < tv.map)
 
 TOP_STACK=$(expr $REG_SP - $STACK_SIZE)
 FREE_MEM=$(expr $TOP_STACK - $BSS_END)

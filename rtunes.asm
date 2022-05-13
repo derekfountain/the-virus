@@ -1,4 +1,4 @@
-;; Shake-the-virus, a ZX Spectrum game
+;; The Virus, a ZX Spectrum game
 ;; Copyright (C) 2022 Derek Fountain
 ;;
 ;; This program is free software; you can redistribute it and/or
