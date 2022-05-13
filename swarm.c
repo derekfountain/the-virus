@@ -176,7 +176,7 @@ void update_swarm( LEVEL *level )
        */
       if( ! level->has_moving_cells )
       {
-      /* Remove it from its old screen position */
+        /* Remove it from its old screen position */
         clear_virion( &swarm[i] );
 
         apply_virion_logic( level, &swarm[i] );

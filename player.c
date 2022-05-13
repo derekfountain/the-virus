@@ -288,16 +288,20 @@ uint8_t move_player( void )
 
   /* Return the level bump magic key */
 
-  if( in_key_pressed( IN_KEY_SCANCODE_1 ) )
-    return 1;
+  if( in_key_pressed( SOUND_SCANCODE ) )
+    return 3;
 #if STDIO_DEBUG
   else if( in_key_pressed( IN_KEY_SCANCODE_2 ) )
-    return 2;
-#endif
-  else if( in_key_pressed( SOUND_SCANCODE ) )
   {
-    return 3;
+    /* Debug dump */
+    return 2;
   }
+  else if( in_key_pressed( IN_KEY_SCANCODE_1 ) )
+  {
+    /* Skip level */
+    return 1;
+  }
+#endif
   else
     return 0;
 }

@@ -184,7 +184,6 @@ LEVEL levels[] =
     NAMED_ARG("Has moving cells",     TRUE),
     NAMED_ARG("Level data",           NULL),
   },
-  /* Play testing with 40 virions and a joystick, I got here in 17mins */
 
   {
     NAMED_ARG("Starting num virions", MAX_WITH_MOVING_CELLS),

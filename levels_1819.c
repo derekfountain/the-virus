@@ -205,7 +205,7 @@ void draw_level19_frame( LEVEL *level, LEVEL_PHASE phase )
     LEVEL19_DATA *ld = (LEVEL19_DATA*)malloc( sizeof(LEVEL19_DATA) );
     level->level_data = ld;
 
-    ld->blue_line.x         = 0;
+    ld->blue_line.x         = 7;
     ld->blue_line.y         = 15;
     ld->blue_line.length    = 7;
     ld->blue_line.colour    = PAPER_BLUE|BRIGHT;

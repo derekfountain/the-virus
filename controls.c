@@ -42,7 +42,7 @@ uint8_t kp;
 
 CONTROL select_controls( void )
 {
-  /* The keyboard responses are a bit sluggish with the ROM int running */
+  /* The keyboard responses are a bit sluggish with the int running */
   intrinsic_di();
 
   print_str(1,10,"Keyboard or Kempston Joystick?");
