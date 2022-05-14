@@ -70,10 +70,6 @@ void init_swarm( uint8_t size, int16_t vel )
 register int16_t vx;
 register int16_t vy;
 
-/* Cache the result of this multiplication, it's verty slightly faster */
-int32_t player_x_times_256;
-int32_t player_y_times_256;
-
 void update_swarm( LEVEL *level )
 {
   register uint8_t i;
@@ -90,8 +86,6 @@ void update_swarm( LEVEL *level )
    * speed reasonably consistent.
    */
   every_other_dot ^= 1;
-  player_x_times_256 = (int32_t)QUERY_PLAYER_X*(int32_t)256;
-  player_y_times_256 = (int32_t)QUERY_PLAYER_Y*(int32_t)256;
   for( i=0; i < level->max_virions; i++ )
   {
     if( (i & 0x01) == every_other_dot )
@@ -109,8 +103,8 @@ void update_swarm( LEVEL *level )
        * the player is at x=0 then 0*0=0, and if the swarm dot is at x=255 then 0-65280=-65280. The
        * result will be in the range 255 to -255.
        */
-      vx += ( player_x_times_256 - (int32_t)swarm[i].x*(int32_t)256) / (int16_t)256;
-      vy += ( player_y_times_256 - (int32_t)swarm[i].y*(int32_t)256) / (int16_t)256;
+      vx += ( QUERY_PLAYER_X_TIMES_256 - (int32_t)swarm[i].x*(int32_t)256) / (int16_t)256;
+      vy += ( QUERY_PLAYER_Y_TIMES_256 - (int32_t)swarm[i].y*(int32_t)256) / (int16_t)256;
 
 
       /*

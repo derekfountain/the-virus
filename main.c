@@ -39,7 +39,7 @@
 #include <stdio.h>
 #endif
 
-unsigned char version[8] = "ver1.00";
+unsigned char version[8] = "ver1.01";
 
 /* Statics for speed */
 LEVEL   *level;
@@ -110,8 +110,8 @@ void main(void)
  *
  * Set max to 26/20 and use -SO3. Then:
  *
- * level 0 with "no moving cells" set TRUE should run in about 13.5 secs
- * level 9 with "no moving cells" set FALSE should run in about 13.5 secs
+ * level 0 with "no moving cells" set TRUE should run in about 13.0 secs
+ * level 9 with "no moving cells" set FALSE should run in about 13.7 secs
  */
 #if TIME_TEST
       uint16_t countdown = 500;
@@ -125,8 +125,10 @@ void main(void)
       {
         /* Small hack here to allow bumping through the levels */
         uint8_t mp_result = move_player();
+#if 0
         if( mp_result == 1 )
           break;
+#endif
 #if STDIO_DEBUG
         if( mp_result == 2 )
           printf_swarm_details();

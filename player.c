@@ -31,6 +31,15 @@ uint8_t  player_y=255;
 uint8_t  previous_player_x=255;
 uint8_t  previous_player_y=255;
 
+/*
+ * Player x*256 and player y*256 are values needed by the swarm algorithm.
+ * It's very slightly faster to calculate these values here each time the
+ * player moves than it is to calculate each time the swarm algorithm is
+ * run. The swarm code picks these up via macros defined in player.h.
+ */
+int32_t  player_x_times_256=65536;
+int32_t  player_y_times_256=65536;
+
 CONTROL   control;
 DIRECTION direction;
 
@@ -44,8 +53,8 @@ void hide_player( void )
 void init_player( CONTROL c )
 {
   /* Middle of screen */
-  player_x = 128;
-  player_y =  96;
+  player_x = 128; player_x_times_256 = ((int32_t)128*(int32_t)256);
+  player_y =  96; player_y_times_256 = ((int32_t) 96*(int32_t)256);
 
   control = c;
 
@@ -326,6 +335,9 @@ void draw_player( void )
   snow_plot( player_x+1, player_y );
   snow_plot( player_x,   player_y+1 );
   snow_plot( player_x+1, player_y+1 );
+
+  player_x_times_256 = ((int32_t)player_x)*(int32_t)256;
+  player_y_times_256 = ((int32_t)player_y)*(int32_t)256;
 
   previous_player_x = player_x;
   previous_player_y = player_y;

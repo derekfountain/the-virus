@@ -32,7 +32,11 @@ void draw_player( void );
 /* Player x,y, see player.c for definitions. Client code can use these macros */
 extern uint8_t player_x;
 extern uint8_t player_y;
+extern int32_t player_x_times_256;
+extern int32_t player_y_times_256;
 #define QUERY_PLAYER_X ((uint8_t)(player_x))
 #define QUERY_PLAYER_Y ((uint8_t)(player_y))
+#define QUERY_PLAYER_X_TIMES_256 ((int32_t)(player_x_times_256))
+#define QUERY_PLAYER_Y_TIMES_256 ((int32_t)(player_y_times_256))
 
 #endif
