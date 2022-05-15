@@ -39,7 +39,7 @@
 #include <stdio.h>
 #endif
 
-unsigned char version[8] = "ver1.01";
+unsigned char version[8] = "ver1.02";
 
 /* Statics for speed */
 LEVEL   *level;
@@ -101,7 +101,6 @@ void main(void)
 
       init_swarm( level->starting_num_virions, STARTING_VELOCITY );
 
-      RESET_HALF_SECONDS_PASSED;
       UNPAUSE_TIMER;
 
 #define TIME_TEST 0
