@@ -1,4 +1,4 @@
-# The Virus, a ZX Spectrum game by Derek Fountain
+# The Virus
 
 A game for the 48K ZX Spectrum home micro of the 1980s. The TAP file of
 the latest release is [here](https://github.com/derekfountain/the-virus/blob/main/tv.tap).
@@ -19,3 +19,13 @@ rewrote most of it, and optimised it as best I could short of
 rewriting it in Z80 assembly language.
 
 It turned out OK, so I built a game around it. :)
+
+Credits:
+
+Me, [Derek Fountain](https://www.derekfountain.org/), for writing it :)
+
+Damien Guard, for the [font](https://damieng.com/typography/zx-origins/zx-eurostile)
+
+[Andy Dansby](https://zxspectrumcoding.wordpress.com/) for his fast pixel plotting [work](https://spectrumcomputing.co.uk/forums/viewtopic.php?t=6727)
+
+Conrad Parker for his [Boids work](https://vergenet.net/~conrad/boids/)
