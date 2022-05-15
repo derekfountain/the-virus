@@ -37,8 +37,6 @@
 volatile uint16_t ticker = 0;
 volatile uint16_t timer_ticker = 0;
 
-uint16_t half_seconds_passed = 0;
-
 /*
  * 100ms ticker. This one increments every 5 interrupts, so it
  * ticks up every 100ms.
@@ -66,7 +64,6 @@ IM2_DEFINE_ISR(isr)
   if( ++ticker_100ms_int_counter == 5 )
   {
     ticker_100ms_int_counter = 0;
-    half_seconds_passed++;
     interrupt_service_required_100ms = 1;
   }
 

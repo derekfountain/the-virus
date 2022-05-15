@@ -26,7 +26,6 @@ typedef uint8_t boolean_t;
 /* These can be accessed directly by client code using the macros defined in here. See timer.c for definitions */
 extern uint8_t countdown;
 extern uint8_t paused;
-extern uint16_t half_seconds_passed;
 
 boolean_t draw_timer( boolean_t );
 void time_up( void );
@@ -35,9 +34,6 @@ void winner( void );
 #define GET_COUNTDOWN       ((uint8_t)(countdown))
 #define SET_COUNTDOWN(t)    countdown = (uint8_t)(t)
 #define GET_COUNTDOWNPAUSED ((uint8_t)(paused))
-
-#define RESET_HALF_SECONDS_PASSED half_seconds_passed=0
-#define GET_HALF_SECONDS_PASSED  ((uint16_t)(half_seconds_passed))
 
 #define PAUSE_TIMER   paused=1
 #define UNPAUSE_TIMER paused=0
