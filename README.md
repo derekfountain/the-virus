@@ -20,6 +20,9 @@ rewriting it in Z80 assembly language.
 
 It turned out OK, so I built a game around it. :)
 
+The release thread at Spectrum Computing is [here](https://spectrumcomputing.co.uk/forums/viewtopic.php?t=7291),
+and there's an RZX file should anyone want to see how it's done. :)
+
 Credits:
 
 Me, [Derek Fountain](https://www.derekfountain.org/), for writing it :)
